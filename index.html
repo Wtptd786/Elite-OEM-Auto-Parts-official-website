@@ -1,0 +1,652 @@
+import { useState, useMemo } from "react";
+
+const GOLD = "#c9a84c";
+const GOLD2 = "#f0c96a";
+const RED = "#d92b2b";
+const DARK = "#07070a";
+const CARD = "#13131c";
+const CARD2 = "#1a1a26";
+const BORDER = "#252538";
+const MUTED = "#7878a0";
+
+const brands = [
+  { id:"ford",  name:"Ford",       flag:"🇺🇸", cat:"American", img:"https://images.unsplash.com/photo-1612825173281-9a193378527e?w=400&q=75&auto=format&fit=crop", parts:8200, rating:4.9, orders:3200 },
+  { id:"toyota",name:"Toyota",     flag:"🇯🇵", cat:"Japanese", img:"https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400&q=75&auto=format&fit=crop", parts:9500, rating:4.9, orders:4100 },
+  { id:"bmw",   name:"BMW",        flag:"🇩🇪", cat:"Luxury",   img:"https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&q=75&auto=format&fit=crop", parts:6800, rating:4.8, orders:1900 },
+  { id:"merc",  name:"Mercedes",   flag:"🇩🇪", cat:"Luxury",   img:"https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=400&q=75&auto=format&fit=crop", parts:7100, rating:4.9, orders:2300 },
+  { id:"chevy", name:"Chevrolet",  flag:"🇺🇸", cat:"American", img:"https://images.unsplash.com/photo-1558981285-6f0c8d89a34c?w=400&q=75&auto=format&fit=crop", parts:7400, rating:4.8, orders:2800 },
+  { id:"honda", name:"Honda",      flag:"🇯🇵", cat:"Japanese", img:"https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?w=400&q=75&auto=format&fit=crop", parts:8100, rating:4.9, orders:3500 },
+  { id:"dodge", name:"Dodge/RAM",  flag:"🇺🇸", cat:"American", img:"https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400&q=75&auto=format&fit=crop", parts:5900, rating:4.8, orders:1700 },
+  { id:"audi",  name:"Audi",       flag:"🇩🇪", cat:"Luxury",   img:"https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=400&q=75&auto=format&fit=crop", parts:5600, rating:4.9, orders:1400 },
+  { id:"nissan",name:"Nissan",     flag:"🇯🇵", cat:"Japanese", img:"https://images.unsplash.com/photo-1551830820-330a71b99659?w=400&q=75&auto=format&fit=crop", parts:6300, rating:4.8, orders:2100 },
+  { id:"jeep",  name:"Jeep",       flag:"🇺🇸", cat:"SUV",      img:"https://images.unsplash.com/photo-1563720223185-11003d516935?w=400&q=75&auto=format&fit=crop", parts:5200, rating:4.8, orders:1900 },
+  { id:"hyundai",name:"Hyundai",   flag:"🇰🇷", cat:"Korean",   img:"https://images.unsplash.com/photo-1632245889029-e406faaa34cd?w=400&q=75&auto=format&fit=crop", parts:5800, rating:4.8, orders:1600 },
+  { id:"lexus", name:"Lexus",      flag:"🇯🇵", cat:"Luxury",   img:"https://images.unsplash.com/photo-1655350253668-b07ef4b08daf?w=400&q=75&auto=format&fit=crop", parts:4900, rating:4.9, orders:1200 },
+];
+
+const catalog = [
+  // Ford
+  { id:1,  brand:"ford",  name:"OEM Brake Rotor Set",          cat:"Brakes",      price:189, orig:259, img:"https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&q=72&auto=format&fit=crop", badge:"Best Seller", sku:"FD-BR-2210", rating:4.9, reviews:312, inStock:true },
+  { id:2,  brand:"ford",  name:"F-150 OEM Air Filter",         cat:"Engine",      price:48,  orig:72,  img:"https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=400&q=72&auto=format&fit=crop", badge:"OEM",         sku:"FD-AF-1150", rating:4.8, reviews:198, inStock:true },
+  { id:3,  brand:"ford",  name:"Mustang OEM Suspension Kit",   cat:"Suspension",  price:420, orig:580, img:"https://images.unsplash.com/photo-1609252509924-d35e73173882?w=400&q=72&auto=format&fit=crop", badge:"Premium",     sku:"FD-SK-9960", rating:4.9, reviews:87,  inStock:true },
+  { id:4,  brand:"ford",  name:"OEM Alloy Wheel 18\"",         cat:"Wheels",      price:295, orig:410, img:"https://images.unsplash.com/photo-1596742578443-7682ef5251cd?w=400&q=72&auto=format&fit=crop", badge:"OEM",         sku:"FD-WH-1801", rating:4.7, reviews:145, inStock:false },
+  // Toyota
+  { id:5,  brand:"toyota",name:"Camry OEM Brake Pads",         cat:"Brakes",      price:89,  orig:129, img:"https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&q=72&auto=format&fit=crop", badge:"OEM",         sku:"TY-BP-2021", rating:4.9, reviews:445, inStock:true },
+  { id:6,  brand:"toyota",name:"RAV4 OEM Timing Belt Kit",     cat:"Engine",      price:210, orig:310, img:"https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=400&q=72&auto=format&fit=crop", badge:"Best Seller", sku:"TY-TB-4440", rating:4.8, reviews:276, inStock:true },
+  { id:7,  brand:"toyota",name:"Tundra OEM Shock Absorbers",   cat:"Suspension",  price:340, orig:480, img:"https://images.unsplash.com/photo-1609252509924-d35e73173882?w=400&q=72&auto=format&fit=crop", badge:"Premium",     sku:"TY-SA-8880", rating:4.9, reviews:134, inStock:true },
+  { id:8,  brand:"toyota",name:"Prius OEM Hybrid Battery",     cat:"Electrical",  price:890, orig:1250,img:"https://images.unsplash.com/photo-1580983559367-0dc2f8934365?w=400&q=72&auto=format&fit=crop", badge:"Genuine OEM", sku:"TY-HB-PRIU", rating:4.9, reviews:98,  inStock:true },
+  // BMW
+  { id:9,  brand:"bmw",   name:"3 Series OEM Brake Caliper",   cat:"Brakes",      price:320, orig:480, img:"https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&q=72&auto=format&fit=crop", badge:"OEM",         sku:"BW-BC-3300", rating:4.9, reviews:167, inStock:true },
+  { id:10, brand:"bmw",   name:"M3 OEM Carbon Air Intake",     cat:"Engine",      price:560, orig:780, img:"https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=400&q=72&auto=format&fit=crop", badge:"Performance", sku:"BW-AI-M300", rating:4.8, reviews:89,  inStock:true },
+  { id:11, brand:"bmw",   name:"X5 OEM Suspension Arm",        cat:"Suspension",  price:280, orig:390, img:"https://images.unsplash.com/photo-1609252509924-d35e73173882?w=400&q=72&auto=format&fit=crop", badge:"OEM",         sku:"BW-SA-X500", rating:4.7, reviews:112, inStock:false },
+  { id:12, brand:"bmw",   name:"5 Series OEM Alloy Set (4pc)", cat:"Wheels",      price:1200,orig:1680,img:"https://images.unsplash.com/photo-1596742578443-7682ef5251cd?w=400&q=72&auto=format&fit=crop", badge:"Premium",     sku:"BW-WH-5S04", rating:4.9, reviews:54,  inStock:true },
+  // Mercedes
+  { id:13, brand:"merc",  name:"E-Class OEM Brake Set",        cat:"Brakes",      price:410, orig:590, img:"https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&q=72&auto=format&fit=crop", badge:"Genuine OEM", sku:"MB-BR-ECLS", rating:4.9, reviews:203, inStock:true },
+  { id:14, brand:"merc",  name:"AMG OEM Cold Air Intake",      cat:"Engine",      price:680, orig:920, img:"https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=400&q=72&auto=format&fit=crop", badge:"Performance", sku:"MB-AI-AMGG", rating:4.9, reviews:76,  inStock:true },
+  { id:15, brand:"merc",  name:"GLE OEM Air Suspension",       cat:"Suspension",  price:950, orig:1350,img:"https://images.unsplash.com/photo-1609252509924-d35e73173882?w=400&q=72&auto=format&fit=crop", badge:"Premium",     sku:"MB-AS-GLEE", rating:4.8, reviews:91,  inStock:true },
+  { id:16, brand:"merc",  name:"S-Class OEM LED Headlight",    cat:"Lighting",    price:780, orig:1100,img:"https://images.unsplash.com/photo-1580983559367-0dc2f8934365?w=400&q=72&auto=format&fit=crop", badge:"OEM",         sku:"MB-LH-SCLS", rating:4.9, reviews:118, inStock:false },
+  // Chevy
+  { id:17, brand:"chevy", name:"Silverado OEM Rotors + Pads",  cat:"Brakes",      price:220, orig:320, img:"https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&q=72&auto=format&fit=crop", badge:"Best Seller", sku:"CV-BR-SIL0", rating:4.8, reviews:389, inStock:true },
+  { id:18, brand:"chevy", name:"Camaro OEM Cold Air Intake",   cat:"Engine",      price:310, orig:440, img:"https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=400&q=72&auto=format&fit=crop", badge:"Performance", sku:"CV-AI-CAM0", rating:4.8, reviews:142, inStock:true },
+  // Honda
+  { id:19, brand:"honda", name:"Accord OEM Brake Pads",        cat:"Brakes",      price:78,  orig:110, img:"https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&q=72&auto=format&fit=crop", badge:"OEM",         sku:"HD-BP-ACRD", rating:4.9, reviews:521, inStock:true },
+  { id:20, brand:"honda", name:"CR-V OEM Timing Chain Kit",    cat:"Engine",      price:185, orig:265, img:"https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=400&q=72&auto=format&fit=crop", badge:"Best Seller", sku:"HD-TC-CRVV", rating:4.8, reviews:298, inStock:true },
+  // Dodge
+  { id:21, brand:"dodge", name:"Charger OEM Brembo Brake Kit", cat:"Brakes",      price:540, orig:750, img:"https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&q=72&auto=format&fit=crop", badge:"Performance", sku:"DG-BK-CHRG", rating:4.9, reviews:156, inStock:true },
+  { id:22, brand:"dodge", name:"RAM 1500 OEM Suspension Lift",  cat:"Suspension",  price:680, orig:950, img:"https://images.unsplash.com/photo-1609252509924-d35e73173882?w=400&q=72&auto=format&fit=crop", badge:"Premium",     sku:"DG-SL-R150", rating:4.8, reviews:87,  inStock:true },
+  // Audi
+  { id:23, brand:"audi",  name:"A4 OEM Ceramic Brake Kit",     cat:"Brakes",      price:490, orig:690, img:"https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&q=72&auto=format&fit=crop", badge:"Premium",     sku:"AD-CB-A4AA", rating:4.9, reviews:134, inStock:true },
+  { id:24, brand:"audi",  name:"Q7 OEM Air Suspension Strut",  cat:"Suspension",  price:760, orig:1050,img:"https://images.unsplash.com/photo-1609252509924-d35e73173882?w=400&q=72&auto=format&fit=crop", badge:"OEM",         sku:"AD-AS-Q7QQ", rating:4.8, reviews:67,  inStock:true },
+  // Nissan
+  { id:25, brand:"nissan",name:"Altima OEM Engine Oil Filter",  cat:"Engine",      price:32,  orig:48,  img:"https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=400&q=72&auto=format&fit=crop", badge:"OEM",         sku:"NS-OF-ALTM", rating:4.8, reviews:612, inStock:true },
+  { id:26, brand:"nissan",name:"Frontier OEM Alloy Wheels",    cat:"Wheels",      price:380, orig:530, img:"https://images.unsplash.com/photo-1596742578443-7682ef5251cd?w=400&q=72&auto=format&fit=crop", badge:"OEM",         sku:"NS-WH-FRNT", rating:4.7, reviews:98,  inStock:false },
+  // Jeep
+  { id:27, brand:"jeep",  name:"Wrangler OEM Lift Kit",        cat:"Suspension",  price:720, orig:1000,img:"https://images.unsplash.com/photo-1609252509924-d35e73173882?w=400&q=72&auto=format&fit=crop", badge:"Best Seller", sku:"JP-LK-WRNL", rating:4.9, reviews:234, inStock:true },
+  { id:28, brand:"jeep",  name:"Grand Cherokee OEM LED Lights", cat:"Lighting",    price:340, orig:480, img:"https://images.unsplash.com/photo-1580983559367-0dc2f8934365?w=400&q=72&auto=format&fit=crop", badge:"OEM",         sku:"JP-LL-GRCH", rating:4.8, reviews:176, inStock:true },
+  // Hyundai
+  { id:29, brand:"hyundai",name:"Elantra OEM Brake Set",       cat:"Brakes",      price:95,  orig:140, img:"https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&q=72&auto=format&fit=crop", badge:"OEM",         sku:"HY-BR-ELNR", rating:4.8, reviews:287, inStock:true },
+  // Lexus
+  { id:30, brand:"lexus", name:"RX 350 OEM Brake Rotor Kit",   cat:"Brakes",      price:290, orig:420, img:"https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&q=72&auto=format&fit=crop", badge:"Genuine OEM", sku:"LX-BR-RX35", rating:4.9, reviews:163, inStock:true },
+];
+
+const cats = ["All Parts","Brakes","Engine","Suspension","Wheels","Electrical","Lighting"];
+const brandCats = ["All","American","European","Japanese","Korean","Luxury","SUV"];
+
+const PHONE = "1-800-000-0000";
+const TEL = "tel:+18000000000";
+
+// ─── tiny style helpers ───────────────────────────────────────────────
+const S = {
+  page:{ background:DARK, minHeight:"100vh", color:"#f0f0f8", fontFamily:"'Segoe UI',Arial,sans-serif", overflowX:"hidden" },
+  nav:{ position:"sticky", top:0, zIndex:1000, background:"rgba(7,7,9,.97)", borderBottom:`1px solid ${BORDER}`, backdropFilter:"blur(20px)", display:"flex", alignItems:"center", justifyContent:"space-between", padding:".7rem 2rem", gap:"1rem", flexWrap:"wrap" },
+  logo:{ display:"flex", alignItems:"center", gap:".6rem", textDecoration:"none", cursor:"pointer" },
+  logoBox:{ width:40, height:40, borderRadius:9, background:`linear-gradient(135deg,${GOLD},${GOLD2})`, display:"flex", alignItems:"center", justifyContent:"center", boxShadow:`0 0 18px rgba(201,168,76,.35)` },
+  logoName:{ fontWeight:900, fontSize:"1.05rem", letterSpacing:".5px", background:`linear-gradient(135deg,${GOLD},${GOLD2})`, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" },
+  logoSub:{ fontSize:".55rem", color:MUTED, letterSpacing:"2px", textTransform:"uppercase", display:"block", marginTop:-3 },
+  navLinks:{ display:"flex", gap:"1.5rem", listStyle:"none", flexWrap:"wrap" },
+  navA:{ color:"#aaa", fontSize:".8rem", fontWeight:500, textDecoration:"none", letterSpacing:".5px", textTransform:"uppercase", cursor:"pointer" },
+  callBtn:{ background:`linear-gradient(135deg,${GOLD},${GOLD2})`, color:"#000", fontWeight:800, fontSize:".82rem", padding:".55rem 1.2rem", borderRadius:50, textDecoration:"none", display:"flex", alignItems:"center", gap:".4rem", boxShadow:`0 0 20px rgba(201,168,76,.3)`, border:"none", cursor:"pointer", whiteSpace:"nowrap" },
+  cartBtn:{ background:"transparent", border:`1px solid ${BORDER}`, color:"#ccc", borderRadius:50, padding:".52rem .9rem", cursor:"pointer", display:"flex", alignItems:"center", gap:".35rem", fontSize:".82rem", position:"relative" },
+};
+
+function PhoneIcon({ s=18, fill="#000" }){ return <svg width={s} height={s} viewBox="0 0 24 24" fill={fill}><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.47 11.47 0 003.58.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.47 11.47 0 00.57 3.58 1 1 0 01-.24 1.01l-2.21 2.2z"/></svg>; }
+function CartIcon({ s=18, fill="#ccc" }){ return <svg width={s} height={s} viewBox="0 0 24 24" fill={fill}><path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM7.7 8h11.4l-1.5 7H9L7.7 8zM1 1h2.2l.9 2H20l-3 9H8L4.1 3H1V1z"/></svg>; }
+function StarIcon(){ return <svg width={12} height={12} viewBox="0 0 24 24" fill={GOLD}><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>; }
+function CheckIcon(){ return <svg width={14} height={14} viewBox="0 0 24 24" fill="#22c55e"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>; }
+function SearchIcon(){ return <svg width={16} height={16} viewBox="0 0 24 24" fill={MUTED}><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16a6.47 6.47 0 004.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>; }
+
+const badgeColor = b => ({
+  "Best Seller":`linear-gradient(135deg,${RED},#ff6600)`,
+  "Performance":`linear-gradient(135deg,#1e90ff,#00bfff)`,
+  "Premium":`linear-gradient(135deg,${GOLD},${GOLD2})`,
+  "Genuine OEM":`linear-gradient(135deg,#22c55e,#16a34a)`,
+  "OEM":`linear-gradient(135deg,#6366f1,#8b5cf6)`,
+}[b] || `linear-gradient(135deg,#444,#666)`);
+
+const badgeTxt = b => ["Premium","OEM","Genuine OEM"].includes(b) ? "#000" : "#fff";
+
+export default function App() {
+  const [page, setPage] = useState("home"); // home | brands | catalogue | cart | detail
+  const [activeBrand, setActiveBrand] = useState(null);
+  const [brandCatFilter, setBrandCatFilter] = useState("All");
+  const [partCat, setPartCat] = useState("All Parts");
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("popular");
+  const [cart, setCart] = useState([]);
+  const [detailPart, setDetailPart] = useState(null);
+  const [toast, setToast] = useState("");
+  const [stockFilter, setStockFilter] = useState(false);
+
+  const addCart = p => {
+    setCart(c => {
+      const ex = c.find(x=>x.id===p.id);
+      return ex ? c.map(x=>x.id===p.id?{...x,qty:x.qty+1}:x) : [...c,[...Object.values({...p,qty:1})].length && {...p,qty:1}];
+    });
+    setToast(`${p.name} added to quote list!`);
+    setTimeout(()=>setToast(""),2800);
+  };
+
+  const removeCart = id => setCart(c=>c.filter(x=>x.id!==id));
+  const cartCount = cart.reduce((a,x)=>a+x.qty,0);
+  const cartTotal = cart.reduce((a,x)=>a+x.price*x.qty,0);
+
+  const filteredBrands = useMemo(()=>
+    brandCatFilter==="All" ? brands :
+    brandCatFilter==="European" ? brands.filter(b=>b.flag==="🇩🇪") :
+    brands.filter(b=>b.cat===brandCatFilter)
+  ,[brandCatFilter]);
+
+  const filteredParts = useMemo(()=>{
+    let p = activeBrand ? catalog.filter(x=>x.brand===activeBrand.id) : catalog;
+    if(partCat!=="All Parts") p=p.filter(x=>x.cat===partCat);
+    if(stockFilter) p=p.filter(x=>x.inStock);
+    if(search) p=p.filter(x=>x.name.toLowerCase().includes(search.toLowerCase())||x.sku.toLowerCase().includes(search.toLowerCase()));
+    if(sort==="price-asc") p=[...p].sort((a,b)=>a.price-b.price);
+    if(sort==="price-desc") p=[...p].sort((a,b)=>b.price-a.price);
+    if(sort==="rating") p=[...p].sort((a,b)=>b.rating-a.rating);
+    if(sort==="popular") p=[...p].sort((a,b)=>b.reviews-a.reviews);
+    return p;
+  },[activeBrand,partCat,search,sort,stockFilter]);
+
+  const goToBrand = b => { setActiveBrand(b); setPage("catalogue"); setPartCat("All Parts"); setSearch(""); };
+  const goAllParts = () => { setActiveBrand(null); setPage("catalogue"); setPartCat("All Parts"); setSearch(""); };
+
+  // ── HERO ──────────────────────────────────────────────────────────
+  const Hero = () => (
+    <div style={{ position:"relative", minHeight:"92vh", display:"flex", alignItems:"center", overflow:"hidden", background:DARK }}>
+      {/* bg image */}
+      <div style={{ position:"absolute", inset:0, backgroundImage:"url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1800&q=70&auto=format&fit=crop')", backgroundSize:"cover", backgroundPosition:"center 40%" }}/>
+      <div style={{ position:"absolute", inset:0, background:"linear-gradient(100deg,rgba(7,7,9,1) 0%,rgba(7,7,9,.97) 38%,rgba(7,7,9,.65) 62%,rgba(7,7,9,.15) 100%)" }}/>
+      <div style={{ position:"absolute", inset:0, background:"linear-gradient(180deg,rgba(7,7,9,.3) 0%,transparent 20%,rgba(7,7,9,.85) 90%,rgba(7,7,9,1) 100%)" }}/>
+      <div style={{ position:"relative", zIndex:2, maxWidth:1200, margin:"0 auto", padding:"0 2rem", width:"100%", display:"grid", gridTemplateColumns:"1fr 1fr", gap:"3rem", alignItems:"center" }}>
+        {/* LEFT */}
+        <div>
+          <div style={{ display:"inline-flex", alignItems:"center", gap:".5rem", background:"rgba(201,168,76,.1)", border:"1px solid rgba(201,168,76,.35)", color:GOLD2, fontSize:".68rem", fontWeight:700, letterSpacing:"2px", textTransform:"uppercase", padding:".35rem 1rem", borderRadius:50, marginBottom:"1.4rem" }}>
+            <span style={{ width:6, height:6, background:GOLD, borderRadius:"50%", animation:"pulse 1.8s ease-in-out infinite" }}/>
+            🇺🇸 Trusted OEM Supplier — All 50 States
+          </div>
+          <h1 style={{ fontFamily:"'Segoe UI Black',sans-serif", fontSize:"clamp(2.4rem,5vw,4.2rem)", fontWeight:900, lineHeight:1.05, letterSpacing:"-1px", color:"#fff", marginBottom:"1.2rem" }}>
+            GENUINE<br/>
+            <span style={{ background:`linear-gradient(135deg,${GOLD},${GOLD2})`, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>OEM &amp; PREMIUM</span><br/>
+            AUTO PARTS
+          </h1>
+          <p style={{ color:"#bbb", fontSize:"1rem", lineHeight:1.75, marginBottom:"2rem", maxWidth:460 }}>
+            America's premium OEM parts store. 50,000+ genuine parts for every major brand — fast quotes, VIN matching, same-day shipping nationwide.
+          </p>
+          <div style={{ display:"flex", flexWrap:"wrap", gap:"1rem", marginBottom:"2.5rem" }}>
+            <a href={TEL} style={{ ...S.callBtn, fontSize:"1rem", padding:"1rem 2rem", boxShadow:`0 6px 28px rgba(201,168,76,.4)` }}>
+              <PhoneIcon s={20}/> Call Now: {PHONE}
+            </a>
+            <button onClick={goAllParts} style={{ background:"transparent", color:GOLD2, border:`1.5px solid rgba(201,168,76,.5)`, borderRadius:50, padding:"1rem 1.8rem", cursor:"pointer", fontSize:".92rem", fontWeight:600 }}>
+              Browse Catalogue →
+            </button>
+          </div>
+          <div style={{ display:"flex", gap:"2rem", flexWrap:"wrap" }}>
+            {[["50K+","Parts In Stock"],["99.2%","Fitment Accuracy"],["All 50","States Covered"],["24hr","Avg Ship Time"]].map(([n,l])=>(
+              <div key={l} style={{ borderLeft:`2px solid ${GOLD}`, paddingLeft:".9rem" }}>
+                <div style={{ fontWeight:900, fontSize:"1.6rem", color:"#fff", lineHeight:1 }}>{n}</div>
+                <div style={{ fontSize:".65rem", color:MUTED, textTransform:"uppercase", letterSpacing:"1px" }}>{l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* RIGHT: parts collage */}
+        <div style={{ display:"flex", justifyContent:"flex-end" }}>
+          <div style={{ width:"100%", maxWidth:500, display:"flex", flexDirection:"column", gap:8 }}>
+            <div style={{ borderRadius:16, overflow:"hidden", border:`1px solid rgba(201,168,76,.22)`, position:"relative", boxShadow:"0 20px 50px rgba(0,0,0,.6)" }}>
+              <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:`linear-gradient(135deg,${GOLD},${GOLD2})`, zIndex:2 }}/>
+              <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=700&q=75&auto=format&fit=crop" alt="OEM Brake System" style={{ width:"100%", height:220, objectFit:"cover", display:"block", filter:"brightness(.8) saturate(1.15)" }}/>
+              <div style={{ position:"absolute", inset:0, background:"linear-gradient(180deg,transparent 40%,rgba(7,7,9,.9) 100%)" }}/>
+              <div style={{ position:"absolute", bottom:".9rem", left:"1rem" }}>
+                <div style={{ fontWeight:800, fontSize:"1rem", color:"#fff" }}>OEM Brake System</div>
+                <div style={{ fontSize:".62rem", color:GOLD2, letterSpacing:"1px" }}>Rotors · Calipers · Pads — VIN Matched</div>
+              </div>
+            </div>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8 }}>
+              {[
+                ["https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=300&q=70&auto=format&fit=crop","ENGINE"],
+                ["https://images.unsplash.com/photo-1609252509924-d35e73173882?w=300&q=70&auto=format&fit=crop","SUSPENSION"],
+                ["https://images.unsplash.com/photo-1596742578443-7682ef5251cd?w=300&q=70&auto=format&fit=crop","WHEELS"],
+              ].map(([img,lbl])=>(
+                <div key={lbl} style={{ borderRadius:12, overflow:"hidden", border:`1px solid rgba(201,168,76,.15)`, position:"relative" }}>
+                  <img src={img} alt={lbl} style={{ width:"100%", height:110, objectFit:"cover", display:"block", filter:"brightness(.72) saturate(1.1)" }}/>
+                  <div style={{ position:"absolute", inset:0, background:"linear-gradient(180deg,transparent 35%,rgba(7,7,9,.85) 100%)" }}/>
+                  <div style={{ position:"absolute", bottom:".45rem", left:".55rem", fontSize:".58rem", fontWeight:700, color:GOLD2, letterSpacing:"1px" }}>{lbl}</div>
+                  <div style={{ position:"absolute", top:0, left:0, width:24, height:2, background:`linear-gradient(135deg,${GOLD},${GOLD2})` }}/>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+      <style>{`@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(201,168,76,.6);}50%{opacity:.7;box-shadow:0 0 0 6px rgba(201,168,76,0);}}`}</style>
+    </div>
+  );
+
+  // ── BRANDS PAGE ───────────────────────────────────────────────────
+  const BrandsPage = () => (
+    <div style={{ maxWidth:1300, margin:"0 auto", padding:"3rem 2rem" }}>
+      <div style={{ marginBottom:".8rem" }}><span style={tagStyle}>Vehicle Coverage</span></div>
+      <h2 style={secH}>SHOP BY BRAND</h2>
+      <p style={{ color:MUTED, marginBottom:"2rem" }}>Select your vehicle brand to browse genuine OEM parts.</p>
+      {/* filter tabs */}
+      <div style={{ display:"flex", flexWrap:"wrap", gap:".5rem", marginBottom:"2rem" }}>
+        {brandCats.map(c=>(
+          <button key={c} onClick={()=>setBrandCatFilter(c)} style={{ background:brandCatFilter===c?"rgba(201,168,76,.14)":"transparent", border:`1px solid ${brandCatFilter===c?"rgba(201,168,76,.5)":BORDER}`, color:brandCatFilter===c?GOLD2:MUTED, fontSize:".72rem", fontWeight:600, letterSpacing:".8px", textTransform:"uppercase", padding:".42rem 1rem", borderRadius:50, cursor:"pointer", transition:"all .2s" }}>
+            {c}
+          </button>
+        ))}
+      </div>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))", gap:"1.2rem" }}>
+        {filteredBrands.map(b=>(
+          <div key={b.id} onClick={()=>goToBrand(b)} style={{ borderRadius:18, overflow:"hidden", border:`1px solid ${BORDER}`, cursor:"pointer", position:"relative", transition:"transform .25s,border-color .25s" }}
+            onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(201,168,76,.55)";e.currentTarget.style.transform="translateY(-5px)";}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor=BORDER;e.currentTarget.style.transform="translateY(0)";}}>
+            <img src={b.img} alt={b.name} style={{ width:"100%", height:200, objectFit:"cover", display:"block", filter:"brightness(.68) saturate(1.15)" }}/>
+            <div style={{ position:"absolute", inset:0, background:"linear-gradient(180deg,transparent 25%,rgba(7,7,9,.95) 100%)" }}/>
+            <div style={{ position:"absolute", top:".75rem", left:".75rem", background:"rgba(7,7,9,.8)", border:"1px solid rgba(201,168,76,.3)", color:GOLD2, fontSize:".58rem", fontWeight:700, letterSpacing:"1px", padding:".2rem .65rem", borderRadius:50, backdropFilter:"blur(10px)" }}>{b.flag} {b.cat}</div>
+            <div style={{ position:"absolute", top:".75rem", right:".75rem", background:"rgba(201,168,76,.12)", border:"1px solid rgba(201,168,76,.3)", color:GOLD2, fontSize:".58rem", fontWeight:700, letterSpacing:".5px", padding:".2rem .65rem", borderRadius:50 }}>{b.parts.toLocaleString()}+ Parts</div>
+            <div style={{ position:"absolute", bottom:0, left:0, right:0, padding:"1rem 1.2rem", display:"flex", justifyContent:"space-between", alignItems:"flex-end" }}>
+              <div>
+                <div style={{ fontWeight:900, fontSize:"1.5rem", letterSpacing:"2px", color:"#fff", lineHeight:1 }}>{b.name.toUpperCase()}</div>
+                <div style={{ display:"flex", alignItems:"center", gap:".3rem", marginTop:4 }}>
+                  {[...Array(5)].map((_,i)=><StarIcon key={i}/>)}
+                  <span style={{ fontSize:".6rem", color:MUTED, marginLeft:2 }}>{b.rating} · {b.orders.toLocaleString()}+ orders</span>
+                </div>
+              </div>
+              <div style={{ background:`linear-gradient(135deg,${GOLD},${GOLD2})`, color:"#000", fontSize:".62rem", fontWeight:800, letterSpacing:"1px", padding:".3rem .85rem", borderRadius:50, flexShrink:0 }}>Shop Parts →</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  // ── CATALOGUE ────────────────────────────────────────────────────
+  const Catalogue = () => (
+    <div style={{ maxWidth:1300, margin:"0 auto", padding:"3rem 2rem" }}>
+      {/* breadcrumb */}
+      <div style={{ display:"flex", alignItems:"center", gap:".5rem", fontSize:".78rem", color:MUTED, marginBottom:"1.5rem", flexWrap:"wrap" }}>
+        <span style={{ cursor:"pointer", color:GOLD2 }} onClick={()=>setPage("home")}>Home</span>
+        <span>›</span>
+        <span style={{ cursor:"pointer", color:GOLD2 }} onClick={()=>setPage("brands")}>Brands</span>
+        {activeBrand && <><span>›</span><span style={{ color:"#fff" }}>{activeBrand.name}</span></>}
+      </div>
+      {activeBrand && (
+        <div style={{ display:"flex", alignItems:"center", gap:"1rem", background:CARD, border:`1px solid ${BORDER}`, borderRadius:16, padding:"1.2rem 1.5rem", marginBottom:"2rem" }}>
+          <img src={activeBrand.img} alt={activeBrand.name} style={{ width:80, height:60, objectFit:"cover", borderRadius:10, filter:"brightness(.8)" }}/>
+          <div>
+            <div style={{ fontWeight:900, fontSize:"1.4rem", letterSpacing:"1px", color:"#fff" }}>{activeBrand.name.toUpperCase()}</div>
+            <div style={{ fontSize:".72rem", color:MUTED }}>{activeBrand.flag} {activeBrand.cat} · {activeBrand.parts.toLocaleString()}+ OEM Parts Available</div>
+            <div style={{ display:"flex", gap:".25rem", marginTop:4 }}>{[...Array(5)].map((_,i)=><StarIcon key={i}/>)}<span style={{ fontSize:".62rem", color:MUTED, marginLeft:3 }}>{activeBrand.rating} · {activeBrand.orders.toLocaleString()}+ orders</span></div>
+          </div>
+          <div style={{ marginLeft:"auto" }}>
+            <a href={TEL} style={{ ...S.callBtn, fontSize:".82rem", padding:".6rem 1.2rem" }}><PhoneIcon s={16}/>Call for Quote</a>
+          </div>
+        </div>
+      )}
+      {/* controls */}
+      <div style={{ display:"flex", flexWrap:"wrap", gap:"1rem", alignItems:"center", marginBottom:"1.8rem" }}>
+        <div style={{ flex:1, minWidth:220, display:"flex", alignItems:"center", gap:".5rem", background:CARD, border:`1px solid ${BORDER}`, borderRadius:50, padding:".5rem 1rem" }}>
+          <SearchIcon/>
+          <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search parts, SKU..." style={{ background:"none", border:"none", outline:"none", color:"#fff", fontSize:".85rem", width:"100%" }}/>
+        </div>
+        <select value={sort} onChange={e=>setSort(e.target.value)} style={{ background:CARD, border:`1px solid ${BORDER}`, color:"#ccc", borderRadius:50, padding:".5rem 1.1rem", fontSize:".82rem", cursor:"pointer" }}>
+          <option value="popular">Most Popular</option>
+          <option value="rating">Top Rated</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+        </select>
+        <label style={{ display:"flex", alignItems:"center", gap:".4rem", color:MUTED, fontSize:".8rem", cursor:"pointer" }}>
+          <input type="checkbox" checked={stockFilter} onChange={e=>setStockFilter(e.target.checked)} style={{ accentColor:GOLD }}/> In Stock Only
+        </label>
+      </div>
+      {/* cat pills */}
+      <div style={{ display:"flex", flexWrap:"wrap", gap:".5rem", marginBottom:"2rem" }}>
+        {cats.map(c=>(
+          <button key={c} onClick={()=>setPartCat(c)} style={{ background:partCat===c?"rgba(201,168,76,.14)":"transparent", border:`1px solid ${partCat===c?"rgba(201,168,76,.5)":BORDER}`, color:partCat===c?GOLD2:MUTED, fontSize:".72rem", fontWeight:600, letterSpacing:".8px", textTransform:"uppercase", padding:".4rem .95rem", borderRadius:50, cursor:"pointer" }}>
+            {c}
+          </button>
+        ))}
+      </div>
+      <p style={{ fontSize:".78rem", color:MUTED, marginBottom:"1.5rem" }}>{filteredParts.length} parts found</p>
+      {/* grid */}
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))", gap:"1.2rem" }}>
+        {filteredParts.map(p=>(
+          <div key={p.id} style={{ background:CARD, border:`1px solid ${BORDER}`, borderRadius:16, overflow:"hidden", display:"flex", flexDirection:"column", transition:"border-color .25s,transform .25s" }}
+            onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(201,168,76,.45)";e.currentTarget.style.transform="translateY(-4px)";}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor=BORDER;e.currentTarget.style.transform="translateY(0)";}}>
+            {/* image */}
+            <div style={{ position:"relative", cursor:"pointer" }} onClick={()=>{setDetailPart(p);setPage("detail");}}>
+              <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:`linear-gradient(135deg,${GOLD},${GOLD2})`, zIndex:2 }}/>
+              <img src={p.img} alt={p.name} style={{ width:"100%", height:175, objectFit:"cover", display:"block", filter:"brightness(.78) saturate(1.1)" }}/>
+              <div style={{ position:"absolute", inset:0, background:"linear-gradient(180deg,transparent 50%,rgba(7,7,9,.8) 100%)" }}/>
+              {/* badge */}
+              <div style={{ position:"absolute", top:".6rem", left:".6rem", background:badgeColor(p.badge), color:badgeTxt(p.badge), fontSize:".58rem", fontWeight:800, letterSpacing:"1px", padding:".2rem .65rem", borderRadius:50 }}>{p.badge}</div>
+              {/* stock */}
+              <div style={{ position:"absolute", top:".6rem", right:".6rem", background:p.inStock?"rgba(34,197,94,.2)":"rgba(239,68,68,.15)", border:`1px solid ${p.inStock?"rgba(34,197,94,.4)":"rgba(239,68,68,.35)"}`, color:p.inStock?"#22c55e":"#ef4444", fontSize:".55rem", fontWeight:700, letterSpacing:".8px", padding:".2rem .6rem", borderRadius:50 }}>
+                {p.inStock?"● In Stock":"○ Order"}
+              </div>
+              <div style={{ position:"absolute", bottom:".5rem", left:".6rem", fontSize:".58rem", color:MUTED }}>SKU: {p.sku}</div>
+            </div>
+            {/* info */}
+            <div style={{ padding:"1rem", flex:1, display:"flex", flexDirection:"column", gap:".4rem" }}>
+              <div style={{ fontSize:".62rem", color:GOLD2, fontWeight:600, letterSpacing:"1px", textTransform:"uppercase" }}>{brands.find(b=>b.id===p.brand)?.name} · {p.cat}</div>
+              <div style={{ fontWeight:700, fontSize:".95rem", color:"#fff", lineHeight:1.35, cursor:"pointer" }} onClick={()=>{setDetailPart(p);setPage("detail");}}>{p.name}</div>
+              <div style={{ display:"flex", alignItems:"center", gap:".3rem" }}>
+                {[...Array(5)].map((_,i)=><StarIcon key={i}/>)}
+                <span style={{ fontSize:".62rem", color:MUTED }}>{p.rating} ({p.reviews})</span>
+              </div>
+              <div style={{ display:"flex", alignItems:"baseline", gap:".5rem", marginTop:"auto" }}>
+                <span style={{ fontWeight:900, fontSize:"1.25rem", color:GOLD }}>${p.price}</span>
+                <span style={{ fontSize:".78rem", color:MUTED, textDecoration:"line-through" }}>${p.orig}</span>
+                <span style={{ fontSize:".65rem", color:"#22c55e", fontWeight:700 }}>Save ${p.orig-p.price}</span>
+              </div>
+              <div style={{ display:"flex", gap:".5rem", marginTop:".4rem" }}>
+                <button onClick={()=>addCart(p)} disabled={!p.inStock} style={{ flex:1, background:p.inStock?`linear-gradient(135deg,${GOLD},${GOLD2})`:"#222", color:p.inStock?"#000":"#555", fontWeight:800, fontSize:".8rem", border:"none", borderRadius:50, padding:".65rem", cursor:p.inStock?"pointer":"not-allowed", transition:"opacity .2s" }}>
+                  {p.inStock?"Add to Quote":"Out of Stock"}
+                </button>
+                <a href={TEL} style={{ display:"flex", alignItems:"center", justifyContent:"center", width:42, background:"rgba(217,43,43,.15)", border:`1px solid rgba(217,43,43,.3)`, borderRadius:50, flexShrink:0, textDecoration:"none" }}>
+                  <PhoneIcon s={16} fill={RED}/>
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      {filteredParts.length===0 && (
+        <div style={{ textAlign:"center", padding:"4rem", color:MUTED }}>No parts found. Try different filters or <a href={TEL} style={{ color:GOLD2 }}>call us</a> for help.</div>
+      )}
+    </div>
+  );
+
+  // ── DETAIL ───────────────────────────────────────────────────────
+  const Detail = () => {
+    const p = detailPart; if(!p) return null;
+    const brd = brands.find(b=>b.id===p.brand);
+    return (
+      <div style={{ maxWidth:1200, margin:"0 auto", padding:"3rem 2rem" }}>
+        <div style={{ display:"flex", alignItems:"center", gap:".5rem", fontSize:".78rem", color:MUTED, marginBottom:"1.5rem", flexWrap:"wrap" }}>
+          <span style={{ cursor:"pointer", color:GOLD2 }} onClick={()=>setPage("home")}>Home</span><span>›</span>
+          <span style={{ cursor:"pointer", color:GOLD2 }} onClick={()=>{setActiveBrand(brd);setPage("catalogue");}}>{ brd?.name}</span><span>›</span>
+          <span style={{ color:"#fff" }}>{p.name}</span>
+        </div>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"2.5rem", alignItems:"start" }}>
+          {/* left */}
+          <div>
+            <div style={{ borderRadius:18, overflow:"hidden", border:`1px solid rgba(201,168,76,.25)`, position:"relative", boxShadow:"0 20px 50px rgba(0,0,0,.5)" }}>
+              <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:`linear-gradient(135deg,${GOLD},${GOLD2})`, zIndex:2 }}/>
+              <img src={p.img} alt={p.name} style={{ width:"100%", height:360, objectFit:"cover", display:"block", filter:"brightness(.85) saturate(1.15)" }}/>
+              <div style={{ position:"absolute", top:"1rem", left:"1rem", background:badgeColor(p.badge), color:badgeTxt(p.badge), fontSize:".65rem", fontWeight:800, letterSpacing:"1px", padding:".25rem .75rem", borderRadius:50 }}>{p.badge}</div>
+            </div>
+            {/* mini gallery */}
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, marginTop:8 }}>
+              {[p.img,
+                "https://images.unsplash.com/photo-1580983559367-0dc2f8934365?w=200&q=65&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=200&q=65&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1596742578443-7682ef5251cd?w=200&q=65&auto=format&fit=crop"
+              ].map((img,i)=>(
+                <div key={i} style={{ borderRadius:10, overflow:"hidden", border:`1px solid ${BORDER}`, cursor:"pointer" }}>
+                  <img src={img} alt="" style={{ width:"100%", height:70, objectFit:"cover", display:"block", filter:"brightness(.75)" }}/>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* right */}
+          <div>
+            <div style={{ fontSize:".7rem", color:GOLD2, fontWeight:600, letterSpacing:"1.5px", textTransform:"uppercase", marginBottom:".5rem" }}>{brd?.name} · {p.cat}</div>
+            <h2 style={{ fontWeight:900, fontSize:"1.8rem", color:"#fff", lineHeight:1.2, marginBottom:".8rem" }}>{p.name}</h2>
+            <div style={{ display:"flex", alignItems:"center", gap:".5rem", marginBottom:"1rem" }}>
+              {[...Array(5)].map((_,i)=><StarIcon key={i}/>)}
+              <span style={{ color:"#fff", fontWeight:600, fontSize:".85rem" }}>{p.rating}</span>
+              <span style={{ color:MUTED, fontSize:".78rem" }}>({p.reviews} reviews)</span>
+            </div>
+            <div style={{ display:"flex", alignItems:"baseline", gap:".8rem", marginBottom:"1.2rem" }}>
+              <span style={{ fontWeight:900, fontSize:"2.2rem", color:GOLD }}>${p.price}</span>
+              <span style={{ color:MUTED, fontSize:"1rem", textDecoration:"line-through" }}>${p.orig}</span>
+              <span style={{ background:"rgba(34,197,94,.15)", color:"#22c55e", fontSize:".72rem", fontWeight:700, padding:".2rem .65rem", borderRadius:50 }}>Save ${p.orig-p.price} ({Math.round((p.orig-p.price)/p.orig*100)}% off)</span>
+            </div>
+            {/* specs */}
+            <div style={{ background:CARD2, border:`1px solid ${BORDER}`, borderRadius:12, padding:"1.1rem", marginBottom:"1.2rem" }}>
+              {[["SKU",p.sku],["Category",p.cat],["Brand Fit",brd?.name],["Availability",p.inStock?"In Stock — Ships Today":"Available on Order"],["Warranty","12 Months OEM Warranty"],["Fitment","VIN Verified"],].map(([k,v])=>(
+                <div key={k} style={{ display:"flex", justifyContent:"space-between", padding:".4rem 0", borderBottom:`1px solid ${BORDER}`, fontSize:".82rem" }}>
+                  <span style={{ color:MUTED }}>{k}</span>
+                  <span style={{ color:k==="Availability"?(p.inStock?"#22c55e":"#ef4444"):"#fff", fontWeight:600 }}>{v}</span>
+                </div>
+              ))}
+            </div>
+            {/* trust badges */}
+            <div style={{ display:"flex", flexWrap:"wrap", gap:".5rem", marginBottom:"1.3rem" }}>
+              {["✅ OEM Certified","🚚 Same-Day Ship","🔑 VIN Matched","♻️ Easy Returns"].map(t=>(
+                <span key={t} style={{ background:"rgba(201,168,76,.08)", border:"1px solid rgba(201,168,76,.2)", color:GOLD2, fontSize:".65rem", fontWeight:700, padding:".25rem .7rem", borderRadius:50 }}>{t}</span>
+              ))}
+            </div>
+            <div style={{ display:"flex", gap:".8rem", flexWrap:"wrap" }}>
+              <button onClick={()=>addCart(p)} disabled={!p.inStock} style={{ flex:1, minWidth:180, background:p.inStock?`linear-gradient(135deg,${GOLD},${GOLD2})`:"#222", color:p.inStock?"#000":"#555", fontWeight:800, fontSize:".95rem", border:"none", borderRadius:50, padding:".85rem 1.5rem", cursor:p.inStock?"pointer":"not-allowed", boxShadow:p.inStock?`0 6px 24px rgba(201,168,76,.35)`:"none" }}>
+                {p.inStock?"Add to Quote List":"Out of Stock"}
+              </button>
+              <a href={TEL} style={{ ...S.callBtn, padding:".85rem 1.4rem", fontSize:".88rem", boxShadow:`0 4px 18px rgba(217,43,43,.3)`, textDecoration:"none", borderRadius:50 }}>
+                <PhoneIcon s={17}/>Call for Quote
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ── CART ─────────────────────────────────────────────────────────
+  const Cart = () => (
+    <div style={{ maxWidth:900, margin:"0 auto", padding:"3rem 2rem" }}>
+      <h2 style={secH}>YOUR QUOTE LIST</h2>
+      <p style={{ color:MUTED, marginBottom:"2rem" }}>Call us with this list for a final price — we beat any competitor.</p>
+      {cart.length===0 ? (
+        <div style={{ textAlign:"center", padding:"4rem", color:MUTED }}>
+          <CartIcon s={48} fill={MUTED}/><br/><br/>Your quote list is empty.<br/>
+          <button onClick={goAllParts} style={{ marginTop:"1rem", background:`linear-gradient(135deg,${GOLD},${GOLD2})`, color:"#000", fontWeight:800, border:"none", borderRadius:50, padding:".75rem 1.8rem", cursor:"pointer", fontSize:".9rem" }}>Browse Parts →</button>
+        </div>
+      ):(
+        <>
+          <div style={{ display:"flex", flexDirection:"column", gap:"1rem", marginBottom:"2rem" }}>
+            {cart.map(p=>(
+              <div key={p.id} style={{ background:CARD, border:`1px solid ${BORDER}`, borderRadius:14, padding:"1rem 1.2rem", display:"flex", alignItems:"center", gap:"1rem", flexWrap:"wrap" }}>
+                <img src={p.img} alt={p.name} style={{ width:80, height:60, objectFit:"cover", borderRadius:10, flexShrink:0 }}/>
+                <div style={{ flex:1, minWidth:180 }}>
+                  <div style={{ fontWeight:700, color:"#fff", marginBottom:2 }}>{p.name}</div>
+                  <div style={{ fontSize:".7rem", color:MUTED }}>SKU: {p.sku} · Qty: {p.qty}</div>
+                </div>
+                <div style={{ fontWeight:900, fontSize:"1.2rem", color:GOLD }}>${(p.price*p.qty).toLocaleString()}</div>
+                <button onClick={()=>removeCart(p.id)} style={{ background:"rgba(239,68,68,.12)", border:"1px solid rgba(239,68,68,.25)", color:"#ef4444", borderRadius:50, padding:".35rem .75rem", cursor:"pointer", fontSize:".72rem" }}>Remove</button>
+              </div>
+            ))}
+          </div>
+          <div style={{ background:CARD2, border:`1px solid ${BORDER}`, borderRadius:16, padding:"1.5rem" }}>
+            <div style={{ display:"flex", justifyContent:"space-between", marginBottom:"1rem" }}>
+              <span style={{ color:MUTED }}>Subtotal ({cartCount} items)</span>
+              <span style={{ fontWeight:900, fontSize:"1.4rem", color:GOLD }}>${cartTotal.toLocaleString()}</span>
+            </div>
+            <div style={{ fontSize:".78rem", color:MUTED, marginBottom:"1.2rem" }}>💡 Call us for final pricing, discounts, and VIN verification before ordering.</div>
+            <a href={TEL} style={{ ...S.callBtn, justifyContent:"center", fontSize:"1.1rem", padding:"1rem", borderRadius:50, textDecoration:"none", display:"flex", boxShadow:`0 6px 28px rgba(201,168,76,.4)` }}>
+              <PhoneIcon s={22}/>Call Now to Complete Order: {PHONE}
+            </a>
+          </div>
+        </>
+      )}
+    </div>
+  );
+
+  // ── SIMPLE HOME SECTIONS ──────────────────────────────────────────
+  const HomeExtra = () => (
+    <div>
+      {/* marquee */}
+      <div style={{ background:`linear-gradient(135deg,${GOLD},${GOLD2})`, padding:".5rem 0", overflow:"hidden" }}>
+        <div style={{ display:"flex", animation:"marquee 28s linear infinite", whiteSpace:"nowrap" }}>
+          {[...Array(2)].map((_,ri)=>(
+            <span key={ri} style={{ display:"inline-flex", gap:"2rem", paddingRight:"2rem" }}>
+              {["⚡ OEM Certified Parts","🚚 Same-Day Shipping","🔑 Free VIN Lookup","🇺🇸 All 50 States","📞 Expert Phone Support","💰 Beat Dealership Prices","✅ Fitment Guaranteed","🔧 All Major Brands"].map(t=>(
+                <span key={t} style={{ fontSize:".72rem", fontWeight:700, color:"#000", letterSpacing:"1.5px", textTransform:"uppercase", paddingRight:"2rem", borderRight:"1px solid rgba(0,0,0,.2)" }}>{t}</span>
+              ))}
+            </span>
+          ))}
+        </div>
+        <style>{`@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}`}</style>
+      </div>
+      {/* stats */}
+      <div style={{ background:CARD, borderBottom:`1px solid ${BORDER}`, padding:"2rem" }}>
+        <div style={{ maxWidth:1200, margin:"0 auto", display:"flex", flexWrap:"wrap", justifyContent:"space-around", gap:"1rem" }}>
+          {[["50,000+","Parts In Stock"],["All 50","States Served"],["99.2%","Fitment Accuracy"],["24 hrs","Avg Ship Time"],["15K+","Happy Customers"]].map(([n,l])=>(
+            <div key={l} style={{ textAlign:"center" }}>
+              <div style={{ fontWeight:900, fontSize:"2rem", background:`linear-gradient(135deg,${GOLD},${GOLD2})`, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>{n}</div>
+              <div style={{ fontSize:".65rem", color:MUTED, textTransform:"uppercase", letterSpacing:"1.5px" }}>{l}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Featured Brands strip */}
+      <div style={{ maxWidth:1300, margin:"0 auto", padding:"3.5rem 2rem" }}>
+        <div style={{ marginBottom:".7rem" }}><span style={tagStyle}>Top Brands</span></div>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-end", marginBottom:"1.8rem", flexWrap:"wrap", gap:"1rem" }}>
+          <h2 style={secH}>SHOP BY BRAND</h2>
+          <button onClick={()=>setPage("brands")} style={{ background:"transparent", color:GOLD2, border:`1px solid rgba(201,168,76,.4)`, borderRadius:50, padding:".5rem 1.2rem", cursor:"pointer", fontSize:".8rem", fontWeight:600 }}>View All Brands →</button>
+        </div>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))", gap:"1rem" }}>
+          {brands.slice(0,6).map(b=>(
+            <div key={b.id} onClick={()=>goToBrand(b)} style={{ background:CARD, border:`1px solid ${BORDER}`, borderRadius:14, overflow:"hidden", cursor:"pointer", transition:"border-color .2s,transform .2s" }}
+              onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(201,168,76,.45)";e.currentTarget.style.transform="translateY(-4px)";}}
+              onMouseLeave={e=>{e.currentTarget.style.borderColor=BORDER;e.currentTarget.style.transform="translateY(0)";}}>
+              <img src={b.img} alt={b.name} style={{ width:"100%", height:120, objectFit:"cover", filter:"brightness(.7)" }}/>
+              <div style={{ padding:".75rem 1rem" }}>
+                <div style={{ fontWeight:800, color:"#fff", fontSize:".95rem" }}>{b.name}</div>
+                <div style={{ fontSize:".62rem", color:MUTED }}>{b.parts.toLocaleString()}+ Parts</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Featured Parts */}
+      <div style={{ background:CARD, borderTop:`1px solid ${BORDER}`, borderBottom:`1px solid ${BORDER}`, padding:"3.5rem 2rem" }}>
+        <div style={{ maxWidth:1300, margin:"0 auto" }}>
+          <div style={{ marginBottom:".7rem" }}><span style={tagStyle}>Best Sellers</span></div>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-end", marginBottom:"1.8rem", flexWrap:"wrap", gap:"1rem" }}>
+            <h2 style={secH}>FEATURED OEM PARTS</h2>
+            <button onClick={goAllParts} style={{ background:"transparent", color:GOLD2, border:`1px solid rgba(201,168,76,.4)`, borderRadius:50, padding:".5rem 1.2rem", cursor:"pointer", fontSize:".8rem", fontWeight:600 }}>Browse All →</button>
+          </div>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(230px,1fr))", gap:"1.1rem" }}>
+            {catalog.filter(p=>["Best Seller","Genuine OEM"].includes(p.badge)).slice(0,8).map(p=>(
+              <div key={p.id} style={{ background:DARK, border:`1px solid ${BORDER}`, borderRadius:14, overflow:"hidden", cursor:"pointer", transition:"border-color .2s,transform .2s" }}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(201,168,76,.45)";e.currentTarget.style.transform="translateY(-4px)";}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor=BORDER;e.currentTarget.style.transform="translateY(0)";}}>
+                <div style={{ position:"relative" }} onClick={()=>{setDetailPart(p);setPage("detail");}}>
+                  <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:`linear-gradient(135deg,${GOLD},${GOLD2})`, zIndex:2 }}/>
+                  <img src={p.img} alt={p.name} style={{ width:"100%", height:150, objectFit:"cover", display:"block", filter:"brightness(.75)" }}/>
+                  <div style={{ position:"absolute", top:".55rem", left:".55rem", background:badgeColor(p.badge), color:badgeTxt(p.badge), fontSize:".55rem", fontWeight:800, letterSpacing:"1px", padding:".18rem .6rem", borderRadius:50 }}>{p.badge}</div>
+                </div>
+                <div style={{ padding:".85rem" }}>
+                  <div style={{ fontSize:".6rem", color:GOLD2, marginBottom:2 }}>{brands.find(b=>b.id===p.brand)?.name}</div>
+                  <div style={{ fontWeight:700, fontSize:".88rem", color:"#fff", marginBottom:".4rem", lineHeight:1.3 }}>{p.name}</div>
+                  <div style={{ display:"flex", alignItems:"baseline", gap:".4rem", marginBottom:".6rem" }}>
+                    <span style={{ fontWeight:900, fontSize:"1.1rem", color:GOLD }}>${p.price}</span>
+                    <span style={{ fontSize:".7rem", color:MUTED, textDecoration:"line-through" }}>${p.orig}</span>
+                  </div>
+                  <button onClick={()=>addCart(p)} style={{ width:"100%", background:`linear-gradient(135deg,${GOLD},${GOLD2})`, color:"#000", fontWeight:800, fontSize:".75rem", border:"none", borderRadius:50, padding:".55rem", cursor:"pointer" }}>Add to Quote</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      {/* How it works */}
+      <div style={{ maxWidth:1200, margin:"0 auto", padding:"4rem 2rem" }}>
+        <div style={{ textAlign:"center", marginBottom:"2.5rem" }}>
+          <span style={tagStyle}>Simple Process</span>
+          <h2 style={{ ...secH, textAlign:"center", marginTop:".6rem" }}>GET YOUR PART IN 4 STEPS</h2>
+        </div>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:"1.2rem" }}>
+          {[["📞","Call Us","Speak directly with a real OEM parts specialist — no bots."],["🔑","Share VIN","Give us your 17-digit VIN for exact part identification."],["✅","Confirm & Pay","Review the quote and pay securely over the phone."],["🚚","Fast Ship","Ships same or next business day, tracked, to all 50 states."]].map(([ic,t,d],i)=>(
+            <div key={t} style={{ background:CARD, border:`1px solid ${BORDER}`, borderRadius:16, padding:"1.8rem 1.5rem", position:"relative", overflow:"hidden" }}>
+              <div style={{ fontWeight:900, fontSize:"5rem", color:"rgba(201,168,76,.06)", position:"absolute", top:-10, right:10, lineHeight:1, fontFamily:"monospace" }}>0{i+1}</div>
+              <div style={{ fontSize:"2rem", marginBottom:".8rem" }}>{ic}</div>
+              <h3 style={{ fontWeight:700, color:"#fff", marginBottom:".4rem" }}>{t}</h3>
+              <p style={{ fontSize:".83rem", color:MUTED, lineHeight:1.6 }}>{d}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* CTA banner */}
+      <div style={{ background:`linear-gradient(135deg,rgba(14,14,18,1),rgba(20,20,28,1))`, border:`solid rgba(201,168,76,.15)`, borderWidth:"1px 0", padding:"4rem 2rem", textAlign:"center", position:"relative", overflow:"hidden" }}>
+        <div style={{ position:"absolute", inset:0, backgroundImage:"url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1800&q=60&auto=format&fit=crop')", backgroundSize:"cover", backgroundPosition:"center", opacity:.06 }}/>
+        <div style={{ position:"relative", zIndex:2 }}>
+          <span style={tagStyle}>Get a Quote Now</span>
+          <h2 style={{ fontWeight:900, fontSize:"clamp(1.8rem,4vw,3rem)", color:"#fff", margin:".8rem 0 .5rem", letterSpacing:"-1px" }}>
+            READY TO FIND YOUR <span style={{ background:`linear-gradient(135deg,${GOLD},${GOLD2})`, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>EXACT PART?</span>
+          </h2>
+          <p style={{ color:"#aaa", marginBottom:"1.8rem" }}>One call. VIN lookup, fitment check, and same-day shipping — handled.</p>
+          <a href={TEL} style={{ fontWeight:900, fontSize:"clamp(2rem,5vw,3.2rem)", letterSpacing:"2px", background:`linear-gradient(135deg,${GOLD},${GOLD2})`, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", textDecoration:"none", display:"inline-block", marginBottom:"1.5rem" }}>📞 {PHONE}</a>
+          <br/>
+          <a href={TEL} style={{ ...S.callBtn, display:"inline-flex", fontSize:"1rem", padding:"1rem 2rem", borderRadius:50, textDecoration:"none", boxShadow:`0 6px 28px rgba(201,168,76,.4)` }}>
+            <PhoneIcon s={20}/>Call Now — Free Quote in Minutes
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+
+  const tagStyle = { display:"inline-block", background:"rgba(201,168,76,.1)", border:"1px solid rgba(201,168,76,.3)", color:GOLD2, fontSize:".65rem", fontWeight:700, letterSpacing:"2.5px", textTransform:"uppercase", padding:".3rem .9rem", borderRadius:50 };
+  const secH = { fontWeight:900, fontSize:"clamp(1.5rem,3vw,2.2rem)", color:"#fff", margin:"0 0 .5rem", letterSpacing:"-.5px" };
+
+  return (
+    <div style={S.page}>
+      {/* NAV */}
+      <nav style={S.nav}>
+        <a style={S.logo} onClick={()=>setPage("home")}>
+          <div style={S.logoBox}><svg width={22} height={22} viewBox="0 0 24 24" fill="#000"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg></div>
+          <div><div style={S.logoName}>Elite OEM Auto Parts</div><span style={S.logoSub}>eliteoemautoparts.com · USA</span></div>
+        </a>
+        <ul style={S.navLinks}>
+          {[["home","Home"],["brands","Brands"],["catalogue","All Parts"]].map(([p,l])=>(
+            <li key={p}><span style={{ ...S.navA, color:page===p?"#fff":undefined }} onClick={()=>{ if(p==="catalogue") goAllParts(); else setPage(p); }}>{l}</span></li>
+          ))}
+        </ul>
+        <div style={{ display:"flex", gap:".7rem", alignItems:"center" }}>
+          <button style={S.cartBtn} onClick={()=>setPage("cart")}>
+            <CartIcon s={17}/>
+            <span>Quote</span>
+            {cartCount>0 && <span style={{ position:"absolute", top:-6, right:-6, background:RED, color:"#fff", fontSize:".6rem", fontWeight:800, width:18, height:18, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center" }}>{cartCount}</span>}
+          </button>
+          <a href={TEL} style={S.callBtn}><PhoneIcon s={15}/>{PHONE}</a>
+        </div>
+      </nav>
+
+      {/* PAGES */}
+      {page==="home" && <><Hero/><HomeExtra/></>}
+      {page==="brands" && <BrandsPage/>}
+      {page==="catalogue" && <Catalogue/>}
+      {page==="detail" && <Detail/>}
+      {page==="cart" && <Cart/>}
+
+      {/* FOOTER */}
+      <footer style={{ background:"#040408", borderTop:`1px solid ${BORDER}`, padding:"2.5rem 2rem", textAlign:"center" }}>
+        <div style={{ fontWeight:900, fontSize:"1.1rem", background:`linear-gradient(135deg,${GOLD},${GOLD2})`, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", marginBottom:".3rem" }}>Elite OEM Auto Parts</div>
+        <div style={{ fontSize:".7rem", color:MUTED, marginBottom:"1rem" }}>eliteoemautoparts.com · 1-800-000-0000 · All 50 States</div>
+        <div style={{ maxWidth:760, margin:"0 auto", background:"rgba(255,255,255,.02)", border:`1px solid rgba(255,255,255,.05)`, borderRadius:10, padding:".9rem 1.2rem", fontSize:".72rem", color:"#444", lineHeight:1.6, textAlign:"left" }}>
+          <strong style={{ color:"#666" }}>Legal Disclaimer:</strong> Elite OEM Auto Parts supplies OEM and aftermarket parts compatible with major vehicle brands. We are not affiliated with or endorsed by any vehicle manufacturer. All manufacturer names and trademarks are used for fitment identification only.
+        </div>
+        <div style={{ fontSize:".68rem", color:"#333", marginTop:"1rem" }}>© 2025 Elite OEM Auto Parts · All Rights Reserved</div>
+      </footer>
+
+      {/* TOAST */}
+      {toast && (
+        <div style={{ position:"fixed", bottom:90, left:"50%", transform:"translateX(-50%)", background:`linear-gradient(135deg,${GOLD},${GOLD2})`, color:"#000", fontWeight:700, fontSize:".85rem", padding:".75rem 1.5rem", borderRadius:50, zIndex:9999, boxShadow:"0 8px 30px rgba(0,0,0,.4)", whiteSpace:"nowrap", display:"flex", alignItems:"center", gap:".4rem" }}>
+          <CheckIcon/>{toast}
+        </div>
+      )}
+
+      {/* MOBILE STICKY */}
+      <div style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:2000, display:"none" }} className="mob-sticky">
+        <a href={TEL} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:".5rem", background:`linear-gradient(135deg,${GOLD},${GOLD2})`, color:"#000", fontWeight:800, fontSize:"1rem", padding:"1rem", textDecoration:"none" }}>
+          <PhoneIcon s={20}/>Tap to Call: {PHONE}
+        </a>
+      </div>
+    </div>
+  );
+}
