@@ -1,4 +1,238 @@
-<!DOCTYPE html>
+/* ══════════════════════════════════════════
+   CHAT WIDGET ENGINE
+══════════════════════════════════════════ */
+const chatState = {
+  open: false,
+  step: 'welcome',      // welcome | selectBrand | selectCat | selectParts | collectInfo | submitted
+  selectedBrand: null,
+  selectedCat: null,
+  selectedParts: [],    // [{id,name,price}]
+  info: { name:'', phone:'', email:'', vin:'', message:'' },
+  infoStep: 0           // which field collecting
+};
+
+const INFO_FIELDS = [
+  { key:'name',    label:'Your Full Name',         placeholder:'e.g. John Smith',         type:'text',  required:true },
+  { key:'phone',   label:'Phone Number',            placeholder:'e.g. +1 (555) 123-4567',  type:'tel',   required:true },
+  { key:'email',   label:'Email Address',           placeholder:'e.g. john@email.com',     type:'email', required:false },
+  { key:'vin',     label:'Vehicle VIN (optional)',  placeholder:'17-digit VIN number',     type:'text',  required:false },
+  { key:'message', label:'Additional Notes',        placeholder:'Any specific details...',  type:'textarea',required:false },
+];
+
+function toggleChat(){
+  chatState.open = !chatState.open;
+  const box = document.getElementById('chatBox');
+  const icon = document.getElementById('chatIcon');
+  const closeIc = document.getElementById('closeIcon');
+  const notif = document.getElementById('chatNotif');
+  if(chatState.open){
+    box.classList.add('open');
+    icon.style.display = 'none';
+    closeIc.style.display = 'block';
+    notif.style.display = 'none';
+    if(chatState.step === 'welcome') initChat();
+  } else {
+    box.classList.remove('open');
+    icon.style.display = 'block';
+    closeIc.style.display = 'none';
+  }
+}
+
+function now(){ const d=new Date(); return d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
+
+function addMsg(text, who='bot', delay=0){
+  return new Promise(resolve => {
+    setTimeout(() => {
+      const msgs = document.getElementById('chatMsgs');
+      if(who==='bot'){
+        // show typing first
+        const typingId = 'typing_'+Date.now();
+        msgs.innerHTML += `<div class="msg bot" id="${typingId}"><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div></div>`;
+        scrollChat();
+        setTimeout(()=>{
+          const el = document.getElementById(typingId);
+          if(el) el.outerHTML = `<div class="msg bot"><div class="msg-bubble">${text}</div><div class="msg-time">${now()}</div></div>`;
+          scrollChat(); resolve();
+        }, 700);
+      } else {
+        msgs.innerHTML += `<div class="msg user"><div class="msg-bubble">${text}</div><div class="msg-time">${now()}</div></div>`;
+        scrollChat(); resolve();
+      }
+    }, delay);
+  });
+}
+
+function scrollChat(){ const m=document.getElementById('chatMsgs'); m.scrollTop=m.scrollHeight; }
+
+function setActions(html){ document.getElementById('chatActions').innerHTML = html; }
+function showBottom(show){ document.getElementById('chatBottom').style.display = show?'flex':'none'; }
+
+async function initChat(){
+  setActions(''); showBottom(false);
+  await addMsg("👋 <strong>Welcome to Elite OEM Auto Parts!</strong><br>I'm here to help you find the exact OEM part for your vehicle.");
+  await addMsg("What would you like to do today?", 'bot', 400);
+  setActions(`<div class="quick-replies">
+    <div class="qr-chip" onclick="chatPickFlow('parts')">🔧 Find a Part</div>
+    <div class="qr-chip" onclick="chatPickFlow('inquiry')">📋 General Inquiry</div>
+    <div class="qr-chip" onclick="chatPickFlow('vin')">🔑 VIN Lookup Help</div>
+    <div class="qr-chip" onclick="chatPickFlow('track')">🚚 Track My Order</div>
+  </div>`);
+}
+
+async function chatPickFlow(type){
+  setActions('');
+  if(type==='parts'){
+    await addMsg("🔧 Find a Part", 'user');
+    await addMsg("Great! Let's find your exact OEM part. <strong>First, select your vehicle brand:</strong>", 'bot', 200);
+    chatState.step = 'selectBrand';
+    renderBrandPicker();
+  } else if(type==='inquiry'){
+    await addMsg("📋 General Inquiry", 'user');
+    await addMsg("Sure! Please share your details and question — our team will get back to you within 1 hour.", 'bot', 200);
+    chatState.step = 'collectInfo';
+    chatState.infoStep = 0;
+    chatState.selectedParts = [];
+    startCollectInfo();
+  } else if(type==='vin'){
+    await addMsg("🔑 VIN Lookup Help", 'user');
+    await addMsg("Your VIN is a 17-digit code found on your dashboard (driver's side), door jamb sticker, or vehicle title. Share it with us when you call <strong>1-800-000-0000</strong> and we'll identify your exact parts instantly!", 'bot', 200);
+    await addMsg("Would you like to find a specific part now?", 'bot', 800);
+    setActions(`<div class="quick-replies">
+      <div class="qr-chip" onclick="chatPickFlow('parts')">Yes, find a part</div>
+      <div class="qr-chip" onclick="chatCallNow()">📞 Call Us Now</div>
+    </div>`);
+  } else if(type==='track'){
+    await addMsg("🚚 Track My Order", 'user');
+    await addMsg("For order tracking, please call us at <strong>1-800-000-0000</strong> or share your order details below and we'll look it up for you.", 'bot', 200);
+    chatState.step = 'collectInfo';
+    chatState.infoStep = 0;
+    chatState.selectedParts = [];
+    startCollectInfo();
+  }
+}
+
+async function chatCallNow(){
+  await addMsg("📞 Call Us", 'user');
+  await addMsg("Perfect! Our specialists are standing by. <a href='tel:+18000000000' style='color:#f0c96a;font-weight:700'>📞 Click to Call: 1-800-000-0000</a><br><small>Mon–Fri 8AM–8PM · Sat 9AM–5PM EST</small>", 'bot', 200);
+  setActions(`<div class="quick-replies"><div class="qr-chip" onclick="initChat()">🔄 Start Over</div></div>`);
+}
+
+function renderBrandPicker(){
+  const chips = brands.map(b=>`<div class="qr-chip" onclick="chatSelectBrand('${b.id}','${b.name}')">${b.flag} ${b.name}</div>`).join('');
+  setActions(`<div class="quick-replies">${chips}<div class="qr-chip" onclick="chatSelectBrand('other','Other Brand')">🔧 Other Brand</div></div>`);
+}
+
+async function chatSelectBrand(id, name){
+  setActions('');
+  chatState.selectedBrand = {id, name};
+  await addMsg(name, 'user');
+  await addMsg(`Good choice! Now select the <strong>part category</strong> you need for your ${name}:`, 'bot', 200);
+  chatState.step = 'selectCat';
+  renderCatPicker();
+}
+
+function renderCatPicker(){
+  const cats = [
+    {icon:'🛑',name:'Brakes & Rotors'},
+    {icon:'⚙️',name:'Engine Parts'},
+    {icon:'🔧',name:'Suspension'},
+    {icon:'⚡',name:'Electrical'},
+    {icon:'💡',name:'Lighting'},
+    {icon:'🔩',name:'Transmission'},
+    {icon:'🌀',name:'Wheels & Rims'},
+    {icon:'❄️',name:'A/C & HVAC'},
+    {icon:'🔋',name:'Fuel System'},
+    {icon:'📦',name:'Other Part'},
+  ];
+  const chips = cats.map(c=>`<div class="qr-chip" onclick="chatSelectCat('${c.name}')">${c.icon} ${c.name}</div>`).join('');
+  setActions(`<div class="quick-replies">${chips}</div>`);
+}
+
+async function chatSelectCat(cat){
+  setActions('');
+  chatState.selectedCat = cat;
+  await addMsg(cat, 'user');
+
+  // filter parts from catalog for this brand
+  const brandParts = catalog.filter(p => chatState.selectedBrand.id === 'other' || p.brand === chatState.selectedBrand.id);
+  const catMap = {
+    'Brakes & Rotors':'Brakes','Engine Parts':'Engine','Suspension':'Suspension',
+    'Electrical':'Electrical','Lighting':'Lighting','Wheels & Rims':'Wheels',
+    'Transmission':'Engine','A/C & HVAC':'Engine','Fuel System':'Engine'
+  };
+  const mappedCat = catMap[cat] || '';
+  const filtered = mappedCat ? brandParts.filter(p=>p.cat===mappedCat) : brandParts;
+
+  chatState.step = 'selectParts';
+
+  if(filtered.length > 0){
+    await addMsg(`Here are available <strong>${cat}</strong> parts for <strong>${chatState.selectedBrand.name}</strong>. Select all that you need:`, 'bot', 200);
+    renderPartsPicker(filtered);
+  } else {
+    await addMsg(`I don't see a direct match in our catalogue for <strong>${cat}</strong> on <strong>${chatState.selectedBrand.name}</strong>, but our specialists carry 50,000+ parts. Let's take your details and we'll find it for you! 💪`, 'bot', 200);
+    chatState.step = 'collectInfo';
+    chatState.infoStep = 0;
+    setTimeout(startCollectInfo, 600);
+  }
+}
+
+function renderPartsPicker(parts){
+  const list = parts.slice(0,8).map(p=>`
+    <div class="qr-chip" id="pc_${p.id}" onclick="chatTogglePart(${p.id},'${p.name.replace(/'/g,"\\'")}',${p.price})">
+      ${p.name} — <strong>${p.price}</strong>
+    </div>`).join('');
+  setActions(`
+    <div class="quick-replies">${list}<div class="qr-chip" onclick="chatTogglePart(0,'Custom Part Request',0)">📝 Custom / Not Listed</div></div>
+    <div id="selPartsWrap"></div>
+    <div class="quick-replies" style="padding:.5rem .9rem 0"><div class="qr-chip" onclick="chatConfirmParts()" style="background:rgba(201,168,76,.2);border-color:rgba(201,168,76,.6);font-weight:700">✅ Done — Continue</div></div>
+  `);
+}
+
+function chatTogglePart(id, name, price){
+  const exists = chatState.selectedParts.find(p=>p.id===id);
+  if(exists){
+    chatState.selectedParts = chatState.selectedParts.filter(p=>p.id!==id);
+    const chip = document.getElementById('pc_'+id);
+    if(chip){ chip.style.background=''; chip.style.borderColor=''; chip.style.color=''; }
+  } else {
+    chatState.selectedParts.push({id, name, price});
+    const chip = document.getElementById('pc_'+id);
+    if(chip){ chip.style.background='rgba(201,168,76,.25)'; chip.style.borderColor='rgba(201,168,76,.8)'; chip.style.color='#fff'; }
+  }
+  renderSelectedPartsInChat();
+}
+
+function renderSelectedPartsInChat(){
+  const wrap = document.getElementById('selPartsWrap');
+  if(!wrap) return;
+  if(!chatState.selectedParts.length){ wrap.innerHTML=''; return; }
+  wrap.innerHTML=`<div class="selected-parts">
+    <div class="selected-parts-title">Selected (${chatState.selectedParts.length})</div>
+    ${chatState.selectedParts.map(p=>`<div class="sel-part-item"><span>${p.name}</span>${p.price?`<span style="color:#c9a84c;font-weight:700">${p.price}</span>`:''}</div>`).join('')}
+  </div>`;
+}
+
+async function chatConfirmParts(){
+  if(!chatState.selectedParts.length){
+    await addMsg("Please select at least one part or choose 'Custom / Not Listed' to continue.", 'bot');
+    return;
+  }
+  setActions('');
+  const names = chatState.selectedParts.map(p=>p.name).join(', ');
+  await addMsg(`Selected: ${names}`, 'user');
+  await addMsg(`Perfect! I've noted your parts. Now I just need your contact details so our team can send you a quote. <strong>This only takes 30 seconds!</strong>`, 'bot', 200);
+  chatState.step = 'collectInfo';
+  chatState.infoStep = 0;
+  setTimeout(startCollectInfo, 600);
+}
+
+async function startCollectInfo(){
+  showBottom(false);
+  setActions('');
+  askInfoField(chatState.infoStep);
+}
+
+async funct<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -314,6 +548,164 @@ footer{background:#040408;border-top:1px solid var(--border);padding:2.5rem 2rem
   footer{padding:2rem 1rem;}
   .footer-top{flex-direction:column;}
 }
+/* ══ CHAT WIDGET ══ */
+#chatBtn{
+  position:fixed;bottom:80px;right:24px;z-index:4000;
+  width:58px;height:58px;border-radius:50%;
+  background:linear-gradient(135deg,#c9a84c,#f0c96a);
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 28px rgba(201,168,76,.5);
+  transition:transform .2s,box-shadow .2s;
+  animation:chatPulse 2.5s ease-in-out infinite;
+}
+#chatBtn:hover{transform:scale(1.1);box-shadow:0 10px 36px rgba(201,168,76,.65);}
+@keyframes chatPulse{0%,100%{box-shadow:0 6px 28px rgba(201,168,76,.5);}50%{box-shadow:0 6px 28px rgba(201,168,76,.5),0 0 0 10px rgba(201,168,76,.12);}}
+#chatBtn svg{fill:#000;}
+.chat-notif{
+  position:absolute;top:-4px;right:-4px;
+  background:#d92b2b;color:#fff;font-size:.58rem;font-weight:800;
+  width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  animation:bounce .8s ease-in-out infinite alternate;
+}
+@keyframes bounce{from{transform:translateY(0);}to{transform:translateY(-3px);}}
+
+#chatBox{
+  position:fixed;bottom:150px;right:24px;z-index:4001;
+  width:360px;max-height:580px;
+  background:#13131c;border:1px solid #252538;border-radius:20px;
+  box-shadow:0 20px 60px rgba(0,0,0,.7);
+  display:none;flex-direction:column;overflow:hidden;
+  animation:slideUp .25s ease;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+#chatBox.open{display:flex;}
+
+.chat-head{
+  background:linear-gradient(135deg,#1a1a26,#222235);
+  border-bottom:1px solid #252538;
+  padding:.9rem 1.1rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.chat-head-left{display:flex;align-items:center;gap:.65rem;}
+.chat-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,#c9a84c,#f0c96a);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  position:relative;
+}
+.chat-avatar svg{fill:#000;}
+.online-dot{
+  position:absolute;bottom:1px;right:1px;
+  width:10px;height:10px;background:#22c55e;border-radius:50%;
+  border:2px solid #13131c;
+}
+.chat-head-name{font-weight:700;font-size:.9rem;color:#fff;}
+.chat-head-status{font-size:.65rem;color:#22c55e;display:flex;align-items:center;gap:.3rem;}
+.chat-close{background:transparent;border:none;color:#7878a0;cursor:pointer;font-size:1.2rem;padding:.2rem .4rem;border-radius:6px;transition:color .2s;}
+.chat-close:hover{color:#fff;}
+
+.chat-msgs{
+  flex:1;overflow-y:auto;padding:.9rem;
+  display:flex;flex-direction:column;gap:.7rem;
+  max-height:360px;
+}
+.chat-msgs::-webkit-scrollbar{width:4px;}
+.chat-msgs::-webkit-scrollbar-thumb{background:#252538;border-radius:2px;}
+
+.msg{max-width:85%;animation:msgIn .2s ease;}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.msg.bot{align-self:flex-start;}
+.msg.user{align-self:flex-end;}
+.msg-bubble{
+  padding:.65rem .9rem;border-radius:14px;font-size:.82rem;line-height:1.5;
+}
+.msg.bot .msg-bubble{
+  background:#1e1e2c;border:1px solid #2a2a3d;color:#e0e0f0;
+  border-bottom-left-radius:4px;
+}
+.msg.user .msg-bubble{
+  background:linear-gradient(135deg,#c9a84c,#f0c96a);color:#000;font-weight:600;
+  border-bottom-right-radius:4px;
+}
+.msg-time{font-size:.58rem;color:#7878a0;margin-top:3px;padding:0 .2rem;}
+.msg.user .msg-time{text-align:right;}
+
+/* quick reply chips */
+.quick-replies{display:flex;flex-wrap:wrap;gap:.4rem;padding:.5rem .9rem 0;}
+.qr-chip{
+  background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);
+  color:#f0c96a;font-size:.72rem;font-weight:600;
+  padding:.35rem .8rem;border-radius:50px;cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+}
+.qr-chip:hover{background:rgba(201,168,76,.2);border-color:rgba(201,168,76,.6);}
+
+/* selected parts list */
+.selected-parts{
+  background:#1a1a26;border:1px solid #252538;border-radius:10px;
+  padding:.6rem .8rem;margin:.5rem .9rem 0;
+}
+.selected-parts-title{font-size:.65rem;color:#7878a0;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:.4rem;}
+.sel-part-item{display:flex;align-items:center;justify-content:space-between;padding:.25rem 0;border-bottom:1px solid #252538;font-size:.75rem;color:#e0e0f0;}
+.sel-part-item:last-child{border-bottom:none;}
+.sel-part-remove{background:none;border:none;color:#d92b2b;cursor:pointer;font-size:.8rem;padding:0 .3rem;}
+
+/* form inputs */
+.chat-form{padding:.7rem .9rem;display:flex;flex-direction:column;gap:.5rem;}
+.chat-input-wrap{position:relative;}
+.chat-input{
+  width:100%;background:#1e1e2c;border:1px solid #2a2a3d;
+  color:#fff;border-radius:10px;padding:.6rem .9rem;
+  font-size:.82rem;font-family:inherit;outline:none;
+  transition:border-color .2s;
+}
+.chat-input:focus{border-color:rgba(201,168,76,.5);}
+.chat-input::placeholder{color:#7878a0;}
+.chat-input-label{font-size:.65rem;color:#7878a0;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;}
+
+/* bottom bar */
+.chat-bottom{
+  padding:.7rem .9rem;border-top:1px solid #252538;
+  display:flex;gap:.5rem;
+}
+.chat-type-input{
+  flex:1;background:#1e1e2c;border:1px solid #2a2a3d;
+  color:#fff;border-radius:50px;padding:.5rem 1rem;
+  font-size:.82rem;font-family:inherit;outline:none;
+  transition:border-color .2s;
+}
+.chat-type-input:focus{border-color:rgba(201,168,76,.5);}
+.chat-type-input::placeholder{color:#7878a0;}
+.chat-send{
+  background:linear-gradient(135deg,#c9a84c,#f0c96a);
+  border:none;border-radius:50%;width:36px;height:36px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;transition:transform .15s;
+}
+.chat-send:hover{transform:scale(1.08);}
+.chat-send svg{fill:#000;}
+
+/* typing indicator */
+.typing-dots{display:flex;gap:3px;padding:.3rem .2rem;}
+.typing-dots span{width:6px;height:6px;background:#7878a0;border-radius:50%;animation:dot 1.2s ease-in-out infinite;}
+.typing-dots span:nth-child(2){animation-delay:.2s;}
+.typing-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes dot{0%,80%,100%{transform:scale(.8);opacity:.5;}40%{transform:scale(1);opacity:1;}}
+
+.success-card{
+  background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(34,197,94,.08));
+  border:1px solid rgba(34,197,94,.3);border-radius:12px;
+  padding:.9rem;margin:.5rem .9rem;text-align:center;
+}
+.success-card .sc-icon{font-size:2rem;margin-bottom:.4rem;}
+.success-card h4{font-weight:700;color:#22c55e;font-size:.9rem;margin-bottom:.3rem;}
+.success-card p{font-size:.75rem;color:#7878a0;line-height:1.5;}
+
+@media(max-width:600px){
+  #chatBox{width:calc(100vw - 24px);right:12px;bottom:140px;}
+  #chatBtn{bottom:80px;right:16px;}
+}
 </style>
 </head>
 <body>
@@ -579,6 +971,48 @@ footer{background:#040408;border-top:1px solid var(--border);padding:2.5rem 2rem
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
+
+<!-- ══ CHAT BUTTON ══ -->
+<button id="chatBtn" onclick="toggleChat()" title="Chat with us">
+  <svg id="chatIcon" width="26" height="26" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+  <svg id="closeIcon" width="22" height="22" viewBox="0 0 24 24" style="display:none"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+  <span class="chat-notif" id="chatNotif">1</span>
+</button>
+
+<!-- ══ CHAT BOX ══ -->
+<div id="chatBox">
+  <!-- Header -->
+  <div class="chat-head">
+    <div class="chat-head-left">
+      <div class="chat-avatar">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg>
+        <span class="online-dot"></span>
+      </div>
+      <div>
+        <div class="chat-head-name">Elite OEM Support</div>
+        <div class="chat-head-status">
+          <span style="width:6px;height:6px;background:#22c55e;border-radius:50%;display:inline-block"></span>
+          Online · Replies instantly
+        </div>
+      </div>
+    </div>
+    <button class="chat-close" onclick="toggleChat()">✕</button>
+  </div>
+
+  <!-- Messages area -->
+  <div class="chat-msgs" id="chatMsgs"></div>
+
+  <!-- Quick replies / parts selector / form rendered here -->
+  <div id="chatActions"></div>
+
+  <!-- Bottom input -->
+  <div class="chat-bottom" id="chatBottom" style="display:none">
+    <input class="chat-type-input" id="chatTypeInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendUserMsg()"/>
+    <button class="chat-send" onclick="sendUserMsg()">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>
+</div>
 
 <!-- ══════════ JS ══════════ -->
 <script>
