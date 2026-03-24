@@ -1783,7 +1783,7 @@ function showDetail(id){
     </div>
     <div class="detail-actions">
      <button class="detail-add" onclick="openContactById(${p.id})">💬 Get Price &amp; Availability</button>
-     <a class="detail-call" href="${TEL}" onclick="gtagCall()"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.47 11.47 0 003.58.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.47 11.47 0 00.57 3.58 1 1 0 01-.24 1.01l-2.21 2.2z"/></svg>Call for Quote</a>
+     <a class="detail-call" href="tel:+18444083004" onclick="gtagCall()"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.47 11.47 0 003.58.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.47 11.47 0 00.57 3.58 1 1 0 01-.24 1.01l-2.21 2.2z"/></svg>Call for Quote</a>
     </div>
    </div>
   </div>`;
@@ -1822,7 +1822,7 @@ function renderCart(){
   <div class="cart-summary">
    <div class="cart-total-row"><span class="cart-total-lbl">Subtotal (${count} items)</span><span class="cart-total-val">$${total.toLocaleString()}</span></div>
    <div class="cart-note">💡 Call us to confirm pricing, apply discounts, and complete your order.</div>
-   <a class="btn-gold" href="${TEL}" onclick="gtagCall()" style="display:flex;justify-content:center;gap:.5rem;font-size:1rem;padding:1rem;">
+   <a class="btn-gold" href="tel:+18444083004" onclick="gtagCall()" style="display:flex;justify-content:center;gap:.5rem;font-size:1rem;padding:1rem;">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="#000"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.47 11.47 0 003.58.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.47 11.47 0 00.57 3.58 1 1 0 01-.24 1.01l-2.21 2.2z"/></svg>
     Call Now to Complete Order: ${PHONE}
    </a>
@@ -1933,7 +1933,7 @@ function handleQuickReply(choice) {
    showQuickReplies(["Find a part","Talk to a specialist","Back to menu"]);
   } else if (choice === 'Talk to a specialist') {
    addBotMsg("📞 Our specialists are standing by! Call us now at **+1 (844) 408-3004**<br><br>⏰ Mon–Fri: 8AM–8PM EST<br>⏰ Saturday: 9AM–5PM EST");
-   addBotMsg(`<a href="${TEL}" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--grad);color:#000;font-weight:800;padding:.5rem 1.1rem;border-radius:50px;font-size:.82rem;" onclick="gtagCall()">📞 Call Now</a>`);
+   addBotMsg(`<a href="tel:+18444083004" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--grad);color:#000;font-weight:800;padding:.5rem 1.1rem;border-radius:50px;font-size:.82rem;" onclick="gtagCall()">📞 Call Now</a>`);
    showQuickReplies(["Find a part","Back to menu"]);
   } else if (choice === 'Yes, get me a quote') {
    addBotMsg("Sure! Tell me your **vehicle year, make, model** and the **part you need** — I'll pull up the best options.");
@@ -1942,7 +1942,7 @@ function handleQuickReply(choice) {
    addBotMsg("What else can I help you with?");
    showQuickReplies(["Find a part","Check pricing","Shipping info","Talk to a specialist"]);
   } else if (choice === 'Call now') {
-   addBotMsg(`Connecting you now! 📞<br><a href="${TEL}" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--grad);color:#000;font-weight:800;padding:.5rem 1.1rem;border-radius:50px;font-size:.82rem;margin-top:.4rem" onclick="gtagCall()">Call +1 (844) 408-3004</a>`);
+   addBotMsg(`Connecting you now! 📞<br><a href="tel:+18444083004" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--grad);color:#000;font-weight:800;padding:.5rem 1.1rem;border-radius:50px;font-size:.82rem;margin-top:.4rem" onclick="gtagCall()">Call +1 (844) 408-3004</a>`);
    showQuickReplies(["Back to menu"]);
   } else {
    addBotMsg("Let me check that for you...");
