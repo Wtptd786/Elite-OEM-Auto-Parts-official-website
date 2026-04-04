@@ -2833,7 +2833,7 @@ function wireChatButtons() {
 (function(){
   function wknd(){
     var d=new Date().getDay();
-    if(false)return;
+    if(d!==0&&d!==6)return;
     ['nav-phone','btn-hero-call','mob-call-bar','about-call-btn'].forEach(function(id){
       var e=document.getElementById(id);if(e)e.style.display='none';
     });
