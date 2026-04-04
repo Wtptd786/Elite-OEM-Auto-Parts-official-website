@@ -1647,7 +1647,7 @@ function sendMail(e) {
 
   emailjs.sendForm('service_qir3oxt',template_fpxmva9', e.target)
     .then(function() {
-      window.location.href = "/thank-you.html";
+      window.location.href = "thank-you.html";
     }, function(error) {
       alert("Email failed");
     });
