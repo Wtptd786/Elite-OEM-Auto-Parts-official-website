@@ -1639,12 +1639,11 @@ button:active, a.btn-gold:active {
 <!-- GOOGLE ADS TRACKING -->
 <!-- EmailJS SDK -->
 
-<script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <script>
 emailjs.init('436D8gu9IZi-Cal6C');
-
+</script>
 function sendMail(e) {
   e.preventDefault();
 
@@ -1661,26 +1660,7 @@ function sendMail(e) {
   }, function(error) {
     alert("Email failed");
   });
-}
-</script>
- <script>
-function sendMail(e) {
-  e.preventDefault();
-
-  emailjs.sendForm('service_qir3oxt', 'template_fpxmva9', e.target)
-  .then(function() {
-
-    gtag('event', 'conversion', {
-      'send_to': 'AW-18008082126/m-7TcMbLxoYcEM6N9opD'
-    });
-
-    alert("Thank you! We will connect you soon.");
-
-  }, function(error) {
-    alert("Email failed");
-  });
-}
-</script> 
+} 
 
 </script>
 <script>
