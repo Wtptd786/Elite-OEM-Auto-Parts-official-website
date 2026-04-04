@@ -2839,8 +2839,8 @@ function wireChatButtons() {
     document.querySelectorAll('a[href^="tel:"]').forEach(function(e){e.style.display='none';});
     var b=document.createElement('div');
     b.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#0a0a0a,#e65c00);color:#fff;padding:14px 22px;display:flex;align-items:center;gap:16px;box-shadow:0 -4px 20px rgba(0,0,0,.4);font-family:inherit;';
-    b.innerHTML='<span style="font-size:1.6rem;flex-shrink:0;">&#128197;</span><div style="flex:1;"><strong style="font-size:.95rem;display:block;margin-bottom:4px;">Weekend Hours &mdash; Form Submissions Only</strong><span style="font-size:.82rem;opacity:.88;line-height:1.4;">Our phone lines are closed Saturday &amp; Sunday. Please submit the quote form &mdash; an OEM specialist will contact you first thing Monday morning.</span><span style="display:inline-block;margin-top:5px;font-size:.78rem;font-weight:800;color:#fff;letter-spacing:1px;">👆 Click here to submit your request</span></div>
-    var x=document.createElement('button');
+    b.innerHTML='<span style="font-size:1.6rem;flex-shrink:0;">&#128197;</span><div style="flex:1;"><strong style="font-size:.95rem;display:block;margin-bottom:4px;">Weekend Hours &mdash; Form Submissions Only</strong><span style="font-size:.82rem;opacity:.88;line-height:1.4;">Our phone lines are closed Saturday &amp; Sunday. Please submit the quote form &mdash; an OEM specialist will contact you first thing Monday morning.</span><span style="display:inline-block;margin-top:5px;font-size:.78rem;font-weight:800;color:#fff;letter-spacing:1px;">👆 Click here to submit your request</span></div>';
+    var x=document.createElement('button');';
     x.innerHTML='&times;';
     x.style.cssText='margin-left:10px;flex-shrink:0;background:rgba(255,255,255,.18);border:none;color:#fff;font-size:1.5rem;width:32px;height:32px;border-radius:50%;cursor:pointer;';
     x.onclick=function(){b.style.display='none';};
