@@ -1642,15 +1642,47 @@ button:active, a.btn-gold:active {
   
 <script>emailjs.init('436D8Gu9IZi-CaL6C');</script>
 <script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<script>
+emailjs.init('436D8gu9IZi-Cal6C');
+
 function sendMail(e) {
   e.preventDefault();
 
-  emailjs.sendForm('service_qir3oxt',template_fpxmva9', e.target)
-    .then(function() {
-      window.location.href = "thank-you.html";
-    }, function(error) {
-      alert("Email failed");
+  emailjs.sendForm('service_qir3oxt', 'template_fpxmva9', e.target)
+  .then(function() {
+
+    // Google Ads Conversion
+    gtag('event', 'conversion', {
+      'send_to': 'AW-18008082126/m-7TcMbLxoYcEM6N9opD'
     });
+
+    alert("Thank you! We will connect you soon.");
+
+  }, function(error) {
+    alert("Email failed");
+  });
+}
+</script>
+ <script>
+function sendMail(e) {
+  e.preventDefault();
+
+  emailjs.sendForm('service_qir3oxt', 'template_fpxmva9', e.target)
+  .then(function() {
+
+    gtag('event', 'conversion', {
+      'send_to': 'AW-18008082126/m-7TcMbLxoYcEM6N9opD'
+    });
+
+    alert("Thank you! We will connect you soon.");
+
+  }, function(error) {
+    alert("Email failed");
+  });
+}
+</script> 
 }
 </script>
 <script>
@@ -2839,8 +2871,18 @@ function wireChatButtons() {
     }
   });
 }
-
 </script>
+<form onsubmit="sendMail(event)">
+  <input type="text" name="name" placeholder="Your Name" required><br><br>
+  
+  <input type="email" name="email" placeholder="Your Email" required><br><br>
+  
+  <textarea name="message" placeholder="Your Message" required></textarea><br><br>
+  
+  <button type="submit">Send Message</button>
+
+</form>
+  
 <script>
 (function(){
   function wknd(){
