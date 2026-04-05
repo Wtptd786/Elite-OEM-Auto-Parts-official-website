@@ -2854,32 +2854,39 @@ function wireChatButtons() {
   
 <script>
 (function(){
-  function wknd(){
-    var d=new Date().getDay();
-    if(d!==0&&d!==6)return;
-    ['nav-phone','btn-hero-call','mob-call-bar','about-call-btn'].forEach(function(id){
-      var e=document.getElementById(id);if(e)e.style.display='none';
-    });
-    document.querySelectorAll('a[href^="tel:"]').forEach(function(e){e.style.display='none';});
-    var b=document.createElement('div');
-    b.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#0a0a0a,#e65c00);color:#fff;padding:14px 22px;display:flex;align-items:center;gap:16px;box-shadow:0 -4px 20px rgba(0,0,0,.4);font-family:inherit;';
-    b.innerHTML='<span style="font-size:1.6rem;flex-shrink:0;">&#128197;</span><div style="flex:1;"><strong style="font-size:.95rem;display:block;margin-bottom:4px;">Weekend Hours &mdash; Form Submissions Only</strong><span style="font-size:.82rem;opacity:.88;line-height:1.4;">Our phone lines are closed Saturday &amp; Sunday. Please submit the quote form &mdash; an OEM specialist will contact you first thing Monday morning.</span><span style="display:inline-block;margin-top:5px;font-size:.78rem;font-weight:800;color:#fff;letter-spacing:1px;">👆 Click here to submit your request</span></div>';
-    var x=document.createElement('button');
-    x.innerHTML='&times;';
-    x.style.cssText='margin-left:10px;flex-shrink:0;background:rgba(255,255,255,.18);border:none;color:#fff;font-size:1.5rem;width:32px;height:32px;border-radius:50%;cursor:pointer;';
-    x.onclick=function(){b.style.display='none';};
-    b.appendChild(x);
-    b.style.cursor='pointer';
-    b.addEventListener('click',function(ev){
-      if(ev.target===x)return;
-      var f=document.getElementById('hero-form-box');
-      if(f){f.scrollIntoView({behavior:'smooth',block:'center'});
-        var inp=f.querySelector('input');if(inp)inp.focus();}
-    });
-    
-    document.body.appendChild(b);
-  }
-  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',wknd):wknd();
+function getESTHour(){
+var now=new Date();
+var est=new Date(now.toLocaleString('en-US',{timeZone:'America/New_York'}));
+return{h:est.getHours(),m:est.getMinutes(),d:est.getDay()};
+}
+function showBanner(msg){
+var ids=['nav-phone','btn-hero-call','mob-call-bar','about-call-btn'];
+for(var i=0;i<ids.length;i++){var e=document.getElementById(ids[i]);if(e)e.style.display='none';}
+document.querySelectorAll('a[href^="tel:"]').forEach(function(e){e.style.display='none';});
+var b=document.createElement('div');
+b.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#0a0a0a,#e65c00);color:#fff;padding:18px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 -4px 20px rgba(0,0,0,.4);font-family:inherit;cursor:pointer;';
+b.innerHTML='<span style="font-size:1.6rem;flex-shrink:0;">&#128197;</span><div style="flex:1;"><strong style="font-size:1.1rem;display:block;margin-bottom:6px;">'+msg+'</strong><span style="font-size:.92rem;opacity:.88;line-height:1.5;">Please submit the quote form below &#8212; an OEM specialist will contact you shortly.</span></div>';
+var x=document.createElement('button');
+x.innerHTML='&times;';
+x.style.cssText='margin-left:10px;flex-shrink:0;background:rgba(255,255,255,.18);border:none;color:#fff;font-size:1.5rem;width:32px;height:32px;border-radius:50%;cursor:pointer;';
+x.onclick=function(ev){ev.stopPropagation();b.style.display='none';};
+b.appendChild(x);
+b.addEventListener('click',function(){var f=document.getElementById('hero-form-box');if(f){f.scrollIntoView({behavior:'smooth',block:'center'});var inp=f.querySelector('input');if(inp)inp.focus();}});
+document.body.appendChild(b);
+}
+function check(){
+var t=getESTHour();
+var d=t.d;var h=t.h;var m=t.m;
+var mins=h*60+m;
+var open=9*60+30;
+var close=19*60+30;
+if(d===0||d===6){
+showBanner('Weekend Hours &#8212; Form Submissions Only. Phone lines closed Sat &amp; Sun.');
+}else if(mins<open||mins>=close){
+showBanner('After Hours &#8212; We are currently closed. Leave your request &amp; we will call you back!');
+}
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',check);}else{check();}
 })();
 </script>
   
