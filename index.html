@@ -2203,7 +2203,7 @@ function submitHeroForm(){
     source:'Hero Form'
   };
   emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, params)
-    .then(function(){ hide('hero-form'); show('hf-success'); showToast('✅ Quote sent!'); gtagCall(); })
+    .then(function(){ hide('hero-form'); show('hf-success'); showToast('✅ Quote sent!'); setTimeout(function(){ window.location.href='/thank.html';}, 500); gtagCall(); })
     .catch(function(err){ console.error('EmailJS error:',err); showToast('❌ Error. Try again.'); btn.textContent='📅 Get Instant Quote — Free'; btn.disabled=false; });
 }
 
