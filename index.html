@@ -2226,7 +2226,7 @@ function submitContactForm(){
       if(typeof gtag==='function'){
         gtag('event','conversion',{'send_to':'AW-18008082126/m-7tCMbLxoYcEM6N9opD','value':1.0,'currency':'USD'});
         console.log('✅ gtag conversion fired - contact form');
-      }
+     setTimeout(function(){ window.location.href='/thank.html'; }, 500); }
     })
     .catch(function(err){ console.error('EmailJS error:',err); showToast('❌ Error. Please call us.'); btn.textContent='📨 Send Inquiry →'; btn.disabled=false; });
 }
