@@ -2290,8 +2290,7 @@ function wireAll(){
   var nc=$('nav-cart'); if(nc) nc.addEventListener('click',function(){ renderCart(); showPage('cart'); });
   var nq=$('nav-quote'); if(nq) nq.addEventListener('click',function(){ openQuoteModal(); });
   var logo=$('logo'); if(logo) logo.addEventListener('click',function(){ showPage('home'); });
-  var nph=$('nav-phone'); if(nph) nph.addEventListener('click',function(){ if(typeof gtag=='function'){ gtag('event','conversion',{'send-to':'AW-18008082126/m-7tCMbLxoYcEM6N9opD'}); } });
-
+  var nph=$('nav-phone') if(nph) nph.addEvertListener('click',function(){ if(typeof gtag=='function'){ gtag('event','conversion',{'send-to':'AW-18008082126/m-7tcMbLxoYcEM6N9opD'}); } setTimeout(function(){ window.location.href='tel:+18444083004';}'300) });
   /* HERO */
   var bhq=$('btn-hero-quote'); if(bhq) bhq.addEventListener('click',function(){ openQuoteModal(); });
   var bhv=$('btn-hero-vin');   if(bhv) bhv.addEventListener('click',function(){ openVINModal(); });
