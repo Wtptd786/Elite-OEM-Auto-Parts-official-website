@@ -1668,9 +1668,9 @@ function sendMail(e) {
     gtag('event', 'conversion', {
       'send_to': 'AW-18008082126/m-7TcMbLxoYcEM6N9opD'
     });
-
+    setTimeout(function() {
     window.location.href='/thank.html';
-
+    },500);
   }, function(error) {
     alert("Email failed");
   });
