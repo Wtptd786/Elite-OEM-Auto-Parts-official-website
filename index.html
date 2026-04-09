@@ -10,6 +10,22 @@
 
   gtag('config', 'AW-18008082126');
 </script>
+  <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typof(url) != 'underfined') { window.location = url; }
+      };
+      gtag('event', 'conversion', {
+       'send_to': 'AW-18008082126/BWZJCOXam4scEM6N9opD',
+        'value': 1.0,
+        'currency': 'INR',
+       'event_callback': callback
+    });
+  return false;
+    }
+  </script>
+
+          >
 
 <meta charset="UTF-8">
 <meta name="viewport" ...
