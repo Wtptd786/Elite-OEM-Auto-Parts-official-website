@@ -2297,617 +2297,1002 @@ function wireAll(){
   navTo('nav-contact','contact');
   var np=$('nav-parts'); if(np) np.addEventListener('click',function(){ showAllParts(); });
   var nc=$('nav-cart'); if(nc) nc.addEventListener('click',function(){ renderCart(); showPage('cart'); });
-  var nq=$('nav-quote'); if(nq) nq.addEventListener('click',function(){ openQuoteModal(); });
-  var logo=$('logo'); if(logo) logo.addEventListener('click',function(){ showPage('home'); });
-var nph=$('nav-phone'); if(nph) nph.addEventListener('click',function(){ if(typeof gtag=='function'){ gtag('event','conversion',{'send_to':'AW-18008082126/BWZJCOXam4scEM6N9opD'}); } window.location.href='tel:+18444083004'; });
-  var bhq=$('btn-hero-quote'); if(bhq) bhq.addEventListener('click',function(){ openQuoteModal(); });
-  var bhv=$('btn-hero-vin');   if(bhv) bhv.addEventListener('click',function(){ openVINModal(); });
-  var hfb=$('hf-btn');         if(hfb) hfb.addEventListener('click',function(){ submitHeroForm(); });
-
-  /* HOME */
-  var bab=$('btn-all-brands'); if(bab) bab.addEventListener('click',function(){ showPage('brands'); });
-  var bap=$('btn-all-parts');  if(bap) bap.addEventListener('click',function(){ showAllParts(); });
-
-  /* WHY */
-  var wq=$('why-quote'); if(wq) wq.addEventListener('click',function(){ openQuoteModal(); });
-
-  /* CATEGORIES */
-  var cats={brakes:'Brakes',engine:'Engine',suspension:'Suspension',electrical:'Electrical',wheels:'Wheels',drivetrain:'Drivetrain'};
-  Object.keys(cats).forEach(function(key){
-    var el=$('cat-'+key);
-    if(el) el.addEventListener('click',function(){ showCatalogCat(cats[key]); });
-  });
-
-  /* HIW */
-  var hs=$('hiw-search-btn'); if(hs) hs.addEventListener('click',function(){ showAllParts(); });
-  var hq=$('hiw-quote-btn');  if(hq) hq.addEventListener('click',function(){ openQuoteModal(); });
-
-  /* QUOTE MODAL */
-  var cqm=$('close-quote-modal'); if(cqm) cqm.addEventListener('click',function(){ closeQuoteModal(); });
-  var mqs=$('mq-submit');         if(mqs) mqs.addEventListener('click',function(){ submitQuoteModal(); });
-  var qmod=$('quote-modal');      if(qmod) qmod.addEventListener('click',function(e){ if(e.target===this) closeQuoteModal(); });
-
-  /* VIN MODAL */
-  var cvm=$('close-vin-modal'); if(cvm) cvm.addEventListener('click',function(){ closeVINModal(); });
-  var vs=$('vin-submit');       if(vs) vs.addEventListener('click',function(){ submitVINForm(); });
-  var vmod=$('vin-modal');      if(vmod) vmod.addEventListener('click',function(e){ if(e.target===this) closeVINModal(); });
-
-  /* CONTACT */
-  var cfs=$('cf-submit'); if(cfs) cfs.addEventListener('click',function(){ submitContactForm(); });
-  var wab=$('wa-contact-btn'); if(wab) wab.addEventListener('click',function(){
-    if(typeof gtag==='function'){ gtag('event','conversion',{'send_to':'AW-18008082126/m-7tCMbLxoYcEM6N9opD','value':1.0,'currency':'USD'}); }
-    console.log('✅ gtag conversion fired - WhatsApp click');
-  });
-
-  /* FOOTER NAV */
-  function footerTo(id,page){ var el=$(id); if(el) el.addEventListener('click',function(){ showPage(page); }); }
-  footerTo('footer-home','home'); footerTo('footer-brands','brands');
-  footerTo('footer-how','how');   footerTo('footer-contact','contact');
-  footerTo('footer-privacy','privacy'); footerTo('footer-returns','returns'); footerTo('footer-shipping','shipping');
-  footerTo('footer-priv2','privacy');   footerTo('footer-ret2','returns');    footerTo('footer-ship2','shipping');
-  var fpa=$('footer-parts'); if(fpa) fpa.addEventListener('click',function(){ showAllParts(); });
-
-  /* POLICY BACK BUTTONS */
-  var pb=$('privacy-back');  if(pb) pb.addEventListener('click',function(){ showPage('home'); });
-  var rb=$('returns-back');  if(rb) rb.addEventListener('click',function(){ showPage('home'); });
-  var sb=$('shipping-back'); if(sb) sb.addEventListener('click',function(){ showPage('home'); });
-
-
-  /* ABOUT */
-  var abq=$('about-quote-btn'); if(abq) abq.addEventListener('click',function(){ openQuoteModal(); });
-
-  /* SERVICES */
-  document.querySelectorAll('.service-btn').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      var action=this.dataset.service;
-      if(action==='quote') openQuoteModal();
-      else if(action==='vin') openVINModal();
-      else if(action==='contact') showPage('contact');
-      else if(action==='brands') showPage('brands');
-    });
-  });
-
-  /* KEYBOARD */
-  document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ closeQuoteModal(); closeVINModal(); } });
-
-  /* DELEGATION - handles dynamic cards */
-  document.addEventListener('click',function(e){
-    var el=e.target;
-    // Brand card
-    var bc=el.closest('.brand-card');
-    if(bc && bc.dataset.brand){ goBrand(bc.dataset.brand); return; }
-    // Part card
-    var pc=el.closest('.part-card');
-    if(pc && pc.dataset.part){ showDetail(parseInt(pc.dataset.part)); return; }
-    // Quote button on part
-    if(el.dataset.quote){ e.stopPropagation(); openQuoteModal(parseInt(el.dataset.quote)); return; }
-    // Remove from cart
-    if(el.dataset.remove){ removeFromCart(parseInt(el.dataset.remove)); return; }
-    // Breadcrumb page link
-    if(el.classList.contains('bc-link') && el.dataset.page){ showPage(el.dataset.page); return; }
-    if(el.classList.contains('bc-link') && el.dataset.brand){ goBrand(el.dataset.brand); return; }
-    // Brand filter
-    if(el.classList.contains('f-btn') && el.closest('#brand-filters')){
-      el.closest('#brand-filters').querySelectorAll('.f-btn').forEach(function(b){b.classList.remove('active');});
-      el.classList.add('active');
-      renderAllBrands(el.dataset.filter||'All');
-      return;
-    }
-    // Cat filter
-    if(el.classList.contains('f-btn') && el.closest('#cat-filters')){
-      el.closest('#cat-filters').querySelectorAll('.f-btn').forEach(function(b){b.classList.remove('active');});
-      el.classList.add('active');
-      activeCat=el.dataset.cat||'All Parts';
-      renderParts();
-      return;
-    }
-  });
-  /* SEARCH + SORT */
-  var cs=$('cat-search');
-  if(cs){ cs.addEventListener('input',function(){ renderParts(); }); }
-  var cso=$('cat-sort');
-  if(cso){ cso.addEventListener('change',function(){ renderParts(); }); }
-}
-
-/* ── INIT ── */
-function init(){`
-  buildMarquee();
-  buildLogosStrip();
-  buildHome();
-  buildBrandsPage();
-  showPage('home');
-  wireAll();
-  initSearchBar();
-  initYMM();
-  initStats();
-  setTimeout(function(){
-    var cn=$('chat-notif'); if(cn) cn.style.display='flex';
-  }, 3000);
-  initScrollReveal();
-  initRipples();
-  updateNavActive('home');
-  wireChatButtons();
-  console.log('✅ Elite OEM - All systems ready!');
-}
-
-if(document.readyState==='loading'){
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
-/* ── SCROLL REVEAL ── */
-function initScrollReveal(){
-  var els = document.querySelectorAll('.why-card,.testi-card,.hiw-step,.service-card,.cat-card,.about-feat,.stat');
-  els.forEach(function(el, i){
-    el.classList.add('reveal');
-    el.style.transitionDelay = (i % 4) * 0.08 + 's';
-  });
-  var obs = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting) e.target.classList.add('visible');
-    });
-  }, { threshold: 0.1 });
-  els.forEach(function(el){ obs.observe(el); });
-}
-
-
-
-
-/* ════════════════════════════════════════
-   EXTRA FEATURES
-════════════════════════════════════════ */
-
-/* ── DELIVERY SECTION ── */
-function buildDeliverySection(){
-  // Already in HTML statically
-}
-
-/* ── LOGOS MARQUEE STRIP ── */
-function buildLogosStrip(){
-  var el = document.getElementById('logos-track');
-  if(!el) return;
-  var logos = [
-    {name:'Ford', url:'https://upload.wikimedia.org/wikipedia/commons/3/3e/Ford_logo_flat.svg'},
-    {name:'Toyota', url:'https://upload.wikimedia.org/wikipedia/commons/e/e7/Toyota.svg'},
-    {name:'Honda', url:'https://upload.wikimedia.org/wikipedia/commons/3/38/Honda.svg'},
-    {name:'BMW', url:'https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg'},
-    {name:'Chevrolet', url:'https://upload.wikimedia.org/wikipedia/commons/1/13/Chevrolet_logo.svg'},
-    {name:'Mercedes', url:'https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg'},
-    {name:'Nissan', url:'https://upload.wikimedia.org/wikipedia/commons/2/23/Nissan_2020_logo.svg'},
-    {name:'Hyundai', url:'https://upload.wikimedia.org/wikipedia/commons/4/44/Hyundai_Motor_Company_logo.svg'},
-    {name:'Jeep', url:'https://upload.wikimedia.org/wikipedia/commons/d/da/Jeep_logo.svg'},
-    {name:'Audi', url:'https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg'},
-    {name:'Volkswagen', url:'https://upload.wikimedia.org/wikipedia/commons/6/6d/Volkswagen_logo_2019.svg'},
-    {name:'Subaru', url:'https://upload.wikimedia.org/wikipedia/commons/5/5c/Subaru_logo.svg'},
-  ];
-  var allLogos = logos.concat(logos); // duplicate for infinite scroll
-  allLogos.forEach(function(l){
-    var wrap = document.createElement('div');
-    wrap.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;padding:0 2.5rem;opacity:.5;flex-shrink:0';
-    var img = document.createElement('img');
-    img.src = l.url; img.alt = l.name;
-    img.style.cssText = 'height:24px;width:auto;filter:brightness(0) invert(1);object-fit:contain';
-    var fb = document.createElement('span');
-    fb.textContent = l.name;
-    fb.style.cssText = 'display:none;font-family:Bebas Neue,sans-serif;color:#fff;letter-spacing:2px;font-size:.8rem';
-    img.onerror = function(){ img.style.display='none'; fb.style.display='block'; };
-    wrap.appendChild(img); wrap.appendChild(fb);
-    el.appendChild(wrap);
-  });
-}
-
-/* ── SEARCH BAR ── */
-function initSearchBar(){
-  var input = document.getElementById('gs-input');
-  var btn   = document.getElementById('gs-btn');
-  var results = document.getElementById('gs-results');
-  if(!input || !results) return;
-
-  function doSearch(){
-    var q = input.value.trim().toLowerCase();
-    if(q.length < 2){ results.style.display='none'; return; }
-    var matches = catalog.filter(function(p){
-      var b = brands.find(function(x){return x.id===p.brand;})||{name:''};
-      return p.name.toLowerCase().indexOf(q)>=0
-        || p.fitment.toLowerCase().indexOf(q)>=0
-        || p.sku.toLowerCase().indexOf(q)>=0
-        || b.name.toLowerCase().indexOf(q)>=0
-        || p.cat.toLowerCase().indexOf(q)>=0;
-    }).slice(0,6);
-
-    if(!matches.length){
-      results.innerHTML='<div style="text-align:center;padding:1rem;color:var(--muted);font-size:.82rem">No parts found. <a href="tel:+18444083004" style="color:var(--gold2)">Call us →</a></div>';
-    } else {
-      var CAT_C = {Brakes:'#ef4444',Engine:'#3b82f6',Suspension:'#f97316',Wheels:'#8b5cf6',Electrical:'#eab308',Drivetrain:'#10b981'};
-      results.innerHTML = matches.map(function(p){
-        var b = brands.find(function(x){return x.id===p.brand;})||{name:''};
-        var cc = CAT_C[p.cat]||'#c9a84c';
-        return '<div data-part="'+p.id+'" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.7rem 1rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem;cursor:pointer">'
-          +'<div><div style="font-weight:600;font-size:.82rem;color:#fff">'+p.name+'</div>'
-          +'<div style="font-size:.68rem;color:var(--muted);margin-top:.15rem"><span style="color:'+cc+';font-weight:600">'+p.cat+'</span> · '+b.name+' · '+p.years+'</div></div>'
-          +'<button data-quote="'+p.id+'" style="background:var(--grad);color:#000;font-size:.68rem;font-weight:800;padding:.25rem .7rem;border-radius:50px;border:none;cursor:pointer;flex-shrink:0">Get Price</button>'
-          +'</div>';
-      }).join('');
-    }
-    results.style.display='block';
-  }
-
-  input.addEventListener('input', doSearch);
-  input.addEventListener('keydown', function(e){ if(e.key==='Enter') doSearch(); });
-  if(btn) btn.addEventListener('click', doSearch);
-  document.addEventListener('click', function(e){
-    if(!input.closest && !results.contains(e.target) && e.target!==input) results.style.display='none';
-    else if(results && !results.contains(e.target) && e.target!==input && e.target!==btn) results.style.display='none';
-  });
-}
-
-/* ── UPDATE INIT ── */
-var _origInit = init;
-
-
-
-/* ── YEAR MAKE MODEL SEARCH ── */
-var YMM_DATA = {
-  years: [2024,2023,2022,2021,2020,2019,2018,2017,2016,2015,2014,2013,2012,2011,2010,2009,2008,2007,2006,2005,2004,2003,2002,2001,2000],
-  makes: {
-    'Ford':['F-150','F-250','F-350','Mustang','Explorer','Escape','Expedition','Edge','Ranger','Bronco','Focus','Fusion','Taurus'],
-    'Toyota':['Camry','Corolla','RAV4','Highlander','Tacoma','Tundra','4Runner','Prius','Sienna','Sequoia','Avalon','Venza'],
-    'Honda':['Civic','Accord','CR-V','Pilot','Odyssey','Ridgeline','HR-V','Passport','Insight','Element'],
-    'Chevrolet':['Silverado','Equinox','Malibu','Traverse','Tahoe','Suburban','Colorado','Blazer','Camaro','Corvette'],
-    'Dodge':['Ram 1500','Charger','Challenger','Durango','Journey','Grand Caravan','Dakota'],
-    'RAM':['1500','2500','3500','ProMaster','ProMaster City'],
-    'Jeep':['Wrangler','Grand Cherokee','Cherokee','Compass','Renegade','Gladiator'],
-    'GMC':['Sierra','Terrain','Acadia','Yukon','Canyon','Envoy'],
-    'BMW':['3 Series','5 Series','7 Series','X3','X5','X7','M3','M5','330i','528i'],
-    'Mercedes':['C-Class','E-Class','S-Class','GLE','GLC','GLS','AMG'],
-    'Nissan':['Altima','Maxima','Rogue','Pathfinder','Frontier','Titan','Murano','Sentra'],
-    'Hyundai':['Elantra','Sonata','Tucson','Santa Fe','Palisade','Kona','Veloster'],
-    'Audi':['A4','A6','Q5','Q7','A3','Q3','TT','R8'],
-    'Subaru':['Outback','Forester','Impreza','Legacy','Crosstrek','WRX','Ascent'],
-    'Volkswagen':['Jetta','Passat','Tiguan','Atlas','Golf','Beetle'],
-    'Kia':['Sorento','Sportage','Telluride','Soul','Stinger','Forte','Optima'],
-  }
-};
-
-function initYMM(){
-  var yEl=$('ymm-year'), mEl=$('ymm-make'), mdEl=$('ymm-model'), btn=$('ymm-btn');
-  if(!yEl) return;
-  
-  // Fill years
-  YMM_DATA.years.forEach(function(y){
-    var opt=document.createElement('option');
-    opt.value=y; opt.textContent=y; yEl.appendChild(opt);
-  });
-  
-  // Fill makes
-  Object.keys(YMM_DATA.makes).sort().forEach(function(m){
-    var opt=document.createElement('option');
-    opt.value=m; opt.textContent=m; mEl.appendChild(opt);
-  });
-  
-  // Make change → fill models
-  mEl.addEventListener('change',function(){
-    mdEl.innerHTML='<option value="">Select Model</option>';
-    var models=YMM_DATA.makes[this.value]||[];
-    models.forEach(function(m){
-      var opt=document.createElement('option');
-      opt.value=m; opt.textContent=m; mdEl.appendChild(opt);
-    });
-  });
-  
-  // Search button
-  if(btn) btn.addEventListener('click',function(){
-    var y=yEl.value, mk=mEl.value, md=mdEl.value;
-    if(!y||!mk){showToast('⚠️ Please select Year and Make'); return;}
-    // Find matching parts
-    var query=(y+' '+mk+' '+md).toLowerCase().trim();
-    activeBrand=null;
-    activeCat='All Parts';
-    buildCatalogPage();
-    showPage('catalog');
-    // Apply search
-    var si=$('cat-search');
-    if(si){ si.value=mk+(md?' '+md:''); renderParts(); }
-    showToast('🔍 Showing parts for '+y+' '+mk+(md?' '+md:''));
-  });
-  
-  // VIN hint click
-  var hint=$('ymm-hint');
-  if(hint) hint.addEventListener('click',function(){ openVINModal(); });
-}
-
-/* ── ANIMATED STATS ── */
-function initStats(){
-  var stats = document.querySelectorAll('.stat strong');
-  if(!stats.length) return;
-  var done = false;
-  
-  function animateStat(el){
-    var text = el.textContent;
-    var num = parseFloat(text.replace(/[^0-9.]/g,''));
-    var suffix = text.replace(/[0-9.]/g,'');
-    if(isNaN(num)) return;
-    var start=0, dur=1800, step=16;
-    var inc = num/(dur/step);
-    el.textContent='0'+suffix;
-    var timer=setInterval(function(){
-      start+=inc;
-      if(start>=num){ start=num; clearInterval(timer); }
-      el.textContent=(Number.isInteger(num)?Math.floor(start):start.toFixed(1))+suffix;
-    },step);
-  }
-  
-  var obs=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting && !done){
-        done=true;
-        stats.forEach(function(s,i){ setTimeout(function(){animateStat(s);},i*150); });
-      }
-    });
-  },{threshold:0.5});
-  
-  var sb=document.getElementById('stats-bar');
-  if(sb) obs.observe(sb);
-}
-
-
-
-
-
-
-
-
-
-
-
-/* ── RIPPLE EFFECT ── */
-function addRipple(e) {
-  var btn = e.currentTarget;
-  var ripple = document.createElement('span');
-  var rect = btn.getBoundingClientRect();
-  var size = Math.max(rect.width, rect.height);
-  ripple.style.cssText = 'width:'+size+'px;height:'+size+'px;left:'+(e.clientX-rect.left-size/2)+'px;top:'+(e.clientY-rect.top-size/2)+'px';
-  ripple.classList.add('ripple');
-  btn.appendChild(ripple);
-  setTimeout(function(){ ripple.remove(); }, 700);
-}
-
-function initRipples() {
-  var btns = document.querySelectorAll(
-    'button, .btn-gold, .btn-hero-main, .btn-hero-vin, #hf-btn, .part-btn, .service-btn, #about-call-btn, #about-quote-btn, .hiw-step button, #ymm-btn, #cf-submit, .modal-submit, #vin-submit'
-  );
-  btns.forEach(function(btn) {
-    btn.classList.add('ripple-btn');
-    btn.addEventListener('click', addRipple);
-  });
-}
-
-/* ── NAV ACTIVE STATE ── */
-function updateNavActive(page) {
-  document.querySelectorAll('#nav-links a').forEach(function(a) {
-    a.classList.remove('nav-active');
-  });
-  var map = {
-    'home': 'nav-home',
-    'brands': 'nav-brands',
-    'catalog': 'nav-parts',
-    'how': 'nav-how',
-    'contact': 'nav-contact'
-  };
-  var id = map[page];
-  if (id) {
-    var el = document.getElementById(id);
-    if (el) el.classList.add('nav-active');
-  }
-}
-
-/* ── OVERRIDE showPage to update nav ── */
-var _origShowPage2 = showPage;
-showPage = function(id) {
-  _origShowPage2(id);
-  updateNavActive(id);
-};
-
-
-/* ── CHAT SYSTEM ── */
-var chatOpen = false;
-var chatStarted = false;
-
-function toggleChat() {
-  chatOpen = !chatOpen;
-  var box = document.getElementById('chat-box');
-  var notif = document.getElementById('chat-notif');
-  if (!box) return;
-  if (chatOpen) {
-    box.classList.add('open');
-    if (notif) notif.style.display = 'none';
-    if (!chatStarted) { chatStarted = true; initChat(); }
-    setTimeout(function(){
-      var msgs = document.getElementById('chat-msgs');
-      if (msgs) msgs.scrollTop = msgs.scrollHeight;
-    }, 100);
-  } else {
-    box.classList.remove('open');
-  }
-}
-
-function addBotMsg(text) {
-  var msgs = document.getElementById('chat-msgs');
-  if (!msgs) return;
-  var div = document.createElement('div');
-  div.className = 'bot-msg';
-  div.innerHTML = text;
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function addUserMsg(text) {
-  var msgs = document.getElementById('chat-msgs');
-  if (!msgs) return;
-  clearQR();
-  var div = document.createElement('div');
-  div.className = 'user-msg';
-  div.textContent = text;
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function showTyping() {
-  var msgs = document.getElementById('chat-msgs');
-  if (!msgs) return;
-  var div = document.createElement('div');
-  div.className = 'typing-dots'; div.id = 'typing-el';
-  div.innerHTML = '<span></span><span></span><span></span>';
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function hideTyping() {
-  var el = document.getElementById('typing-el');
-  if (el) el.remove();
-}
-
-function showQR(opts) {
-  var qr = document.getElementById('chat-quick-replies');
-  if (!qr) return;
-  qr.innerHTML = opts.map(function(o){
-    return '<button class="qr-btn" data-qr="'+o+'">'+o+'</button>';
-  }).join('');
-}
-
-function clearQR() {
-  var qr = document.getElementById('chat-quick-replies');
-  if (qr) qr.innerHTML = '';
-}
-
-function handleQR(choice) {
-  addUserMsg(choice);
-  showTyping();
-  setTimeout(function(){
-    hideTyping();
-    var c = choice.toLowerCase();
-    if (c.includes('quote') || c.includes('price')) {
-      addBotMsg('Great! Fill our quick form or call us directly at <strong style="color:var(--gold2)">+1 (844) 408-3004</strong> for instant pricing! 💰');
-      showQR(['Open Quote Form', 'Call Now', 'Browse Parts']);
-    } else if (c.includes('vin')) {
-      addBotMsg("Share your 17-digit VIN and we'll find the <strong style='color:var(--gold2)'>exact OEM part</strong> for your trim! 🔑");
-      showQR(['Submit VIN Form', 'Call Specialist']);
-    } else if (c.includes('ship') || c.includes('deliver')) {
-      addBotMsg('🚚 <strong style="color:#fff">Same-day shipping</strong> before 2PM EST. Delivered in <strong>1–3 business days</strong> anywhere in the USA with full tracking!');
-      showQR(['Get a Quote', 'Browse Parts']);
-    } else if (c.includes('browse') || c.includes('parts')) {
-      toggleChat(); showAllParts();
-    } else if (c.includes('call') || c.includes('specialist')) {
-      addBotMsg('📞 Call our specialists now: <a href="tel:+18444083004" style="color:var(--gold2);font-weight:700">+1 (844) 408-3004</a><br>⏰ Mon–Fri 8AM–8PM · Sat 9AM–5PM EST');
-    } else if (c.includes('open quote')) {
-      toggleChat(); openQuoteModal();
-    } else if (c.includes('submit vin')) {
-      toggleChat(); openVINModal();
-    } else {
-      addBotMsg('How can I help you today?');
-      showQR(['Get a Quote', 'Submit VIN', 'Shipping Info', 'Browse Parts', 'Call Specialist']);
-    }
-  }, 700);
-}
-
-function sendChat() {
-  var input = document.getElementById('chat-input');
-  if (!input) return;
-  var text = input.value.trim();
-  if (!text) return;
-  input.value = '';
-  addUserMsg(text);
-  showTyping();
-  setTimeout(function(){
-    hideTyping();
-    var l = text.toLowerCase();
-    if (l.includes('brake') || l.includes('rotor') || l.includes('pad')) {
-      addBotMsg('We have a full range of <strong style="color:var(--gold2)">OEM brake parts</strong> — rotors, pads, calipers for all major brands!');
-      showQR(['Get a Quote', 'Browse Parts', 'Submit VIN']);
-    } else if (l.includes('price') || l.includes('cost') || l.includes('how much')) {
-      addBotMsg('Our prices are <strong style="color:var(--gold2)">20–40% below dealership rates</strong>. Tell me the part and vehicle for an exact quote!');
-      showQR(['Get Quote Form', 'Call Specialist']);
-    } else if (l.includes('ship') || l.includes('deliver')) {
-      addBotMsg('🚚 Same-day shipping before 2PM EST. 1–3 days anywhere in the USA.');
-      showQR(['Get a Quote', 'Browse Parts']);
-    } else if (l.includes('vin')) {
-      addBotMsg('VIN matching is our specialty! Submit your VIN for <strong style="color:var(--gold2)">guaranteed fitment</strong>.');
-      showQR(['Submit VIN Form', 'Call Specialist']);
-    } else {
-      addBotMsg('For the fastest answer, call us: <a href="tel:+18444083004" style="color:var(--gold2);font-weight:700">+1 (844) 408-3004</a>');
-      showQR(['Get Quote Form', 'Submit VIN', 'Browse Parts']);
-    }
-  }, 900);
-}
-
-function initChat() {
-  addBotMsg("👋 Hi! I'm here to help you find the <strong style='color:var(--gold2)'>exact OEM part</strong> for your vehicle!");
-  setTimeout(function(){
-    addBotMsg("💡 Share your <strong>VIN number</strong> for guaranteed fitment, or browse our catalog!");
-    showQR(['Get a Quote', 'Submit VIN', 'Shipping Info', 'Browse Parts', 'Call Specialist']);
-  }, 600);
-}
-
-/* ── WIRE CHAT ── */
-function wireChatButtons() {
-  var chatBtn = document.getElementById('chat-btn');
-  if (chatBtn) chatBtn.addEventListener('click', function(){ toggleChat(); });
-
-  var closeBtn = document.getElementById('chat-close-btn');
-  if (closeBtn) closeBtn.addEventListener('click', function(){ toggleChat(); });
-
-  var sendBtn = document.getElementById('chat-send-btn');
-  if (sendBtn) sendBtn.addEventListener('click', function(){ sendChat(); });
-
-  var chatInput = document.getElementById('chat-input');
-  if (chatInput) chatInput.addEventListener('keydown', function(e){
-    if (e.key === 'Enter') sendChat();
-  });
-
-  document.addEventListener('click', function(e){
-    if (e.target && e.target.classList.contains('qr-btn')){
-      handleQR(e.target.getAttribute('data-qr'));
-    }
-  });
- </script>
-  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18008082126"></script>
 <script>
-(function(){
-function getESTHour(){
-var now=new Date();
-var est=new Date(now.toLocaleString('en-US',{timeZone:'America/New_York'}));
-return{h:est.getHours(),m:est.getMinutes(),d:est.getDay()};
-}
-function showBanner(msg){
-var ids=['nav-phone','btn-hero-call','mob-call-bar','about-call-btn'];
-for(var i=0;i<ids.length;i++){var e=document.getElementById(ids[i]);if(e)e.style.display='none';}
-document.querySelectorAll('a[href^="tel:"]').forEach(function(e){e.style.display='none';});
-var b=document.createElement('div');
-b.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#0a0a0a,#e65c00);color:#fff;padding:18px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 -4px 20px rgba(0,0,0,.4);font-family:inherit;cursor:pointer;';
-b.innerHTML='<span style="font-size:1.6rem;flex-shrink:0;">&#128197;</span><div style="flex:1;"><strong style="font-size:1.1rem;display:block;margin-bottom:6px;">'+msg+'</strong><span style="font-size:.92rem;opacity:.88;line-height:1.5;">Please submit the quote form below &#8212; an OEM specialist will contact you shortly.</span><span style="display:block;margin-top:6px;font-size:.82rem;font-weight:800;letter-spacing:1px;"><span style="background:#fff;color:#e65c00;font-weight:900;padding:5px 14px;border-radius:50px;font-size:.8rem;letter-spacing:.5px;">&#128070; Click Here &#10132;</span></span></div>';
-var x=document.createElement('button');
-x.innerHTML='&times;';
-x.style.cssText='margin-left:10px;flex-shrink:0;background:rgba(255,255,255,.18);border:none;color:#fff;font-size:1.5rem;width:32px;height:32px;border-radius:50%;cursor:pointer;';
-x.onclick=function(ev){ev.stopPropagation();b.style.display='none';};
-b.appendChild(x);
-b.addEventListener('click',function(){var f=document.getElementById('hero-form-box');if(f){f.scrollIntoView({behavior:'smooth',block:'center'});var inp=f.querySelector('input');if(inp)inp.focus();}});
-document.body.appendChild(b);
-}
-function check(){
-var t=getESTHour();
-var d=t.d;var h=t.h;var m=t.m;
-var mins=h*60+m;
-var open=9*60+30;
-var close=19*60+30;
-if(d===0||d===6){
-showBanner('Weekend Hours &#8212; Form Submissions Only. Phone lines closed Sat &amp; Sun.');
-}else if(mins<open||mins>=close){
-showBanner('After Hours &#8212; We are currently closed. Leave your request &amp; we will call you back!');
-}
-}
-if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',check);}else{check();}
-})();
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {window.dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-18008082126');
 </script>
+<script>
+function gtag_report_conversion(url) {
+  gtag('event', 'conversion', {
+    'send_to': 'AW-18008082126/BWZJCOXam4scEM6N9opD',
+    'value': 1.0,
+    'currency': 'INR'
+  });
+  window.location.href = url;
+  return false;
+}
+</script> 
+<meta charset="UTF-8">
+<meta name="viewport" ...
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OEM Auto Parts USA | Elite OEM Auto Parts | Genuine OEM Car Parts</title>
+<meta name="description" content="Buy genuine OEM auto parts online in USA. Elite OEM Auto Parts offers factory-original parts for Ford, Toyota, Honda, BMW, Chevy & 30+ brands. Fast shipping all 50 states. VIN matching. Call +1 (844) 408-3004.">
+<meta name="keywords" content="OEM auto parts USA, genuine OEM parts, buy auto parts online, Ford OEM parts, Toyota OEM parts, Honda OEM parts, BMW OEM parts, Chevrolet OEM parts, car parts USA, OEM replacement parts, factory original auto parts, VIN auto parts lookup">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Elite OEM Auto Parts">
+<meta name="geo.region" content="US">
+<link rel="canonical" href="https://eliteoemautoparts.com">
+<meta property="og:type" content="website">
+<meta property="og:title" content="OEM Auto Parts USA | Elite OEM Auto Parts">
+<meta property="og:description" content="Genuine OEM auto parts for all major US car brands. Fast shipping, VIN matching, best prices. Call +1 (844) 408-3004.">
+<meta property="og:url" content="https://eliteoemautoparts.com">
+<meta property="og:site_name" content="Elite OEM Auto Parts">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OEM Auto Parts USA | Elite OEM Auto Parts">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"AutoPartsStore","name":"Elite OEM Auto Parts","description":"Genuine OEM auto parts for all major US car brands. Fast shipping, VIN matching.","url":"https://eliteoemautoparts.com","telephone":"+18444083004","email":"sales@eliteoemautoparts.com","address":{"@type":"PostalAddress","streetAddress":"30 N Gould St Ste R","addressLocality":"Sheridan","addressRegion":"WY","postalCode":"82801","addressCountry":"US"},"openingHours":["Mo-Fr 08:00-20:00","Sa 09:00-17:00"],"priceRange":"$$","areaServed":"US","sameAs":["https://www.rockautotec.com"]}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+/* RESET */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#c9a84c;--gold2:#f0c96a;
+  --bg:#07070a;--bg2:#0e0e12;
+  --card:#13131c;--border:#252538;
+  --text:#f0f0f8;--muted:#7878a0;
+  --red:#d92b2b;--green:#22c55e;
+  --grad:linear-gradient(135deg,#c9a84c,#f0c96a)
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;outline:none}
+img{display:block;max-width:100%}
+ul{list-style:none}
+input,select,textarea{font-family:inherit;outline:none;box-sizing:border-box}
+
+/* PAGE SYSTEM */
+.page{display:none}
+.page.active{display:block}
+
+/* NAV */
+#navbar{
+  position:sticky;top:0;z-index:500;
+  background:rgba(7,7,9,.97);
+  border-bottom:1px solid var(--border);
+  padding:.7rem 2rem;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  flex-wrap:wrap
+}
+#logo{display:flex;align-items:center;gap:.6rem;cursor:pointer}
+#logo-icon{
+  width:38px;height:38px;background:var(--grad);
+  border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.3rem
+}
+.logo-name{
+  font-weight:900;font-size:.9rem;
+  background:var(--grad);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;display:block
+}
+.logo-sub{font-size:.5rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;display:block}
+#nav-links{display:flex;gap:1.5rem}
+#nav-links a{
+  color:#aaa;font-size:.75rem;font-weight:600;
+  letter-spacing:.5px;text-transform:uppercase;cursor:pointer
+}
+#nav-links a:hover{color:#fff}
+#nav-right{display:flex;align-items:center;gap:.5rem}
+.btn-outline{
+  background:transparent;color:var(--gold2);
+  border:1.5px solid rgba(201,168,76,.4);
+  border-radius:50px;padding:.42rem .95rem;
+  font-size:.74rem;font-weight:700
+}
+.btn-gold{
+  background:var(--grad);color:#000;font-weight:800;
+  font-size:.78rem;padding:.48rem 1.1rem;border-radius:50px;
+  display:inline-flex;align-items:center;gap:.3rem
+}
+#cart-count{
+  background:var(--red);color:#fff;font-size:.52rem;font-weight:800;
+  width:16px;height:16px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center
+}
+
+/* HERO */
+#hero{
+  position:relative;min-height:90vh;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:5rem 3rem 3rem;gap:2rem;
+  background:linear-gradient(135deg,#050510,#0a0a1a,#07070a);
+  overflow:hidden
+}
+#hero::before{
+  content:'';position:absolute;inset:0;
+  background:url('https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?auto=compress&cs=tinysrgb&w=1400') center right/cover no-repeat;
+  opacity:.25;z-index:0
+}
+/* Fallback animated gradient when image fails */
+#hero-car-fallback{position:absolute;right:0;top:0;bottom:0;width:55%;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse at 70% 50%,rgba(201,168,76,.08) 0%,transparent 65%)}
+#hero::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(5,5,16,.97) 30%,rgba(5,5,16,.6) 60%,rgba(5,5,16,.2) 100%);
+  z-index:0
+}
+#hero-text{flex:0 0 50%;max-width:540px;position:relative;z-index:2}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:.4rem;
+  background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);
+  color:var(--green);font-size:.62rem;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;
+  padding:.28rem .85rem;border-radius:50px;margin-bottom:1rem
+}
+.hero-badge-dot{width:7px;height:7px;background:var(--green);border-radius:50%;display:inline-block}
+#hero-text h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.8rem,5vw,4.2rem);
+  line-height:.95;letter-spacing:2px;color:#fff;margin-bottom:.8rem
+}
+#hero-text h1 span{
+  background:var(--grad);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text
+}
+#hero-sub{font-size:.9rem;color:#bbb;margin-bottom:1.5rem;line-height:1.7}
+.hero-btns{display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:1.4rem}
+.hero-btns button,.hero-btns a{
+  border-radius:50px;padding:.85rem 1.8rem;font-size:.9rem;
+  display:inline-flex;align-items:center;gap:.4rem;
+  cursor:pointer;transition:transform .15s
+}
+.btn-hero-main{background:var(--grad);color:#000;font-weight:800;border:none;box-shadow:0 6px 24px rgba(201,168,76,.3)}
+.btn-hero-vin{background:rgba(59,130,246,.1);color:#60a5fa;border:1.5px solid rgba(59,130,246,.35);font-weight:700}
+.btn-hero-call{background:transparent;color:var(--gold2);border:1.5px solid rgba(201,168,76,.4);font-weight:600}
+.hero-btns button:hover,.hero-btns a:hover{transform:translateY(-2px)}
+.hero-trust{display:flex;flex-wrap:wrap;gap:1rem}
+.hero-trust span{font-size:.7rem;color:#888}
+
+/* HERO FORM */
+#hero-form-box{
+  width:380px;
+  background:rgba(7,7,12,.55);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(201,168,76,.25);
+  border-radius:20px;
+  padding:1.4rem;position:sticky;top:80px;z-index:2;
+  flex-shrink:0;align-self:flex-start;
+  box-shadow:0 30px 80px rgba(0,0,0,.35)
+}
+.hform-head{display:flex;align-items:center;gap:.55rem;margin-bottom:1rem;padding-bottom:.8rem;border-bottom:1px solid var(--border)}
+.hform-icon{width:34px;height:34px;background:var(--grad);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.hform-title{font-size:.9rem;color:#fff;font-weight:800;display:block}
+.hform-sub{font-size:.66rem;color:var(--green);font-weight:600;display:block}
+#hero-form input{
+  width:100%;background:rgba(255,255,255,.05);
+  border:1px solid var(--border);color:#fff;
+  border-radius:9px;padding:.58rem .75rem;
+  font-size:.79rem;margin-bottom:.45rem;display:block
+}
+#hero-form input:focus{border-color:rgba(201,168,76,.5)}
+#hero-form input::placeholder{color:var(--muted)}
+.vin-label{font-size:.61rem;color:#60a5fa;font-weight:700;margin-bottom:.22rem;display:block}
+#hf-vin{background:rgba(59,130,246,.05)!important;border-color:rgba(59,130,246,.3)!important}
+#hf-btn{
+  width:100%;background:var(--grad);color:#000;font-weight:900;
+  font-size:.9rem;border:none;border-radius:11px;padding:.82rem;
+  margin-top:.4rem;cursor:pointer;box-shadow:0 6px 20px rgba(201,168,76,.28);
+  display:flex;align-items:center;justify-content:center;gap:.38rem
+}
+.hform-note{font-size:.61rem;color:var(--muted);text-align:center;margin-top:.5rem}
+#hf-success{text-align:center;padding:1.5rem 0;display:none}
+#hf-success .s-icon{font-size:3rem;display:block;margin-bottom:.5rem}
+#hf-success h3{font-weight:800;color:var(--gold2);margin-bottom:.3rem}
+#hf-success p{font-size:.78rem;color:#aaa}
+
+/* MARQUEE */
+#marquee-bar{background:var(--grad);padding:.4rem 0;overflow:hidden}
+.mq-track{display:flex;animation:mq 25s linear infinite;white-space:nowrap}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.mq-item{font-size:.68rem;font-weight:700;color:#000;letter-spacing:1.5px;text-transform:uppercase;padding:0 1.4rem;border-right:1px solid rgba(0,0,0,.2)}
+
+/* STATS */
+#stats-bar{
+  background:var(--bg2);border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  padding:1.5rem 2rem;display:flex;flex-wrap:wrap;
+  justify-content:space-around;gap:1rem
+}
+.stat{text-align:center;padding:.5rem 1.5rem;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat strong{
+  font-family:'Bebas Neue',sans-serif;font-size:2.2rem;
+  background:var(--grad);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;display:block
+}
+.stat span{font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px}
+
+/* SECTION */
+.sec{padding:3.5rem 2rem;max-width:1280px;margin:0 auto}
+.sec-bg{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.tag{
+  display:inline-block;background:rgba(201,168,76,.1);
+  border:1px solid rgba(201,168,76,.28);color:var(--gold2);
+  font-size:.6rem;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;padding:.22rem .75rem;border-radius:50px;margin-bottom:.5rem
+}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,3.5vw,2.8rem);letter-spacing:1.5px;color:#fff;margin:.4rem 0}
+.sec-sub{color:var(--muted);font-size:.88rem;margin-bottom:1.8rem}
+
+/* PARTS CATEGORIES */
+#cats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+.cat-card{border-radius:14px;overflow:hidden;cursor:pointer;border:1px solid var(--border);transition:all .25s;background:var(--card)}
+.cat-card:hover{border-color:rgba(201,168,76,.5);transform:translateY(-4px);box-shadow:0 12px 35px rgba(0,0,0,.5)}
+.cat-img{height:200px;position:relative;overflow:hidden;background:#0a0a18}
+.cat-img img{width:100%;height:100%;object-fit:cover;filter:brightness(.55);transition:transform .4s}
+.cat-card:hover .cat-img img{transform:scale(1.07);filter:brightness(.7)}
+.cat-gradient-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.1) 60%)}
+.cat-bottom-info{position:absolute;bottom:0;left:0;right:0;padding:.9rem 1rem}
+.cat-label-text{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:3px;text-shadow:0 2px 8px rgba(0,0,0,.9);margin-bottom:.2rem}
+.cat-sub-text{font-size:.65rem;color:rgba(255,255,255,.7)}
+
+/* BRANDS */
+#brands-grid,#all-brands-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.brand-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s}
+.brand-card:hover{border-color:rgba(201,168,76,.5);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.brand-top{height:85px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.brand-top img{max-width:70px;max-height:46px;object-fit:contain;filter:brightness(0) invert(1);opacity:.9}
+.brand-logo-fb{display:none;font-family:'Bebas Neue',sans-serif;color:#fff;letter-spacing:2px;font-size:1.4rem;text-align:center;width:100%;justify-content:center;align-items:center}
+.brand-body{padding:.55rem .75rem}
+.brand-name{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:1.5px;color:#fff}
+.brand-models{font-size:.55rem;color:var(--muted);line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.brand-foot{display:flex;justify-content:space-between;align-items:center;margin-top:.3rem}
+.brand-stars{font-size:.55rem;color:var(--muted)}
+.brand-shop-btn{background:var(--grad);color:#000;font-size:.55rem;font-weight:800;padding:.15rem .5rem;border-radius:50px}
+.brand-filters{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1.3rem}
+.f-btn{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:50px;padding:.32rem .85rem;font-size:.72rem;cursor:pointer;transition:all .2s;font-family:inherit}
+.f-btn.active,.f-btn:hover{background:rgba(201,168,76,.09);border-color:rgba(201,168,76,.38);color:var(--gold2)}
+
+/* PARTS */
+#parts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.part-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s}
+.part-card:hover{border-color:rgba(201,168,76,.4);transform:translateY(-2px)}
+.part-cat-bar{padding:.35rem .65rem;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid}
+.part-cat-name{font-size:.58rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.part-sku{font-size:.5rem;color:var(--muted)}
+.part-body{padding:.65rem}
+.part-brand-name{font-size:.55rem;color:var(--gold2);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:.15rem}
+.part-name{font-weight:700;font-size:.78rem;color:#fff;margin-bottom:.3rem;line-height:1.3}
+.part-tags{display:flex;gap:.25rem;flex-wrap:wrap;margin-bottom:.3rem}
+.tag-year{font-size:.54rem;font-weight:600;padding:.08rem .4rem;border-radius:50px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.18);color:var(--gold2)}
+.tag-oem{font-size:.54rem;font-weight:600;padding:.08rem .4rem;border-radius:50px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.18);color:var(--green)}
+.part-fit{font-size:.6rem;color:var(--muted);line-height:1.35;margin-bottom:.45rem}
+.part-btn{background:var(--grad);color:#000;font-weight:700;font-size:.65rem;border:none;border-radius:50px;padding:.32rem .85rem;cursor:pointer;font-family:inherit}
+
+/* CATALOG CONTROLS */
+.catalog-controls{display:flex;gap:.75rem;align-items:center;margin-bottom:.9rem;flex-wrap:wrap}
+.cat-search{background:rgba(255,255,255,.05);border:1px solid var(--border);color:#fff;border-radius:10px;padding:.52rem .95rem;font-size:.78rem;width:215px}
+.cat-search:focus{border-color:rgba(201,168,76,.4)}
+.cat-search::placeholder{color:var(--muted)}
+.sort-sel{background:rgba(255,255,255,.05);border:1px solid var(--border);color:#fff;border-radius:10px;padding:.52rem .85rem;font-size:.76rem;cursor:pointer}
+.sort-sel option{background:#13131c}
+.results-count{font-size:.72rem;color:var(--muted);margin-bottom:.9rem}
+.breadcrumb{display:flex;align-items:center;gap:.38rem;font-size:.72rem;color:var(--muted);margin-bottom:1.1rem;flex-wrap:wrap}
+.bc-link{cursor:pointer;transition:color .2s}
+.bc-link:hover{color:var(--gold2)}
+#brand-header{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:1.1rem 1.4rem;margin-bottom:1.4rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+#brand-header img{max-height:46px;max-width:88px;object-fit:contain;filter:brightness(0) invert(1);opacity:.78}
+.bh-name{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:2px;color:#fff}
+.bh-sub{font-size:.7rem;color:var(--muted)}
+.no-results{text-align:center;padding:3rem;color:var(--muted)}
+
+/* DETAIL */
+.detail-layout{display:grid;grid-template-columns:1fr 1.2fr;gap:1.8rem;align-items:start}
+.detail-img-box{background:linear-gradient(135deg,var(--bg2),var(--card));border:1px solid var(--border);border-top:3px solid var(--gold);border-radius:15px;min-height:230px;display:flex;align-items:center;justify-content:center;text-align:center;padding:2rem}
+.detail-info{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:1.4rem}
+.detail-brand-cat{font-size:.63rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:.38rem}
+.detail-part-name{font-weight:800;font-size:1.2rem;color:#fff;margin-bottom:.75rem;line-height:1.3}
+.detail-tags{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:1.1rem}
+.detail-tag{font-size:.7rem;font-weight:700;padding:.28rem .85rem;border-radius:50px}
+.detail-specs{background:rgba(255,255,255,.028);border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:1.1rem}
+.detail-spec{display:flex;justify-content:space-between;padding:.58rem .95rem;border-bottom:1px solid rgba(255,255,255,.04);font-size:.77rem}
+.detail-spec:last-child{border-bottom:none}
+.spec-k{color:var(--muted)}.spec-v{color:#fff;font-weight:600}
+.detail-note{background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.16);border-radius:10px;padding:.75rem .95rem;font-size:.77rem;color:var(--muted);margin-bottom:1.1rem}
+.detail-actions{display:flex;gap:.75rem;flex-wrap:wrap}
+.btn-detail-quote{flex:1;background:var(--grad);color:#000;font-weight:800;font-size:.86rem;border:none;border-radius:50px;padding:.82rem;cursor:pointer}
+.btn-detail-call{background:rgba(217,43,43,.1);border:1px solid rgba(217,43,43,.28);color:var(--red);font-weight:700;font-size:.8rem;border-radius:50px;padding:.82rem 1.1rem;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:.38rem}
+
+/* WHY */
+#why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.1rem;margin:1.8rem 0}
+.why-card{background:var(--card);border:1px solid var(--border);border-top:3px solid var(--gold);border-radius:13px;padding:1.4rem;transition:transform .2s}
+.why-card:hover{transform:translateY(-3px)}
+.why-icon{font-size:1.9rem;display:block;margin-bottom:.65rem}
+.why-card h3{font-weight:800;font-size:.9rem;color:#fff;margin-bottom:.35rem}
+.why-card p{font-size:.76rem;color:var(--muted);line-height:1.55}
+
+/* HOW IT WORKS */
+#hiw-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.2rem;margin-top:1.8rem}
+.hiw-step{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:1.7rem 1.4rem;text-align:center;transition:border-color .3s}
+.hiw-step:hover{border-color:rgba(201,168,76,.4)}
+.hiw-icon{font-size:2.4rem;display:block;margin-bottom:.8rem}
+.hiw-step h3{font-weight:800;color:#fff;font-size:.93rem;margin-bottom:.38rem}
+.hiw-step p{font-size:.77rem;color:var(--muted);line-height:1.55;margin-bottom:.9rem}
+.hiw-step button,.hiw-step a{background:var(--grad);color:#000;font-weight:800;border-radius:50px;padding:.48rem .95rem;font-size:.73rem;cursor:pointer;display:inline-block;border:none;text-decoration:none}
+
+/* TESTIMONIALS */
+.testi-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:1.4rem}
+.testi-stars{color:var(--gold);font-size:.82rem;margin-bottom:.65rem}
+.testi-text{font-size:.8rem;color:#ccc;line-height:1.68;margin-bottom:.9rem;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:.5rem}
+.testi-av{width:40px;height:40px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;color:#000;flex-shrink:0}
+.testi-name{font-weight:700;font-size:.82rem;color:#fff}
+.testi-loc{font-size:.65rem;color:var(--green)}
+#testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(275px,1fr));gap:1.1rem;margin-top:1.8rem}
+
+/* CTA */
+#cta-section{position:relative;overflow:hidden;text-align:center;padding:5rem 2rem;background:linear-gradient(135deg,#0a0a12,#1a1020,#0d1525)}
+#cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(201,168,76,.07),transparent 68%);pointer-events:none}
+.cta-phone{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,4vw,2.9rem);color:var(--gold2);letter-spacing:3px;display:block;margin:.75rem 0;text-decoration:none}
+.cta-hours{display:flex;flex-wrap:wrap;justify-content:center;gap:.9rem;margin-top:.9rem}
+.cta-hours span{font-size:.72rem;color:#888}
+
+/* CONTACT */
+#contact-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:1.8rem;align-items:start}
+.contact-info,.contact-form{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:1.7rem}
+.ci-item{display:flex;gap:.75rem;margin-bottom:1.1rem;align-items:flex-start}
+.ci-icon{width:35px;height:35px;background:rgba(201,168,76,.09);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.ci-label{font-size:.66rem;color:var(--muted);display:block}
+.ci-value{font-size:.83rem;font-weight:600;color:#fff}
+.ci-value a{color:#fff}
+.contact-form label{font-size:.7rem;font-weight:600;color:#aaa;margin-bottom:.28rem;display:block;margin-top:.85rem}
+.contact-form label:first-of-type{margin-top:0}
+.contact-form input,.contact-form textarea{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);color:#fff;border-radius:10px;padding:.62rem .88rem;font-size:.8rem;resize:vertical}
+.contact-form input:focus,.contact-form textarea:focus{border-color:rgba(201,168,76,.5)}
+.contact-form input::placeholder,.contact-form textarea::placeholder{color:var(--muted)}
+
+/* CART */
+.cart-item{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:.95rem;display:flex;align-items:center;gap:.95rem;margin-bottom:.75rem}
+.cart-info{flex:1}
+.cart-name{font-weight:700;font-size:.83rem;color:#fff;margin-bottom:.15rem}
+.cart-sku{font-size:.63rem;color:var(--muted)}
+.cart-empty{text-align:center;padding:3rem;color:var(--muted)}
+#cart-summary-box{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:1.2rem;text-align:center;margin-top:1rem}
+
+/* MODALS */
+.modal{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.82);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:1rem}
+.modal.open{display:flex}
+.modal-box{background:var(--card);border:1px solid rgba(201,168,76,.18);border-radius:20px;width:100%;max-width:490px;max-height:90vh;overflow-y:auto}
+.modal-head{padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-weight:800;font-size:.97rem;color:#fff;margin:0;display:block}
+.modal-subtitle{font-size:.68rem;color:var(--muted);margin-top:.05rem;display:block}
+.modal-close-btn{background:rgba(255,255,255,.06);border:1px solid var(--border);color:#aaa;width:29px;height:29px;border-radius:50%;cursor:pointer;font-size:.92rem;flex-shrink:0;font-family:inherit}
+.modal-body{padding:1.1rem 1.4rem}
+.modal-body label{font-size:.68rem;font-weight:600;color:#aaa;margin-bottom:.27rem;display:block;margin-top:.8rem}
+.modal-body label:first-of-type{margin-top:0}
+.modal-body input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);color:#fff;border-radius:10px;padding:.6rem .88rem;font-size:.8rem}
+.modal-body input:focus{border-color:rgba(201,168,76,.5)}
+.modal-body input::placeholder{color:var(--muted)}
+.modal-submit{width:100%;background:var(--grad);color:#000;font-weight:800;font-size:.92rem;border:none;border-radius:50px;padding:.88rem;cursor:pointer;margin-top:.8rem}
+.modal-submit:disabled{opacity:.6;cursor:not-allowed}
+.modal-note{font-size:.61rem;color:var(--muted);text-align:center;margin-top:.6rem}
+.modal-success{text-align:center;padding:2rem 1.4rem;display:none}
+.success-icon{font-size:3rem;display:block;margin-bottom:.6rem}
+.modal-success h3{font-family:'Bebas Neue',sans-serif;font-size:1.55rem;color:var(--gold2);margin-bottom:.38rem}
+.modal-success p{font-size:.8rem;color:#aaa;line-height:1.58;margin-bottom:.9rem}
+
+/* POLICY PAGES */
+.policy-section{max-width:820px}
+.policy-section h3{font-weight:800;color:#fff;margin:1.5rem 0 .5rem;font-size:.95rem}
+.policy-section p{font-size:.86rem;color:#aaa;line-height:1.78;margin-bottom:.5rem}
+
+/* FOOTER */
+#footer{background:var(--card);border-top:1px solid var(--border);padding:2.8rem 2rem 1.4rem}
+#footer-inner{max-width:1200px;margin:0 auto;display:flex;gap:2.5rem;flex-wrap:wrap;margin-bottom:1.8rem}
+#footer-brand{flex:1;min-width:200px}
+.footer-brand-name{font-weight:900;font-size:.92rem;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block}
+.footer-brand-sub{font-size:.5rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;display:block;margin-top:.08rem}
+.footer-brand-desc{font-size:.7rem;color:var(--muted);margin-top:.55rem;line-height:1.58}
+.footer-col h4{font-weight:700;font-size:.78rem;color:#fff;margin-bottom:.75rem}
+.footer-col li{margin-bottom:.38rem}
+.footer-col a{font-size:.74rem;color:var(--muted);cursor:pointer}
+.footer-col a:hover{color:var(--gold2)}
+#footer-bottom{border-top:1px solid var(--border);padding-top:1.1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;max-width:1200px;margin:0 auto}
+#footer-bottom span{font-size:.68rem;color:var(--muted)}
+.footer-links{display:flex;gap:1.1rem}
+.footer-links a{font-size:.68rem;color:var(--muted);cursor:pointer}
+.footer-links a:hover{color:var(--gold2)}
+
+/* FLOATING BUTTONS */
+#wa-btn{position:fixed;bottom:90px;right:22px;z-index:8000;width:56px;height:56px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 4px 20px rgba(37,211,102,.48)}
+#chat-btn{position:fixed;bottom:160px;right:22px;z-index:8000;width:50px;height:50px;border-radius:50%;background:var(--grad);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 22px rgba(201,168,76,.42)}
+#chat-notif{position:absolute;top:-3px;right:-3px;background:var(--red);color:#fff;font-size:.52rem;font-weight:800;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+/* TOAST */
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(18px);background:var(--grad);color:#000;font-weight:700;font-size:.8rem;padding:.58rem 1.35rem;border-radius:50px;z-index:9999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* MOBILE */
+@media(max-width:900px){
   
-</body>
-</html>
+  #delivery-inner,
+  [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
+
+  #hero{flex-direction:column;padding:3rem 1.5rem}
+  #hero-form-box{width:100%;position:static}
+  .detail-layout,#contact-grid{grid-template-columns:1fr}
+  #delivery-inner{grid-template-columns:1fr}
+  #cats-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  #nav-links{display:none}
+  #hero{padding:2rem 1rem}
+  #hero-text h1{font-size:2.4rem!important}
+  .hero-btns{flex-direction:column}
+  #footer-inner{flex-direction:column;gap:1.4rem}
+  #cats-grid{grid-template-columns:repeat(2,1fr);gap:.75rem}
+  .cat-img{height:130px}
+  #wa-btn{bottom:72px;right:14px;width:52px;height:52px}
+  #chat-btn{bottom:136px;right:14px;width:46px;height:46px}
+}
+
+/* YMM SEARCH */
+#ymm-box{background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.25);border-radius:14px;padding:1rem 1.2rem;margin-bottom:1.4rem}
+#ymm-title{font-size:.72rem;font-weight:700;color:var(--gold2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.65rem}
+#ymm-selects{display:flex;gap:.5rem;flex-wrap:wrap}
+#ymm-selects select{flex:1;min-width:120px;background:rgba(255,255,255,.07);border:1px solid var(--border);color:#fff;border-radius:9px;padding:.55rem .75rem;font-size:.8rem;cursor:pointer;font-family:inherit}
+#ymm-selects select option{background:#13131c;color:#fff}
+#ymm-selects select:focus{border-color:rgba(201,168,76,.5);outline:none}
+#ymm-btn{background:var(--grad);color:#000;font-weight:800;border:none;border-radius:9px;padding:.55rem 1.2rem;cursor:pointer;font-size:.8rem;white-space:nowrap;font-family:inherit}
+#ymm-hint{font-size:.62rem;color:var(--muted);margin-top:.5rem;cursor:pointer}
+#ymm-hint:hover{color:var(--gold2)}
+
+/* ABOUT */
+#about-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+#about-inner{max-width:1280px;margin:0 auto;padding:3.5rem 2rem;display:grid;grid-template-columns:1fr 1.2fr;gap:3rem;align-items:center}
+#about-img-wrap{position:relative;border-radius:18px;overflow:hidden;height:480px}
+#about-img{width:100%;height:100%;object-fit:cover;filter:brightness(.8)}
+#about-img-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.4),transparent)}
+#about-badge{position:absolute;bottom:1.5rem;left:1.5rem;background:rgba(7,7,12,.92);border:1px solid rgba(201,168,76,.3);border-radius:12px;padding:.9rem 1.2rem;display:flex;align-items:center;gap:.7rem}
+#about-badge-icon{font-size:1.8rem}
+#about-badge strong{font-weight:800;color:#fff;font-size:.9rem;display:block}
+#about-badge span{font-size:.72rem;color:var(--gold2);font-weight:600}
+#about-desc,#about-desc2{color:var(--muted);font-size:.9rem;line-height:1.8;margin-bottom:.9rem}
+#about-desc strong,#about-desc2 strong{color:#fff}
+#about-features{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:1.5rem 0}
+.about-feat{display:flex;align-items:flex-start;gap:.65rem}
+.about-feat span{font-size:1.2rem;flex-shrink:0;margin-top:.1rem}
+.about-feat strong{font-weight:700;font-size:.85rem;color:#fff;display:block;margin-bottom:.15rem}
+.about-feat small{font-size:.72rem;color:var(--muted)}
+#about-btns{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.5rem}
+#about-call-btn{background:var(--grad);color:#000;font-weight:800;font-size:.88rem;padding:.85rem 1.6rem;border-radius:50px;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem}
+#about-quote-btn{background:transparent;color:var(--gold2);border:1.5px solid rgba(201,168,76,.4);border-radius:50px;padding:.85rem 1.6rem;font-size:.88rem;cursor:pointer;font-family:inherit}
+
+/* SERVICES */
+#services-section{background:var(--bg);border-top:1px solid var(--border)}
+#services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.service-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .25s}
+.service-card:hover{border-color:rgba(201,168,76,.4);transform:translateY(-4px);box-shadow:0 12px 35px rgba(0,0,0,.5)}
+.service-img{height:200px;overflow:hidden;position:relative;background:#0a0a18;display:flex;align-items:center;justify-content:center}
+.service-img img{width:100%;height:100%;object-fit:cover;object-position:center 30%;filter:brightness(.75);transition:transform .4s}
+.service-card:hover .service-img img{transform:scale(1.05);filter:brightness(.85)}
+.service-body{padding:1.3rem}
+.service-icon{font-size:2rem;margin-bottom:.6rem}
+.service-body h3{font-weight:800;color:#fff;font-size:.95rem;margin-bottom:.5rem}
+.service-body p{font-size:.78rem;color:var(--muted);line-height:1.6;margin-bottom:1rem}
+.service-btn{background:var(--grad);color:#000;font-weight:800;font-size:.75rem;border:none;border-radius:50px;padding:.45rem 1.1rem;cursor:pointer;font-family:inherit;transition:transform .15s}
+.service-btn:hover{transform:scale(1.04)}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  #about-inner{grid-template-columns:1fr}
+  #services-grid{grid-template-columns:repeat(2,1fr)}
+  #ymm-selects{flex-direction:column}
+}
+@media(max-width:600px){
+  #about-features{grid-template-columns:1fr}
+  #services-grid{grid-template-columns:1fr}
+  #about-inner{padding:2.5rem 1rem}
+}
+
+
+/* Hero right side glow - visible even without internet */
+#hero::after{
+  content:'';position:absolute;
+  right:0;top:0;bottom:0;width:50%;
+  background:radial-gradient(ellipse at 80% 50%, rgba(201,168,76,.06) 0%, transparent 60%),
+             radial-gradient(ellipse at 90% 30%, rgba(59,130,246,.04) 0%, transparent 50%);
+  z-index:0;pointer-events:none
+}
+#home-brands-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+#home-parts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+@media(max-width:600px){#brands-grid,#all-brands-grid,#home-brands-grid{grid-template-columns:repeat(3,1fr);gap:8px}.brand-top{height:70px}.brand-top img{max-width:55px;max-height:38px}}
+
+/* ══════════════════════════════════
+   PREMIUM HOVER & GRAPHICS
+══════════════════════════════════ */
+
+/* ── CURSOR GLOW ── */
+* { cursor: default; }
+a, button, .brand-card, .part-card, .cat-card, .service-card, .why-card, .hiw-step, [data-brand], [data-part] {
+  cursor: pointer;
+}
+
+/* ── NAV LINK HOVER ── */
+#nav-links a {
+  position: relative;
+  padding-bottom: .3rem;
+  transition: color .2s;
+}
+#nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 100%;
+  height: 2px;
+  background: var(--grad);
+  transition: right .25s ease;
+  border-radius: 2px;
+}
+#nav-links a:hover::after { right: 0; }
+#nav-links a:hover { color: #fff; }
+
+/* ── LOGO HOVER ── */
+#logo { transition: transform .2s; }
+#logo:hover { transform: scale(1.04); }
+#logo-icon { transition: box-shadow .3s; }
+#logo:hover #logo-icon { box-shadow: 0 0 20px rgba(201,168,76,.5); }
+
+/* ── BUTTON SHINE EFFECT ── */
+.btn-gold, .btn-hero-main, #hf-btn, .modal-submit, #ymm-btn,
+.service-btn, #about-call-btn, #cf-submit {
+  position: relative;
+  overflow: hidden;
+  transition: transform .15s, box-shadow .2s;
+}
+.btn-gold::after, .btn-hero-main::after, #hf-btn::after,
+.modal-submit::after, .service-btn::after, #about-call-btn::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -70%;
+  width: 40%; height: 200%;
+  background: rgba(255,255,255,.18);
+  transform: skewX(-20deg);
+  transition: left .45s ease;
+}
+.btn-gold:hover::after, .btn-hero-main:hover::after, #hf-btn:hover::after,
+.modal-submit:hover::after, .service-btn:hover::after, #about-call-btn:hover::after {
+  left: 130%;
+}
+.btn-gold:hover, .btn-hero-main:hover, #hf-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(201,168,76,.35); }
+
+/* ── BRAND CARD HOVER ── */
+.brand-card { position: relative; overflow: hidden; }
+.brand-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(201,168,76,.08), transparent);
+  opacity: 0;
+  transition: opacity .25s;
+  z-index: 1;
+  pointer-events: none;
+}
+.brand-card:hover::before { opacity: 1; }
+.brand-top img { transition: transform .3s, opacity .3s; }
+.brand-card:hover .brand-top img { transform: scale(1.08); opacity: 1; }
+.brand-shop-btn { transition: transform .15s; }
+.brand-card:hover .brand-shop-btn { transform: scale(1.08); }
+
+/* ── PART CARD HOVER ── */
+.part-card { transition: all .2s; }
+.part-card:hover { box-shadow: 0 8px 28px rgba(201,168,76,.12); }
+.part-btn { transition: transform .15s, box-shadow .15s; }
+.part-btn:hover { transform: scale(1.05); box-shadow: 0 4px 14px rgba(201,168,76,.3); }
+
+/* ── CATEGORY CARD HOVER ── */
+.cat-card { transition: all .25s; }
+.cat-card:hover .cat-label-text { letter-spacing: 4px; }
+.cat-label-text { transition: letter-spacing .3s; }
+
+/* ── WHY CARD HOVER ── */
+.why-card {
+  position: relative; overflow: hidden;
+  transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+.why-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--grad);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .3s ease;
+}
+.why-card:hover::before { transform: scaleX(1); }
+.why-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,.4);
+  border-color: rgba(201,168,76,.35);
+}
+
+/* ── SERVICE CARD HOVER ── */
+.service-card { transition: all .25s; }
+.service-card:hover { box-shadow: 0 14px 40px rgba(0,0,0,.5); }
+.service-icon { transition: transform .3s; display: inline-block; }
+.service-card:hover .service-icon { transform: scale(1.2) rotate(-5deg); }
+
+/* ── HIW STEP HOVER ── */
+.hiw-step { transition: all .25s; }
+.hiw-step:hover {
+  border-color: rgba(201,168,76,.5);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(0,0,0,.4);
+}
+.hiw-icon { transition: transform .3s; display: inline-block; }
+.hiw-step:hover .hiw-icon { transform: scale(1.15); }
+
+/* ── HERO BADGE PULSE ── */
+.hero-badge-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,.4); }
+  50% { box-shadow: 0 0 0 6px rgba(34,197,94,.0); }
+}
+
+/* ── HERO TEXT ANIMATION ── */
+#hero-text h1 {
+  animation: heroFadeIn .8s ease both;
+}
+#hero-sub {
+  animation: heroFadeIn .8s ease .2s both;
+}
+#ymm-box {
+  animation: heroFadeIn .8s ease .35s both;
+}
+.hero-btns {
+  animation: heroFadeIn .8s ease .5s both;
+}
+@keyframes heroFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── FORM INPUT FOCUS ── */
+#hero-form input:focus,
+.modal-body input:focus,
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: rgba(201,168,76,.6);
+  box-shadow: 0 0 0 3px rgba(201,168,76,.1);
+  background: rgba(201,168,76,.03);
+  outline: none;
+}
+#ymm-selects select:focus {
+  border-color: rgba(201,168,76,.6);
+  box-shadow: 0 0 0 3px rgba(201,168,76,.1);
+}
+
+/* ── WHATSAPP BUTTON PULSE ── */
+#wa-btn {
+  animation: waPulse 2.5s ease-in-out infinite;
+  transition: transform .2s;
+}
+#wa-btn:hover { transform: scale(1.12); }
+@keyframes waPulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,.48); }
+  50% { box-shadow: 0 4px 20px rgba(37,211,102,.48), 0 0 0 10px rgba(37,211,102,.06); }
+}
+
+/* ── CHAT BUTTON PULSE ── */
+#chat-btn {
+  animation: chatPulse 2.5s ease-in-out infinite .5s;
+  transition: transform .2s;
+}
+#chat-btn:hover { transform: scale(1.12); }
+@keyframes chatPulse {
+  0%, 100% { box-shadow: 0 6px 22px rgba(201,168,76,.42); }
+  50% { box-shadow: 0 6px 22px rgba(201,168,76,.42), 0 0 0 9px rgba(201,168,76,.06); }
+}
+
+/* ── CHAT NOTIF BOUNCE ── */
+#chat-notif {
+  animation: notifBounce .8s ease-in-out infinite alternate;
+}
+@keyframes notifBounce {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-3px); }
+}
+
+/* ── STATS COUNTER STYLE ── */
+#stats-bar { background: linear-gradient(135deg, #0a0a14, #0e0e18); }
+.stat { transition: transform .2s; }
+.stat:hover { transform: scale(1.05); }
+.stat strong { transition: text-shadow .3s; }
+.stat:hover strong { text-shadow: 0 0 20px rgba(201,168,76,.4); }
+
+/* ── MARQUEE HOVER PAUSE ── */
+#marquee-bar:hover .mq-track { animation-play-state: paused; }
+
+/* ── FOOTER LINK HOVER ── */
+.footer-col a { transition: color .2s, padding-left .2s; }
+.footer-col a:hover { color: var(--gold2); padding-left: .3rem; }
+
+/* ── MODAL OPEN ANIMATION ── */
+.modal.open .modal-box {
+  animation: modalPop .3s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(.92) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ── PAGE TRANSITION ── */
+.page.active {
+  animation: pageIn .35s ease both;
+}
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── TESTI CARD HOVER ── */
+.testi-card { transition: all .25s; }
+.testi-card:hover {
+  border-color: rgba(201,168,76,.35);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0,0,0,.4);
+}
+
+/* ── ABOUT IMG HOVER ── */
+#about-img-wrap:hover #about-img { filter: brightness(.9); }
+#about-img { transition: filter .3s; }
+
+/* ── OUTLINE BUTTON HOVER ── */
+.btn-outline { transition: all .2s; }
+.btn-outline:hover {
+  background: rgba(201,168,76,.1);
+  border-color: rgba(201,168,76,.6);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* ── SEARCH BAR FOCUS ── */
+#gs-input:focus { outline: none; }
+div:focus-within > #gs-input { color: #fff; }
+
+/* ── SECTION TAG HOVER ── */
+.tag { transition: all .2s; }
+.tag:hover {
+  background: rgba(201,168,76,.2);
+  border-color: rgba(201,168,76,.5);
+}
+
+/* ── YMM BOX HOVER ── */
+#ymm-box { transition: border-color .2s; }
+#ymm-box:hover { border-color: rgba(201,168,76,.45); }
+#ymm-btn:hover { transform: scale(1.04); }
+
+/* ── SCROLLBAR PREMIUM ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold2); }
+
+/* ── TEXT SELECTION ── */
+::selection { background: rgba(201,168,76,.3); color: #fff; }
+
+
+/* Logo/icon style images */
+.service-img img[alt="Fast OEM Parts Delivery USA - Same Day Shipping"] {
+  object-fit: contain;
+  object-position: center;
+  padding: 1.5rem;
+  filter: none;
+  background: #fff;
+}
+.service-img img[alt="All Major Car Brands OEM Parts Ford Toyota BMW Honda"] {
+  object-fit: contain;
+  object-position: center;
+  padding: .8rem;
+  filter: none;
+  background: #fff;
+}
+.service-img img[alt="Genuine OEM Auto Parts USA - All Major Brands"] {
+  object-fit: contain;
+  object-position: center;
+  padding: .5rem;
+  background: #f0f0f0;
+  filter: none;
+}
+/* VIN image - show from top slightly */
+.service-img img[alt="Free VIN Lookup OEM Parts USA - Exact Fitment"] {
+  object-fit: cover;
+  object-position: center top;
+  filter: brightness(.85);
+}
+
+/* ══════════════════════════════════
+   CLICK RIPPLE + UNIQUE EFFECTS
+══════════════════════════════════ */
+
+/* ── RIPPLE EFFECT on all buttons ── */
+.ripple-btn { position: relative; overflow: hidden; }
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,.3);
+  transform: scale(0);
+  animation: rippleAnim .6s linear;
+  pointer-events: none;
+}
+@keyframes rippleAnim {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* ── NAV LINKS click flash ── */
+#nav-links a { position: relative; overflow: hidden; }
+#nav-links a::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(201,168,76,.25), transparent 70%);
+  opacity: 0;
+  transition: opacity .3s;
+  border-radius: 4px;
+}
+#nav-links a:active::before { opacity: 1; }
+
+/* ── PHONE NUMBER special effect ── */
+#nav-phone {
+  position: relative;
+  overflow: hidden;
+  background: var(--grad) !important;
+  transition: all .2s !important;
+}
+#nav-phone::before {
+  content: '📞';
+  position: absolute;
+  left: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  transition: left .3s ease;
+}
+#nav-phone:hover::before { left: 8px; }
+#nav-phone:hover { padding-left: 2rem !important; }
+#nav-phone:active {
+  transform: scale(.96) !important;
+  box-shadow: 0 0 20px rgba(201,168,76,.6) !important;
+}
+
+/* ── GET QUOTE button glow pulse ── */
+#nav-quote {
+  animation: quotePulse 3s ease-in-out infinite;
+}
+@keyframes quotePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,.0); }
+  50% { box-shadow: 0 0 12px 3px rgba(201,168,76,.35); }
+}
+#nav-quote:hover {
+  animation: none;
+  background: rgba(201,168,76,.15) !important;
+  box-shadow: 0 0 20px rgba(201,168,76,.5) !important;
+}
+
+/* ── CART BUTTON badge bounce ── */
+#nav-cart #cart-count {
+  animation: badgeBounce .8s ease infinite alternate;
+}
+@keyframes badgeBounce {
+  from { transform: scale(1); }
+  to   { transform: scale(1.2); }
+}
+#nav-cart:hover {
+  border-color: rgba(201,168,76,.8) !important;
+  background: rgba(201,168,76,.12) !important;
+  color: #fff !important;
+}
+#nav-cart:active { transform: scale(.94) !important; }
+
+/* ── LOGO click spark ── */
+#logo:active #logo-icon {
+  animation: logoSpark .4s ease;
+}
+@keyframes logoSpark {
+  0%   { transform: scale(1); box-shadow: 0 0 0 rgba(201,168,76,0); }
+  50%  { transform: scale(1.2); box-shadow: 0 0 25px rgba(201,168,76,.8); }
+  100% { transform: scale(1); box-shadow: 0 0 0 rgba(201,168,76,0); }
+}
+
+/* ── NAV active page highlight ── */
+#nav-links a.nav-active {
+  color: var(--gold2) !important;
+}
+#nav-links a.nav-active::after { right: 0 !important; }
+
+/* ── PHONE number - simple gold ── */
+#nav-phone {
+  color: #000 !important;
+  font-weight: 800 !important;
+  letter-spacing: .3px;
+}
+
+/* ── ALL BUTTONS active press ── */
+button:active, a.btn-gold:active {
+  transform: scale(.96) !important;
+}
+
+/* ── HERO CALL BUTTON special ── */
+#btn-hero-call {
+  position: relative;
+  overflow: hidden;
+}
+#btn-hero-call::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.15), transparent);
+  transform: translateX(-100%);
+  animation: callSweep 2.5s ease infinite;
+}
+@keyframes callSweep {
+  0%   { transform: translateX(-100%); }
+  50%, 100% { transform: translateX(100%); }
+}
+
+/* ── MOBILE CALL BAR ── */
+#mob-call-bar {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 7000;
+  background: var(--grad);
+}
+#mob-call-bar a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  color: #000;
+  font-weight: 900;
+  font-size: .98rem;
+  padding: .9rem;
+  text-decoration: none;
+}
+@media(max-width:600px) {
+  #mob-call-bar { display: block; }
+  body { padding-bottom: 56px; }
+  /* Mobile nav phone number hidden - show in bar */
+  #nav-phone { display: none; }
+}
+
+
+/* ── CHAT BOX ── */
+#chat-box{position:fixed;bottom:225px;right:22px;z-index:7999;width:310px;max-height:480px;background:#13131c;border:1px solid #252538;border-radius:17px;box-shadow:0 20px 60px rgba(0,0,0,.7);display:none;flex-direction:column;overflow:hidden}
+#chat-box.open{display:flex;animation:chatPop .25s ease}
+@keyframes chatPop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+#chat-head{background:var(--grad);padding:.75rem .95rem;display:flex;align-items:center;gap:.65rem}
+#chat-head-icon{width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
