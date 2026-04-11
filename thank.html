@@ -1,21 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18008082126"></script>
-  <script>
-    window.datalayer = window.datalayer || [];
-    function gtag(){datalayer.push(arguments);}
-    gtag('js',new Date());
-    gtag('config', 'AW-18008082126');
-    gtag('event', 'conversion',{
-      'send_to':'AW-18008082126/m-7tCMbLxoYcEM6N9opD'
-    });
-  </script>
-  <title>Thank You</title>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18008082126"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'AW-18008082126');
+</script>
+
+<title>Thank You</title>
+
 </head>
+
 <body style="text-align:center; padding:50px; font-family:sans-serif;">
-  <h1>Thank You!</h1>
-  <p>Your request has been submitted successfully.</p>
-  <p>We will contact you shortly.</p>
+
+<h1>Thank You!</h1>
+<p>Your request has been submitted successfully.</p>
+<p>We will contact you shortly.</p>
+
+<!-- ✅ Conversion Event (IMPORTANT) -->
+<script>
+gtag('event', 'conversion', {
+  'send_to': 'AW-18008082126/m-7tCMbLxoYcEM6N9opD'
+});
+</script>
+
 </body>
 </html>
