@@ -2870,14 +2870,7 @@ function wireChatButtons() {
 <script>
 (function(){
 function getESTHour(){
-var now=new Date();
-var est=new Date(now.toLocaleString('en-US',{timeZone:'America/New_York'}));
-return{h:est.getHours(),m:est.getMinutes(),d:est.getDay()};
-}
-function showBanner(msg){
-var ids=['nav-phone','btn-hero-call','mob-call-bar','about-call-btn'];
-for(var i=0;i<ids.length;i++){var e=document.getElementById(ids[i]);if(e)e.style.display='none';}
-document.querySelectorAll('a[href^="tel:"]').forEach(function(e){e.style.display='none';});
+
 var b=document.createElement('div');
 b.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#0a0a0a,#e65c00);color:#fff;padding:18px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 -4px 20px rgba(0,0,0,.4);font-family:inherit;cursor:pointer;';
 b.innerHTML='<span style="font-size:1.6rem;flex-shrink:0;">&#128197;</span><div style="flex:1;"><strong style="font-size:1.1rem;display:block;margin-bottom:6px;">'+msg+'</strong><span style="font-size:.92rem;opacity:.88;line-height:1.5;">Please submit the quote form below &#8212; an OEM specialist will contact you shortly.</span><span style="display:block;margin-top:6px;font-size:.82rem;font-weight:800;letter-spacing:1px;"><span style="background:#fff;color:#e65c00;font-weight:900;padding:5px 14px;border-radius:50px;font-size:.8rem;letter-spacing:.5px;">&#128070; Click Here &#10132;</span></span></div>';
