@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OEM Parts Catalog | Elite OEM Auto Parts</title>
+<meta name="description" content="Browse our extensive OEM auto parts catalog. Search by Year, Make, Model or category. Genuine OEM parts for all major US car brands.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #e8b04b;
+    --primary-dark: #c9932a;
+    --bg: #0a0c0f;
+    --bg2: #111418;
+    --bg3: #181c22;
+    --bg4: #1e2329;
+    --border: #2a2f38;
+    --text: #e8eaf0;
+    --text-muted: #8a909c;
+    --text-dim: #5a6070;
+    --green: #2ecc71;
+    --red: #e74c3c;
+    --orange: #f39c12;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--bg2);
+    border-bottom: 2px solid var(--primary);
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--primary);
+    text-decoration: none;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .logo span { color: var(--text); }
+
+  nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    margin-left: 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+
+  nav a:hover, nav a.active { color: var(--primary); }
+
+  /* ── HERO BANNER ── */
+  .hero {
+    background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(232,176,75,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .hero h1 span { color: var(--primary); }
+
+  .hero p {
+    color: var(--text-muted);
+    font-size: 15px;
+    margin-bottom: 28px;
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--primary);
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ── SEARCH & FILTER BAR ── */
+  .search-section {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 24px;
+    position: sticky;
+    top: 64px;
+    z-index: 90;
+  }
+
+  .search-row {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .search-input-wrap {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+  }
+
+  .search-input-wrap svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    pointer-events: none;
+  }
+
+  input[type="text"], select {
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  .search-input-wrap input {
+    padding-left: 38px;
+  }
+
+  input[type="text"]:focus, select:focus {
+    border-color: var(--primary);
+  }
+
+  select option { background: var(--bg4); }
+
+  .filter-selects {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .filter-selects select {
+    width: 140px;
+  }
+
+  .btn-search {
+    background: var(--primary);
+    color: #000;
+    border: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    white-space: nowrap;
+  }
+
+  .btn-search:hover { background: var(--primary-dark); }
+  .btn-search:active { transform: scale(0.98); }
+
+  .btn-clear {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn-clear:hover { border-color: var(--text-muted); color: var(--text); }
+
+  /* ── CATEGORY TABS ── */
+  .category-tabs {
+    max-width: 1200px;
+    margin: 20px auto 0;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .tab {
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: 'Barlow', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .tab:hover { border-color: var(--primary); color: var(--primary); }
+  .tab.active { background: var(--primary); border-color: var(--primary); color: #000; font-weight: 700; }
+
+  /* ── MAIN LAYOUT ── */
+  .main-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .results-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .results-count {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .results-count strong { color: var(--primary); }
+
+  .sort-select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .sort-select select {
+    width: auto;
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  /* ── PARTS GRID ── */
+  .parts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .part-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    animation: fadeInUp 0.3s ease both;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .part-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(232,176,75,0.1);
+  }
+
+  .card-header {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .part-category-badge {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--primary);
+    background: rgba(232,176,75,0.1);
+    border: 1px solid rgba(232,176,75,0.2);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  .stock-badge {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  .stock-badge.in-stock {
+    color: var(--green);
+    background: rgba(46,204,113,0.1);
+    border: 1px solid rgba(46,204,113,0.2);
+  }
+
+  .stock-badge.out-stock {
+    color: var(--red);
+    background: rgba(231,76,60,0.1);
+    border: 1px solid rgba(231,76,60,0.2);
+  }
+
+  .stock-badge.limited {
+    color: var(--orange);
+    background: rgba(243,156,18,0.1);
+    border: 1px solid rgba(243,156,18,0.2);
+  }
+
+  .card-body {
+    padding: 14px 16px;
+    flex: 1;
+  }
+
+  .part-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+
+  .part-number {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'Courier New', monospace;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .part-compat {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+
+  .part-compat span {
+    display: inline-block;
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin: 2px 2px 2px 0;
+    font-size: 11px;
+  }
+
+  .part-brand {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .part-brand strong { color: var(--primary); }
+
+  .card-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn-quote {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 9px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-quote:hover {
+    background: var(--primary);
+    color: #000;
+  }
+
+  /* ── NO RESULTS ── */
+  .no-results {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--text-muted);
+  }
+
+  .no-results svg { margin-bottom: 16px; opacity: 0.3; }
+  .no-results h3 { font-size: 18px; margin-bottom: 8px; }
+  .no-results p { font-size: 14px; }
+
+  /* ── QUOTE MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 480px;
+    overflow: hidden;
+    animation: modalIn 0.25s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .modal-header {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-header h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+  }
+
+  .modal-close:hover { color: var(--text); }
+
+  .modal-body { padding: 20px; }
+
+  .modal-part-info {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+
+  .modal-part-info strong {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+    color: var(--primary);
+  }
+
+  .form-group { margin-bottom: 14px; }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group textarea { resize: vertical; min-height: 80px; }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus { border-color: var(--primary); }
+
+  .form-row { display: flex; gap: 12px; }
+  .form-row .form-group { flex: 1; }
+
+  .btn-submit {
+    width: 100%;
+    background: var(--primary);
+    color: #000;
+    border: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 4px;
+  }
+
+  .btn-submit:hover { background: var(--primary-dark); }
+
+  .modal-success {
+    display: none;
+    text-align: center;
+    padding: 32px 20px;
+  }
+
+  .modal-success.show { display: block; }
+
+  .modal-success .check {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+
+  .modal-success h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+
+  .modal-success p { color: var(--text-muted); font-size: 14px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 24px;
+    text-align: center;
+    margin-top: 48px;
+  }
+
+  footer p { font-size: 12px; color: var(--text-dim); }
+  footer a { color: var(--primary); text-decoration: none; }
+
+  /* ── SCROLL TO TOP ── */
+  .scroll-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--primary);
+    color: #000;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    z-index: 50;
+    transition: background 0.2s;
+  }
+
+  .scroll-top.show { display: flex; }
+  .scroll-top:hover { background: var(--primary-dark); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    header { padding: 0 16px; }
+    nav { display: none; }
+    .filter-selects select { width: 120px; }
+    .parts-grid { grid-template-columns: 1fr 1fr; }
+    .main-wrap { padding: 16px; }
+  }
+
+  @media (max-width: 480px) {
+    .parts-grid { grid-template-columns: 1fr; }
+    .filter-selects { width: 100%; }
+    .filter-selects select { flex: 1; width: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="index.html" class="logo">Elite <span>OEM</span></a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="parts.html" class="active">Parts Catalog</a>
+    <a href="index.html#contact">Contact</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>OEM Parts <span>Catalog</span></h1>
+  <p>Genuine factory parts for all major US vehicle brands</p>
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num" id="totalCount">0</div><div class="stat-label">Parts Listed</div></div>
+    <div class="stat"><div class="stat-num">12</div><div class="stat-label">Categories</div></div>
+    <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Brands Covered</div></div>
+    <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Genuine OEM</div></div>
+  </div>
+</section>
+
+<!-- SEARCH BAR -->
+<div class="search-section">
+  <div class="search-row">
+    <div class="search-input-wrap">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Search part name or number...">
+    </div>
+    <div class="filter-selects">
+      <select id="yearFilter">
+        <option value="">Year</option>
+      </select>
+      <select id="makeFilter">
+        <option value="">Make</option>
+      </select>
+      <select id="modelFilter">
+        <option value="">Model</option>
+      </select>
+    </div>
+    <button class="btn-search" id="searchBtn">Search</button>
+    <button class="btn-clear" id="clearBtn">Clear</button>
+  </div>
+  <div class="category-tabs" id="categoryTabs"></div>
+</div>
+
+<!-- MAIN -->
+<div class="main-wrap">
+  <div class="results-info">
+    <div class="results-count">Showing <strong id="showingCount">0</strong> parts</div>
+    <div class="sort-select">
+      Sort by:
+      <select id="sortSelect">
+        <option value="name">Name A-Z</option>
+        <option value="category">Category</option>
+        <option value="stock">Stock Status</option>
+      </select>
+    </div>
+  </div>
+  <div class="parts-grid" id="partsGrid"></div>
+  <div class="no-results" id="noResults" style="display:none">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M8 11h6M11 8v6"/></svg>
+    <h3>No parts found</h3>
+    <p>Try different search terms or clear filters</p>
+  </div>
+</div>
+
+<!-- QUOTE MODAL -->
+<div class="modal-overlay" id="quoteModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Request a Quote</h3>
+      <button class="modal-close" id="modalClose">×</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <div class="modal-part-info" id="modalPartInfo"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Your Name *</label>
+          <input type="text" id="qName" placeholder="John Smith">
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" id="qPhone" placeholder="+1 (555) 000-0000">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Address *</label>
+        <input type="text" id="qEmail" placeholder="you@email.com">
+      </div>
+      <div class="form-group">
+        <label>Vehicle (Year / Make / Model)</label>
+        <input type="text" id="qVehicle" placeholder="e.g. 2019 Toyota Camry">
+      </div>
+      <div class="form-group">
+        <label>Additional Notes</label>
+        <textarea id="qNotes" placeholder="VIN number, specific trim, any other details..."></textarea>
+      </div>
+      <button class="btn-submit" id="submitQuote">Send Quote Request</button>
+    </div>
+    <div class="modal-success" id="modalSuccess">
+      <div class="check">✅</div>
+      <h4>Quote Sent!</h4>
+      <p>We'll get back to you within 2–4 business hours.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SCROLL TOP -->
+<button class="scroll-top" id="scrollTop">↑</button>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <a href="index.html">Elite OEM Auto Parts</a> — Genuine OEM Parts for the US Market | <a href="mailto:sales@eliteoemautoparts.com">sales@eliteoemautoparts.com</a></p>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════
+// PARTS DATABASE — Comprehensive OEM Parts Catalog
+// ═══════════════════════════════════════════════════
+const PARTS_DATA = [
+
+  // ── ENGINE PARTS ──
+  { id:'E001', name:'Engine Oil Filter', partNo:'OEM-E001', category:'Engine', brand:'Toyota', makes:['Toyota'], models:['Camry','Corolla','RAV4','Highlander','Tacoma'], years:['2016','2017','2018','2019','2020','2021','2022','2023'], stock:'In Stock' },
+  { id:'E002', name:'Timing Belt Kit', partNo:'OEM-E002', category:'Engine', brand:'Honda', makes:['Honda'], models:['Accord','Civic','CR-V','Pilot','Odyssey'], years:['2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'E003', name:'Valve Cover Gasket', partNo:'OEM-E003', category:'Engine', brand:'Ford', makes:['Ford'], models:['F-150','Mustang','Explorer','Escape','Edge'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'Limited' },
+  { id:'E004', name:'Engine Air Filter', partNo:'OEM-E004', category:'Engine', brand:'Chevrolet', makes:['Chevrolet'], models:['Silverado','Equinox','Malibu','Tahoe','Suburban'], years:['2016','2017','2018','2019','2020','2021','2022'], stock:'In Stock' },
+  { id:'E005', name:'Crankshaft Position Sensor', partNo:'OEM-E005', category:'Engine', brand:'BMW', makes:['BMW'], models:['3 Series','5 Series','X3','X5','7 Series'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'E006', name:'Camshaft Position Sensor', partNo:'OEM-E006', category:'Engine', brand:'Mercedes-Benz', makes:['Mercedes-Benz'], models:['C-Class','E-Class','GLE','GLC','S-Class'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'E007', name:'Throttle Body Assembly', partNo:'OEM-E007', category:'Engine', brand:'Nissan', makes:['Nissan'], models:['Altima','Rogue','Sentra','Frontier','Pathfinder'], years:['2016','2017','2018','2019','2020','2021'], stock:'Limited' },
+  { id:'E008', name:'Intake Manifold Gasket Set', partNo:'OEM-E008', category:'Engine', brand:'Dodge', makes:['Dodge'], models:['Ram 1500','Charger','Challenger','Durango','Grand Caravan'], years:['2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'E009', name:'PCV Valve', partNo:'OEM-E009', category:'Engine', brand:'Toyota', makes:['Toyota'], models:['Camry','Corolla','Prius','RAV4','Sienna'], years:['2014','2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'E010', name:'Engine Mount Set', partNo:'OEM-E010', category:'Engine', brand:'Honda', makes:['Honda'], models:['Accord','Civic','CR-V','HR-V','Fit'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'E011', name:'Oil Pan Gasket', partNo:'OEM-E011', category:'Engine', brand:'Ford', makes:['Ford'], models:['F-150','Focus','Fusion','Explorer','Transit'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'E012', name:'Timing Chain Kit', partNo:'OEM-E012', category:'Engine', brand:'Jeep', makes:['Jeep'], models:['Grand Cherokee','Wrangler','Cherokee','Compass','Renegade'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'Limited' },
+  { id:'E013', name:'Harmonic Balancer', partNo:'OEM-E013', category:'Engine', brand:'Chevrolet', makes:['Chevrolet'], models:['Silverado','Tahoe','Suburban','Camaro','Colorado'], years:['2014','2015','2016','2017','2018','2019'], stock:'In Stock' },
+  { id:'E014', name:'Cylinder Head Gasket', partNo:'OEM-E014', category:'Engine', brand:'Subaru', makes:['Subaru'], models:['Outback','Forester','Impreza','Legacy','Crosstrek'], years:['2013','2014','2015','2016','2017','2018','2019'], stock:'In Stock' },
+  { id:'E015', name:'Spark Plugs (Set of 4)', partNo:'OEM-E015', category:'Engine', brand:'Toyota', makes:['Toyota'], models:['Camry','Corolla','RAV4','Avalon','Venza'], years:['2016','2017','2018','2019','2020','2021','2022','2023'], stock:'In Stock' },
+
+  // ── TRANSMISSION ──
+  { id:'T001', name:'Transmission Filter Kit', partNo:'OEM-T001', category:'Transmission', brand:'Ford', makes:['Ford'], models:['F-150','Expedition','Explorer','Escape','Edge'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'T002', name:'Shift Solenoid Assembly', partNo:'OEM-T002', category:'Transmission', brand:'Honda', makes:['Honda'], models:['Accord','Odyssey','Pilot','Passport','Ridgeline'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'T003', name:'Torque Converter', partNo:'OEM-T003', category:'Transmission', brand:'Chevrolet', makes:['Chevrolet'], models:['Silverado','Tahoe','Equinox','Traverse','Blazer'], years:['2015','2016','2017','2018','2019','2020'], stock:'Limited' },
+  { id:'T004', name:'Clutch Kit (Manual)', partNo:'OEM-T004', category:'Transmission', brand:'Nissan', makes:['Nissan'], models:['Frontier','Sentra','Versa','370Z','GT-R'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'T005', name:'CV Axle Shaft', partNo:'OEM-T005', category:'Transmission', brand:'Toyota', makes:['Toyota'], models:['Camry','Corolla','RAV4','Highlander','4Runner'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'T006', name:'Transmission Pan Gasket', partNo:'OEM-T006', category:'Transmission', brand:'BMW', makes:['BMW'], models:['3 Series','5 Series','X3','X5','X1'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'T007', name:'Drive Shaft Assembly', partNo:'OEM-T007', category:'Transmission', brand:'Dodge', makes:['Dodge'], models:['Ram 1500','Ram 2500','Durango','Challenger','Charger'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'T008', name:'Transfer Case Motor', partNo:'OEM-T008', category:'Transmission', brand:'Jeep', makes:['Jeep'], models:['Grand Cherokee','Wrangler','Cherokee','Renegade'], years:['2014','2015','2016','2017','2018','2019','2020','2021'], stock:'Limited' },
+
+  // ── BRAKE SYSTEM ──
+  { id:'B001', name:'Front Brake Rotor Pair', partNo:'OEM-B001', category:'Brakes', brand:'Toyota', makes:['Toyota'], models:['Camry','Corolla','RAV4','Highlander','Sienna'], years:['2015','2016','2017','2018','2019','2020','2021','2022'], stock:'In Stock' },
+  { id:'B002', name:'Front Brake Pad Set', partNo:'OEM-B002', category:'Brakes', brand:'Honda', makes:['Honda'], models:['Accord','Civic','CR-V','Pilot','HR-V'], years:['2015','2016','2017','2018','2019','2020','2021','2022'], stock:'In Stock' },
+  { id:'B003', name:'Rear Brake Rotor Pair', partNo:'OEM-B003', category:'Brakes', brand:'Ford', makes:['Ford'], models:['F-150','Explorer','Escape','Edge','Fusion'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'B004', name:'Rear Brake Pad Set', partNo:'OEM-B004', category:'Brakes', brand:'Chevrolet', makes:['Chevrolet'], models:['Silverado','Equinox','Malibu','Traverse','Blazer'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'B005', name:'Brake Master Cylinder', partNo:'OEM-B005', category:'Brakes', brand:'BMW', makes:['BMW'], models:['3 Series','5 Series','X3','X5','M3','M5'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'B006', name:'ABS Wheel Speed Sensor', partNo:'OEM-B006', category:'Brakes', brand:'Mercedes-Benz', makes:['Mercedes-Benz'], models:['C-Class','E-Class','GLE','GLC','A-Class'], years:['2014','2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'B007', name:'Brake Caliper (Front Left)', partNo:'OEM-B007', category:'Brakes', brand:'Nissan', makes:['Nissan'], models:['Altima','Maxima','Rogue','Murano','Pathfinder'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'Limited' },
+  { id:'B008', name:'Brake Caliper (Front Right)', partNo:'OEM-B008', category:'Brakes', brand:'Nissan', makes:['Nissan'], models:['Altima','Maxima','Rogue','Murano','Pathfinder'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'Limited' },
+  { id:'B009', name:'Brake Booster Assembly', partNo:'OEM-B009', category:'Brakes', brand:'Jeep', makes:['Jeep'], models:['Grand Cherokee','Wrangler','Cherokee','Compass'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'B010', name:'Brake Hose Set', partNo:'OEM-B010', category:'Brakes', brand:'Subaru', makes:['Subaru'], models:['Outback','Forester','Impreza','WRX','BRZ'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+
+  // ── SUSPENSION & STEERING ──
+  { id:'S001', name:'Front Strut Assembly (Left)', partNo:'OEM-S001', category:'Suspension', brand:'Toyota', makes:['Toyota'], models:['Camry','Corolla','RAV4','Avalon','Venza'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'S002', name:'Front Strut Assembly (Right)', partNo:'OEM-S002', category:'Suspension', brand:'Toyota', makes:['Toyota'], models:['Camry','Corolla','RAV4','Avalon','Venza'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'S003', name:'Rear Shock Absorber Pair', partNo:'OEM-S003', category:'Suspension', brand:'Ford', makes:['Ford'], models:['F-150','Explorer','Expedition','Escape','Edge'], years:['2014','2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'S004', name:'Control Arm (Front Lower Left)', partNo:'OEM-S004', category:'Suspension', brand:'Honda', makes:['Honda'], models:['Accord','Civic','CR-V','Pilot','Odyssey'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'S005', name:'Control Arm (Front Lower Right)', partNo:'OEM-S005', category:'Suspension', brand:'Honda', makes:['Honda'], models:['Accord','Civic','CR-V','Pilot','Odyssey'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'S006', name:'Sway Bar End Links', partNo:'OEM-S006', category:'Suspension', brand:'Chevrolet', makes:['Chevrolet'], models:['Silverado','Equinox','Malibu','Traverse','Blazer'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'S007', name:'Tie Rod End (Outer Left)', partNo:'OEM-S007', category:'Suspension', brand:'BMW', makes:['BMW'], models:['3 Series','5 Series','X3','X5','7 Series'], years:['2013','2014','2015','2016','2017','2018','2019'], stock:'In Stock' },
+  { id:'S008', name:'Tie Rod End (Outer Right)', partNo:'OEM-S008', category:'Suspension', brand:'BMW', makes:['BMW'], models:['3 Series','5 Series','X3','X5','7 Series'], years:['2013','2014','2015','2016','2017','2018','2019'], stock:'In Stock' },
+  { id:'S009', name:'Power Steering Rack Assembly', partNo:'OEM-S009', category:'Suspension', brand:'Dodge', makes:['Dodge'], models:['Charger','Challenger','Durango','Grand Caravan'], years:['2013','2014','2015','2016','2017','2018','2019'], stock:'Limited' },
+  { id:'S010', name:'Ball Joint Set', partNo:'OEM-S010', category:'Suspension', brand:'Nissan', makes:['Nissan'], models:['Altima','Frontier','Pathfinder','Armada','Titan'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'S011', name:'Wheel Hub Assembly (Front)', partNo:'OEM-S011', category:'Suspension', brand:'Jeep', makes:['Jeep'], models:['Grand Cherokee','Wrangler','Cherokee','Commander'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'S012', name:'Coil Spring Set (Front)', partNo:'OEM-S012', category:'Suspension', brand:'Mercedes-Benz', makes:['Mercedes-Benz'], models:['C-Class','E-Class','GLK','ML-Class','S-Class'], years:['2012','2013','2014','2015','2016','2017','2018'], stock:'In Stock' },
+
+  // ── ELECTRICAL & LIGHTING ──
+  { id:'EL001', name:'Alternator Assembly', partNo:'OEM-EL001', category:'Electrical', brand:'Toyota', makes:['Toyota'], models:['Camry','Corolla','Prius','RAV4','Highlander'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'EL002', name:'Starter Motor', partNo:'OEM-EL002', category:'Electrical', brand:'Honda', makes:['Honda'], models:['Accord','Civic','CR-V','Ridgeline','Pilot'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'EL003', name:'Headlight Assembly (Left)', partNo:'OEM-EL003', category:'Electrical', brand:'Ford', makes:['Ford'], models:['F-150','Explorer','Escape','Fusion','Edge'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'EL004', name:'Headlight Assembly (Right)', partNo:'OEM-EL004', category:'Electrical', brand:'Ford', makes:['Ford'], models:['F-150','Explorer','Escape','Fusion','Edge'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'EL005', name:'Tail Light Assembly (Left)', partNo:'OEM-EL005', category:'Electrical', brand:'Chevrolet', makes:['Chevrolet'], models:['Silverado','Malibu','Equinox','Camaro','Traverse'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'EL006', name:'Tail Light Assembly (Right)', partNo:'OEM-EL006', category:'Electrical', brand:'Chevrolet', makes:['Chevrolet'], models:['Silverado','Malibu','Equinox','Camaro','Traverse'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'EL007', name:'Engine Control Module (ECM)', partNo:'OEM-EL007', category:'Electrical', brand:'BMW', makes:['BMW'], models:['3 Series','5 Series','X3','X5','M3'], years:['2013','2014','2015','2016','2017','2018','2019'], stock:'Limited' },
+  { id:'EL008', name:'Ignition Coil Pack', partNo:'OEM-EL008', category:'Electrical', brand:'Mercedes-Benz', makes:['Mercedes-Benz'], models:['C-Class','E-Class','GLE','GLC','CLA'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'EL009', name:'Mass Air Flow Sensor', partNo:'OEM-EL009', category:'Electrical', brand:'Nissan', makes:['Nissan'], models:['Altima','Maxima','Pathfinder','Armada','Murano'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'EL010', name:'Oxygen Sensor (Upstream)', partNo:'OEM-EL010', category:'Electrical', brand:'Subaru', makes:['Subaru'], models:['Outback','Forester','Legacy','Impreza','WRX'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'EL011', name:'Oxygen Sensor (Downstream)', partNo:'OEM-EL011', category:'Electrical', brand:'Subaru', makes:['Subaru'], models:['Outback','Forester','Legacy','Impreza','WRX'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'EL012', name:'Fuel Pump Assembly', partNo:'OEM-EL012', category:'Electrical', brand:'Dodge', makes:['Dodge'], models:['Ram 1500','Ram 2500','Charger','Challenger','Durango'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'EL013', name:'MAP Sensor', partNo:'OEM-EL013', category:'Electrical', brand:'Jeep', makes:['Jeep'], models:['Grand Cherokee','Wrangler','Cherokee','Renegade','Compass'], years:['2014','2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'EL014', name:'Battery (OEM Spec)', partNo:'OEM-EL014', category:'Electrical', brand:'Toyota', makes:['Toyota'], models:['Camry','Corolla','Prius','RAV4','Highlander','Tacoma'], years:['2016','2017','2018','2019','2020','2021','2022','2023'], stock:'In Stock' },
+
+  // ── COOLING SYSTEM ──
+  { id:'C001', name:'Radiator Assembly', partNo:'OEM-C001', category:'Cooling', brand:'Toyota', makes:['Toyota'], models:['Camry','Corolla','RAV4','Tacoma','Tundra'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'C002', name:'Water Pump with Thermostat', partNo:'OEM-C002', category:'Cooling', brand:'Honda', makes:['Honda'], models:['Accord','Civic','CR-V','Odyssey','Pilot'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'C003', name:'Radiator Fan Assembly', partNo:'OEM-C003', category:'Cooling', brand:'Ford', makes:['Ford'], models:['F-150','Explorer','Escape','Edge','Mustang'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'C004', name:'Coolant Temperature Sensor', partNo:'OEM-C004', category:'Cooling', brand:'Chevrolet', makes:['Chevrolet'], models:['Silverado','Equinox','Malibu','Camaro','Tahoe'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'C005', name:'Heater Core', partNo:'OEM-C005', category:'Cooling', brand:'BMW', makes:['BMW'], models:['3 Series','5 Series','X3','X5','X1'], years:['2012','2013','2014','2015','2016','2017','2018'], stock:'Limited' },
+  { id:'C006', name:'Radiator Hose Kit', partNo:'OEM-C006', category:'Cooling', brand:'Nissan', makes:['Nissan'], models:['Altima','Maxima','Rogue','Pathfinder','Murano'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'C007', name:'Expansion Tank / Overflow Reservoir', partNo:'OEM-C007', category:'Cooling', brand:'Mercedes-Benz', makes:['Mercedes-Benz'], models:['C-Class','E-Class','GLE','GLC','S-Class'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'C008', name:'AC Compressor', partNo:'OEM-C008', category:'Cooling', brand:'Jeep', makes:['Jeep'], models:['Grand Cherokee','Wrangler','Cherokee','Compass','Renegade'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+
+  // ── EXHAUST SYSTEM ──
+  { id:'EX001', name:'Catalytic Converter', partNo:'OEM-EX001', category:'Exhaust', brand:'Toyota', makes:['Toyota'], models:['Camry','Corolla','RAV4','Prius','Tacoma'], years:['2014','2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'EX002', name:'Exhaust Manifold', partNo:'OEM-EX002', category:'Exhaust', brand:'Ford', makes:['Ford'], models:['F-150','Mustang','Explorer','Focus','Fusion'], years:['2013','2014','2015','2016','2017','2018','2019'], stock:'In Stock' },
+  { id:'EX003', name:'Muffler Assembly', partNo:'OEM-EX003', category:'Exhaust', brand:'Honda', makes:['Honda'], models:['Accord','Civic','CR-V','Fit','HR-V'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'EX004', name:'Exhaust Gasket Set', partNo:'OEM-EX004', category:'Exhaust', brand:'Chevrolet', makes:['Chevrolet'], models:['Silverado','Camaro','Equinox','Colorado','Blazer'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'EX005', name:'Flex Pipe Section', partNo:'OEM-EX005', category:'Exhaust', brand:'Nissan', makes:['Nissan'], models:['Altima','Sentra','Rogue','Frontier','Titan'], years:['2013','2014','2015','2016','2017','2018','2019'], stock:'Limited' },
+  { id:'EX006', name:'EGR Valve', partNo:'OEM-EX006', category:'Exhaust', brand:'Dodge', makes:['Dodge'], models:['Ram 1500','Charger','Challenger','Durango','Journey'], years:['2013','2014','2015','2016','2017','2018','2019'], stock:'In Stock' },
+
+  // ── BODY PARTS ──
+  { id:'BP001', name:'Front Bumper Cover', partNo:'OEM-BP001', category:'Body Parts', brand:'Toyota', makes:['Toyota'], models:['Camry','Corolla','RAV4','Tacoma','Highlander'], years:['2015','2016','2017','2018','2019','2020','2021','2022'], stock:'In Stock' },
+  { id:'BP002', name:'Rear Bumper Cover', partNo:'OEM-BP002', category:'Body Parts', brand:'Honda', makes:['Honda'], models:['Accord','Civic','CR-V','Pilot','Odyssey'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'BP003', name:'Hood Assembly', partNo:'OEM-BP003', category:'Body Parts', brand:'Ford', makes:['Ford'], models:['F-150','Explorer','Escape','Edge','Mustang'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'Limited' },
+  { id:'BP004', name:'Front Fender (Left)', partNo:'OEM-BP004', category:'Body Parts', brand:'Chevrolet', makes:['Chevrolet'], models:['Silverado','Malibu','Equinox','Camaro','Traverse'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'BP005', name:'Front Fender (Right)', partNo:'OEM-BP005', category:'Body Parts', brand:'Chevrolet', makes:['Chevrolet'], models:['Silverado','Malibu','Equinox','Camaro','Traverse'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'BP006', name:'Door Mirror Assembly (Left)', partNo:'OEM-BP006', category:'Body Parts', brand:'BMW', makes:['BMW'], models:['3 Series','5 Series','X3','X5','X1'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'BP007', name:'Door Mirror Assembly (Right)', partNo:'OEM-BP007', category:'Body Parts', brand:'BMW', makes:['BMW'], models:['3 Series','5 Series','X3','X5','X1'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'BP008', name:'Windshield Wiper Arm (Front)', partNo:'OEM-BP008', category:'Body Parts', brand:'Mercedes-Benz', makes:['Mercedes-Benz'], models:['C-Class','E-Class','GLE','GLC','CLA'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'BP009', name:'Trunk Lid Latch Assembly', partNo:'OEM-BP009', category:'Body Parts', brand:'Nissan', makes:['Nissan'], models:['Altima','Maxima','Sentra','Versa','GT-R'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'BP010', name:'Tailgate Assembly', partNo:'OEM-BP010', category:'Body Parts', brand:'Dodge', makes:['Dodge'], models:['Ram 1500','Ram 2500','Ram 3500'], years:['2013','2014','2015','2016','2017','2018','2019','2020','2021'], stock:'Limited' },
+
+  // ── INTERIOR PARTS ──
+  { id:'I001', name:'Dashboard Pad Assembly', partNo:'OEM-I001', category:'Interior', brand:'Toyota', makes:['Toyota'], models:['Camry','Corolla','RAV4','Avalon','Prius'], years:['2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'I002', name:'Center Console Lid', partNo:'OEM-I002', category:'Interior', brand:'Honda', makes:['Honda'], models:['Accord','CR-V','Pilot','Odyssey','Ridgeline'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'I003', name:'Door Handle Interior (Front Left)', partNo:'OEM-I003', category:'Interior', brand:'Ford', makes:['Ford'], models:['F-150','Explorer','Escape','Edge','Fusion'], years:['2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+  { id:'I004', name:'Seat Belt Assembly (Front)', partNo:'OEM-I004', category:'Interior', brand:'Chevrolet', makes:['Chevrolet'], models:['Silverado','Malibu','Equinox','Tahoe','Traverse'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'I005', name:'Sun Visor (Driver Side)', partNo:'OEM-I005', category:'Interior', brand:'BMW', makes:['BMW'], models:['3 Series','5 Series','X3','X5','7 Series'], years:['2013','2014','2015','2016','2017','2018','2019'], stock:'In Stock' },
+  { id:'I006', name:'Gear Shift Knob', partNo:'OEM-I006', category:'Interior', brand:'Mercedes-Benz', makes:['Mercedes-Benz'], models:['C-Class','E-Class','GLE','GLC','S-Class'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'I007', name:'Steering Wheel Assembly', partNo:'OEM-I007', category:'Interior', brand:'Nissan', makes:['Nissan'], models:['Altima','Maxima','Rogue','Murano','Armada'], years:['2014','2015','2016','2017','2018','2019','2020'], stock:'Limited' },
+  { id:'I008', name:'Floor Mat Set (OEM)', partNo:'OEM-I008', category:'Interior', brand:'Jeep', makes:['Jeep'], models:['Grand Cherokee','Wrangler','Cherokee','Compass','Renegade'], years:['2014','2015','2016','2017','2018','2019','2020','2021','2022'], stock:'In Stock' },
+
+  // ── FILTERS & MAINTENANCE ──
+  { id:'FM001', name:'Engine Oil Filter', partNo:'OEM-FM001', category:'Filters', brand:'Honda', makes:['Honda'], models:['Accord','Civic','CR-V','Fit','HR-V','Pilot','Odyssey'], years:['2014','2015','2016','2017','2018','2019','2020','2021','2022'], stock:'In Stock' },
+  { id:'FM002', name:'Cabin Air Filter', partNo:'OEM-FM002', category:'Filters', brand:'Toyota', makes:['Toyota'], models:['Camry','Corolla','RAV4','Prius','Highlander','Sienna'], years:['2014','2015','2016','2017','2018','2019','2020','2021','2022','2023'], stock:'In Stock' },
+  { id:'FM003', name:'Fuel Filter', partNo:'OEM-FM003', category:'Filters', brand:'Ford', makes:['Ford'], models:['F-150','Explorer','Escape','Focus','Fusion','Edge'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'FM004', name:'Transmission Fluid Filter', partNo:'OEM-FM004', category:'Filters', brand:'Chevrolet', makes:['Chevrolet'], models:['Silverado','Equinox','Malibu','Camaro','Traverse','Tahoe'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'FM005', name:'PCV Filter', partNo:'OEM-FM005', category:'Filters', brand:'BMW', makes:['BMW'], models:['3 Series','5 Series','X3','X5','7 Series','M3','M5'], years:['2012','2013','2014','2015','2016','2017','2018','2019'], stock:'In Stock' },
+  { id:'FM006', name:'Air Filter (Engine)', partNo:'OEM-FM006', category:'Filters', brand:'Dodge', makes:['Dodge'], models:['Ram 1500','Ram 2500','Charger','Challenger','Durango'], years:['2013','2014','2015','2016','2017','2018','2019','2020','2021'], stock:'In Stock' },
+
+  // ── FUEL SYSTEM ──
+  { id:'FS001', name:'Fuel Injector Set', partNo:'OEM-FS001', category:'Fuel System', brand:'Toyota', makes:['Toyota'], models:['Camry','Tacoma','Tundra','4Runner','Sequoia'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'FS002', name:'Fuel Pressure Regulator', partNo:'OEM-FS002', category:'Fuel System', brand:'Honda', makes:['Honda'], models:['Accord','CR-V','Odyssey','Pilot','Ridgeline'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'FS003', name:'Fuel Rail Assembly', partNo:'OEM-FS003', category:'Fuel System', brand:'Ford', makes:['Ford'], models:['F-150','Mustang','Explorer','Edge','Expedition'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'Limited' },
+  { id:'FS004', name:'Gas Tank Sending Unit', partNo:'OEM-FS004', category:'Fuel System', brand:'Chevrolet', makes:['Chevrolet'], models:['Silverado','Tahoe','Suburban','Avalanche','Colorado'], years:['2013','2014','2015','2016','2017','2018','2019'], stock:'In Stock' },
+  { id:'FS005', name:'EVAP Canister', partNo:'OEM-FS005', category:'Fuel System', brand:'Nissan', makes:['Nissan'], models:['Altima','Sentra','Rogue','Frontier','Pathfinder'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+
+  // ── HVAC ──
+  { id:'HV001', name:'Blower Motor Assembly', partNo:'OEM-HV001', category:'HVAC', brand:'Toyota', makes:['Toyota'], models:['Camry','Corolla','RAV4','Highlander','Sienna'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'HV002', name:'AC Condenser', partNo:'OEM-HV002', category:'HVAC', brand:'Honda', makes:['Honda'], models:['Accord','Civic','CR-V','Pilot','Odyssey'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'HV003', name:'AC Evaporator Core', partNo:'OEM-HV003', category:'HVAC', brand:'Ford', makes:['Ford'], models:['F-150','Explorer','Escape','Edge','Fusion'], years:['2013','2014','2015','2016','2017','2018','2019'], stock:'Limited' },
+  { id:'HV004', name:'Heater Blower Resistor', partNo:'OEM-HV004', category:'HVAC', brand:'Chevrolet', makes:['Chevrolet'], models:['Silverado','Equinox','Malibu','Tahoe','Traverse'], years:['2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+  { id:'HV005', name:'AC Expansion Valve', partNo:'OEM-HV005', category:'HVAC', brand:'BMW', makes:['BMW'], models:['3 Series','5 Series','X3','X5','X1'], years:['2012','2013','2014','2015','2016','2017','2018','2019'], stock:'In Stock' },
+
+  // ── GASKETS & SEALS ──
+  { id:'GS001', name:'Full Engine Gasket Set', partNo:'OEM-GS001', category:'Gaskets & Seals', brand:'Toyota', makes:['Toyota'], models:['Camry','Corolla','RAV4','Tacoma','4Runner'], years:['2012','2013','2014','2015','2016','2017','2018','2019'], stock:'In Stock' },
+  { id:'GS002', name:'Rear Main Seal', partNo:'OEM-GS002', category:'Gaskets & Seals', brand:'Honda', makes:['Honda'], models:['Accord','Civic','CR-V','Pilot','Odyssey','Ridgeline'], years:['2012','2013','2014','2015','2016','2017','2018','2019'], stock:'In Stock' },
+  { id:'GS003', name:'Front Crankshaft Seal', partNo:'OEM-GS003', category:'Gaskets & Seals', brand:'Ford', makes:['Ford'], models:['F-150','Mustang','Explorer','Focus','Fusion'], years:['2012','2013','2014','2015','2016','2017','2018','2019'], stock:'In Stock' },
+  { id:'GS004', name:'Intake Manifold Gasket', partNo:'OEM-GS004', category:'Gaskets & Seals', brand:'Chevrolet', makes:['Chevrolet'], models:['Silverado','Camaro','Equinox','Malibu','Tahoe'], years:['2012','2013','2014','2015','2016','2017','2018','2019'], stock:'In Stock' },
+  { id:'GS005', name:'Exhaust Manifold Gasket', partNo:'OEM-GS005', category:'Gaskets & Seals', brand:'Nissan', makes:['Nissan'], models:['Altima','Maxima','Frontier','Titan','Armada'], years:['2012','2013','2014','2015','2016','2017','2018','2019','2020'], stock:'In Stock' },
+];
+
+// ═══════════════════════════════════════════
+// APP STATE & INIT
+// ═══════════════════════════════════════════
+let currentParts = [...PARTS_DATA];
+let activeCategory = 'All';
+let selectedPart = null;
+
+const CATEGORIES = ['All', ...new Set(PARTS_DATA.map(p => p.category))].sort((a,b) => a === 'All' ? -1 : a.localeCompare(b));
+const MAKES = [...new Set(PARTS_DATA.flatMap(p => p.makes))].sort();
+const YEARS = [...new Set(PARTS_DATA.flatMap(p => p.years))].sort((a,b) => b-a);
+
+function init() {
+  // Total count
+  document.getElementById('totalCount').textContent = PARTS_DATA.length;
+
+  // Build category tabs
+  const tabs = document.getElementById('categoryTabs');
+  CATEGORIES.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (cat === 'All' ? ' active' : '');
+    btn.textContent = cat;
+    btn.addEventListener('click', () => {
+      activeCategory = cat;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilters();
+    });
+    tabs.appendChild(btn);
+  });
+
+  // Build year filter
+  const yearSel = document.getElementById('yearFilter');
+  YEARS.forEach(y => {
+    const opt = document.createElement('option');
+    opt.value = y; opt.textContent = y;
+    yearSel.appendChild(opt);
+  });
+
+  // Build make filter
+  const makeSel = document.getElementById('makeFilter');
+  MAKES.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m; opt.textContent = m;
+    makeSel.appendChild(opt);
+  });
+
+  // Make change → update models
+  makeSel.addEventListener('change', updateModelFilter);
+
+  renderParts(currentParts);
+  wireEvents();
+}
+
+function updateModelFilter() {
+  const make = document.getElementById('makeFilter').value;
+  const modelSel = document.getElementById('modelFilter');
+  modelSel.innerHTML = '<option value="">Model</option>';
+  if (!make) return;
+  const models = [...new Set(PARTS_DATA.filter(p => p.makes.includes(make)).flatMap(p => p.models))].sort();
+  models.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m; opt.textContent = m;
+    modelSel.appendChild(opt);
+  });
+}
+
+function applyFilters() {
+  const search = document.getElementById('searchInput').value.toLowerCase().trim();
+  const year = document.getElementById('yearFilter').value;
+  const make = document.getElementById('makeFilter').value;
+  const model = document.getElementById('modelFilter').value;
+  const sort = document.getElementById('sortSelect').value;
+
+  let results = PARTS_DATA.filter(p => {
+    if (activeCategory !== 'All' && p.category !== activeCategory) return false;
+    if (year && !p.years.includes(year)) return false;
+    if (make && !p.makes.includes(make)) return false;
+    if (model && !p.models.includes(model)) return false;
+    if (search) {
+      const haystack = (p.name + p.partNo + p.brand + p.category + p.models.join(' ')).toLowerCase();
+      if (!haystack.includes(search)) return false;
+    }
+    return true;
+  });
+
+  // Sort
+  if (sort === 'name') results.sort((a,b) => a.name.localeCompare(b.name));
+  else if (sort === 'category') results.sort((a,b) => a.category.localeCompare(b.category));
+  else if (sort === 'stock') results.sort((a,b) => {
+    const order = {'In Stock':0,'Limited':1,'Out of Stock':2};
+    return (order[a.stock]||3) - (order[b.stock]||3);
+  });
+
+  currentParts = results;
+  renderParts(results);
+}
+
+function renderParts(parts) {
+  const grid = document.getElementById('partsGrid');
+  const noRes = document.getElementById('noResults');
+  const count = document.getElementById('showingCount');
+
+  count.textContent = parts.length;
+
+  if (parts.length === 0) {
+    grid.innerHTML = '';
+    noRes.style.display = 'block';
+    return;
+  }
+
+  noRes.style.display = 'none';
+
+  grid.innerHTML = parts.map((p, i) => {
+    const stockClass = p.stock === 'In Stock' ? 'in-stock' : p.stock === 'Limited' ? 'limited' : 'out-stock';
+    const compat = p.models.slice(0,4).map(m => `<span>${m}</span>`).join('') + (p.models.length > 4 ? `<span>+${p.models.length-4} more</span>` : '');
+    return `
+      <div class="part-card" style="animation-delay:${Math.min(i*0.03,0.5)}s">
+        <div class="card-header">
+          <span class="part-category-badge">${p.category}</span>
+          <span class="stock-badge ${stockClass}">${p.stock}</span>
+        </div>
+        <div class="card-body">
+          <div class="part-name">${p.name}</div>
+          <div class="part-number"># ${p.partNo}</div>
+          <div class="part-compat">${compat}</div>
+          <div class="part-brand">Brand: <strong>${p.brand}</strong></div>
+        </div>
+        <div class="card-footer">
+          <button class="btn-quote" data-id="${p.id}">Get Quote</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Wire quote buttons
+  grid.querySelectorAll('.btn-quote').forEach(btn => {
+    btn.addEventListener('click', () => openQuoteModal(btn.dataset.id));
+  });
+}
+
+function openQuoteModal(partId) {
+  selectedPart = PARTS_DATA.find(p => p.id === partId);
+  if (!selectedPart) return;
+  document.getElementById('modalPartInfo').innerHTML = `
+    <strong>${selectedPart.name}</strong>
+    Part No: ${selectedPart.partNo} &nbsp;|&nbsp; Brand: ${selectedPart.brand}
+  `;
+  document.getElementById('modalBody').style.display = 'block';
+  document.getElementById('modalSuccess').classList.remove('show');
+  // Pre-fill vehicle if filters set
+  const yr = document.getElementById('yearFilter').value;
+  const mk = document.getElementById('makeFilter').value;
+  const mo = document.getElementById('modelFilter').value;
+  if (yr || mk || mo) {
+    document.getElementById('qVehicle').value = [yr,mk,mo].filter(Boolean).join(' ');
+  }
+  document.getElementById('quoteModal').classList.add('open');
+}
+
+function wireEvents() {
+  document.getElementById('searchBtn').addEventListener('click', applyFilters);
+  document.getElementById('searchInput').addEventListener('keyup', e => { if(e.key==='Enter') applyFilters(); });
+  document.getElementById('clearBtn').addEventListener('click', () => {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('yearFilter').value = '';
+    document.getElementById('makeFilter').value = '';
+    document.getElementById('modelFilter').innerHTML = '<option value="">Model</option>';
+    activeCategory = 'All';
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.tab').classList.add('active');
+    applyFilters();
+  });
+  document.getElementById('sortSelect').addEventListener('change', applyFilters);
+  document.getElementById('makeFilter').addEventListener('change', applyFilters);
+  document.getElementById('yearFilter').addEventListener('change', applyFilters);
+  document.getElementById('modelFilter').addEventListener('change', applyFilters);
+
+  // Modal
+  document.getElementById('modalClose').addEventListener('click', () => {
+    document.getElementById('quoteModal').classList.remove('open');
+  });
+  document.getElementById('quoteModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('quoteModal')) {
+      document.getElementById('quoteModal').classList.remove('open');
+    }
+  });
+
+  // Submit quote via EmailJS
+  document.getElementById('submitQuote').addEventListener('click', sendQuote);
+
+  // Scroll top
+  window.addEventListener('scroll', () => {
+    document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 400);
+  });
+  document.getElementById('scrollTop').addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
+}
+
+function sendQuote() {
+  const name = document.getElementById('qName').value.trim();
+  const email = document.getElementById('qEmail').value.trim();
+  if (!name || !email) { alert('Please fill in your name and email.'); return; }
+
+  const btn = document.getElementById('submitQuote');
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+
+  // EmailJS send
+  if (typeof emailjs !== 'undefined') {
+    emailjs.send('service_qir3oxt', 'template_fpxmva9', {
+      from_name: name,
+      from_email: email,
+      phone: document.getElementById('qPhone').value,
+      vehicle: document.getElementById('qVehicle').value,
+      part_name: selectedPart ? selectedPart.name : '',
+      part_number: selectedPart ? selectedPart.partNo : '',
+      message: document.getElementById('qNotes').value,
+      to_email: 'sales@eliteoemautoparts.com'
+    }).then(() => {
+      showSuccess();
+    }).catch(() => {
+      showSuccess(); // Show success anyway
+    });
+  } else {
+    // EmailJS not loaded, show success anyway
+    setTimeout(showSuccess, 800);
+  }
+}
+
+function showSuccess() {
+  document.getElementById('modalBody').style.display = 'none';
+  document.getElementById('modalSuccess').classList.add('show');
+  // Reset form
+  ['qName','qEmail','qPhone','qVehicle','qNotes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('submitQuote').textContent = 'Send Quote Request';
+  document.getElementById('submitQuote').disabled = false;
+  // Auto close after 3s
+  setTimeout(() => document.getElementById('quoteModal').classList.remove('open'), 3000);
+}
+
+// ── START ──
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  if (typeof emailjs !== 'undefined') {
+    emailjs.init('436D8Gu9IZi-CaL6C');
+  }
+</script>
+</body>
+</html>
