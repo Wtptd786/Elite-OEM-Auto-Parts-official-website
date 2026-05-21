@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIN Decoder | Elite OEM Auto Parts</title>
+<meta name="description" content="Decode your VIN number instantly and find exact OEM parts for your vehicle. Free VIN lookup powered by NHTSA database.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #e8b04b;
+  --gold-dark: #c9932a;
+  --gold-dim: rgba(232,176,75,0.12);
+  --bg: #080a0d;
+  --bg2: #0f1216;
+  --bg3: #161b21;
+  --bg4: #1c2229;
+  --bg5: #222930;
+  --border: #252c35;
+  --border2: #2e3740;
+  --text: #dde2ea;
+  --text-muted: #7a8494;
+  --text-dim: #4a5260;
+  --green: #00d68f;
+  --green-dim: rgba(0,214,143,0.1);
+  --red: #ff4d4d;
+  --red-dim: rgba(255,77,77,0.1);
+  --blue: #4da6ff;
+  --blue-dim: rgba(77,166,255,0.1);
+  --orange: #ff8c42;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Barlow', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--bg2);
+  border-bottom: 2px solid var(--gold);
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--gold);
+  text-decoration: none;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.logo span { color: var(--text); }
+
+nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
+}
+nav a:hover, nav a.active { color: var(--gold); }
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  padding: 56px 24px 48px;
+  text-align: center;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse, rgba(232,176,75,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(232,176,75,0.3);
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(36px, 6vw, 64px);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.hero h1 .hl { color: var(--gold); }
+
+.hero p {
+  color: var(--text-muted);
+  font-size: 15px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ── VIN INPUT SECTION ── */
+.vin-section {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 24px 48px;
+}
+
+.vin-card {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.vin-card-header {
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vin-card-header .dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+.dot-red { background: #ff5f57; }
+.dot-yellow { background: #febc2e; }
+.dot-green { background: #28c840; }
+
+.vin-card-title {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-left: 6px;
+}
+
+.vin-input-wrap {
+  padding: 28px 24px 24px;
+}
+
+.vin-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  display: block;
+}
+
+.vin-field-wrap {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.vin-input {
+  flex: 1;
+  background: var(--bg4);
+  border: 2px solid var(--border2);
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 18px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 14px 18px;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.vin-input::placeholder {
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  font-size: 15px;
+}
+
+.vin-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(232,176,75,0.1);
+}
+
+.vin-input.error { border-color: var(--red); box-shadow: 0 0 0 3px var(--red-dim); }
+.vin-input.success { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-dim); }
+
+.btn-decode {
+  background: var(--gold);
+  color: #000;
+  border: none;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 0 28px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  white-space: nowrap;
+  min-width: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-decode:hover { background: var(--gold-dark); }
+.btn-decode:active { transform: scale(0.97); }
+.btn-decode:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.vin-hint {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.vin-hint span { display: flex; align-items: center; gap: 4px; }
+
+/* VIN Character counter */
+.vin-counter {
+  margin-top: 8px;
+  display: flex;
+  gap: 4px;
+}
+
+.vin-char {
+  width: 28px; height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  background: var(--bg4);
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.vin-char.filled {
+  color: var(--gold);
+  border-color: rgba(232,176,75,0.4);
+  background: rgba(232,176,75,0.06);
+}
+
+.vin-char.complete {
+  color: var(--green);
+  border-color: rgba(0,214,143,0.4);
+  background: var(--green-dim);
+}
+
+/* ── ERROR MESSAGE ── */
+.error-msg {
+  display: none;
+  background: var(--red-dim);
+  border: 1px solid rgba(255,77,77,0.3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 0 24px 20px;
+  font-size: 13px;
+  color: var(--red);
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+.error-msg.show { display: flex; }
+
+/* ── LOADING ── */
+.loading-wrap {
+  display: none;
+  padding: 48px 24px;
+  text-align: center;
+}
+.loading-wrap.show { display: block; }
+
+.loader {
+  display: inline-flex;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.loader-bar {
+  width: 4px;
+  height: 32px;
+  background: var(--gold);
+  border-radius: 2px;
+  animation: loaderPulse 1s ease-in-out infinite;
+}
+.loader-bar:nth-child(2) { animation-delay: 0.1s; }
+.loader-bar:nth-child(3) { animation-delay: 0.2s; }
+.loader-bar:nth-child(4) { animation-delay: 0.3s; }
+.loader-bar:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes loaderPulse {
+  0%, 100% { transform: scaleY(0.4); opacity: 0.3; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+.loading-text {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+.loading-steps {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.loading-step {
+  font-size: 12px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s;
+}
+.loading-step.active { color: var(--gold); }
+.loading-step.done { color: var(--green); }
+
+/* ── RESULT SECTION ── */
+.result-section {
+  display: none;
+  padding: 0 24px 32px;
+  animation: fadeIn 0.4s ease;
+}
+.result-section.show { display: block; }
+
+@keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+/* Vehicle ID Card */
+.vehicle-card {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.vehicle-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+}
+
+.vehicle-card-header {
+  padding: 20px 24px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.vehicle-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text);
+  line-height: 1;
+}
+.vehicle-name .year { color: var(--gold); }
+
+.vehicle-vin-display {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+
+.vehicle-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1px;
+  background: var(--border);
+}
+
+.spec-item {
+  background: var(--bg3);
+  padding: 16px 20px;
+  transition: background 0.2s;
+}
+.spec-item:hover { background: var(--bg4); }
+
+.spec-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.spec-value {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.spec-value.highlight { color: var(--gold); }
+
+/* WMI Decode strip */
+.vin-breakdown {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.vin-section-tag {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: 'Share Tech Mono', monospace;
+  font-weight: 600;
+}
+
+.tag-wmi { background: rgba(77,166,255,0.1); color: var(--blue); border: 1px solid rgba(77,166,255,0.2); }
+.tag-vds { background: rgba(232,176,75,0.1); color: var(--gold); border: 1px solid rgba(232,176,75,0.2); }
+.tag-vis { background: rgba(0,214,143,0.1); color: var(--green); border: 1px solid rgba(0,214,143,0.2); }
+.tag-label { font-size: 11px; color: var(--text-dim); }
+
+/* ── PARTS SECTION ── */
+.parts-section-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.parts-section-title span { color: var(--gold); }
+
+.parts-section-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.parts-filter-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.ptab {
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.ptab:hover { border-color: var(--gold); color: var(--gold); }
+.ptab.active { background: var(--gold); border-color: var(--gold); color: #000; }
+
+.parts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.pcard {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  animation: fadeIn 0.3s ease both;
+  display: flex;
+  flex-direction: column;
+}
+.pcard:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(232,176,75,0.08);
+}
+
+.pcard-top {
+  background: var(--bg4);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pcat-badge {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gold);
+  background: var(--gold-dim);
+  border: 1px solid rgba(232,176,75,0.2);
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+
+.pstock {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+.pstock.in { color: var(--green); background: var(--green-dim); border: 1px solid rgba(0,214,143,0.2); }
+.pstock.ltd { color: var(--orange); background: rgba(255,140,66,0.1); border: 1px solid rgba(255,140,66,0.2); }
+.pstock.out { color: var(--red); background: var(--red-dim); border: 1px solid rgba(255,77,77,0.2); }
+
+.pcard-body { padding: 12px 14px; flex: 1; }
+
+.pname {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+  line-height: 1.2;
+}
+
+.pno {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.pbrand { font-size: 11px; color: var(--text-muted); }
+.pbrand strong { color: var(--gold); }
+
+.pcard-footer { padding: 10px 14px; border-top: 1px solid var(--border); }
+
+.btn-quote-part {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-quote-part:hover { background: var(--gold); color: #000; }
+
+.no-parts-msg {
+  text-align: center;
+  padding: 40px 24px;
+  color: var(--text-muted);
+  background: var(--bg3);
+  border: 1px dashed var(--border2);
+  border-radius: 12px;
+}
+.no-parts-msg h4 { margin-bottom: 8px; font-size: 16px; }
+.no-parts-msg p { font-size: 13px; }
+
+/* ── QUOTE MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 480px;
+  overflow: hidden;
+  animation: fadeIn 0.25s ease;
+}
+
+.modal-hdr {
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-hdr h3 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.modal-x {
+  background: none; border: none;
+  color: var(--text-muted);
+  font-size: 22px; cursor: pointer;
+  line-height: 1; padding: 0 4px;
+}
+.modal-x:hover { color: var(--text); }
+
+.modal-bdy { padding: 20px; }
+
+.mpart-info {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.mpart-info strong {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 2px;
+  color: var(--gold);
+}
+
+.fg { margin-bottom: 12px; }
+.fg label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+.fg input, .fg textarea {
+  width: 100%;
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.fg input:focus, .fg textarea:focus { border-color: var(--gold); }
+.fg textarea { resize: vertical; min-height: 70px; }
+.fg-row { display: flex; gap: 10px; }
+.fg-row .fg { flex: 1; }
+
+.btn-submit {
+  width: 100%;
+  background: var(--gold);
+  color: #000;
+  border: none;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 4px;
+}
+.btn-submit:hover { background: var(--gold-dark); }
+
+.modal-success {
+  display: none;
+  text-align: center;
+  padding: 36px 20px;
+}
+.modal-success.show { display: block; }
+.modal-success .check { font-size: 44px; margin-bottom: 12px; }
+.modal-success h4 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px; font-weight: 800;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 6px;
+}
+.modal-success p { color: var(--text-muted); font-size: 13px; }
+
+/* ── CTA BANNER ── */
+.cta-banner {
+  background: linear-gradient(135deg, var(--bg3), var(--bg2));
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 28px 24px;
+  text-align: center;
+  margin-top: 24px;
+}
+.cta-banner h3 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px; font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.cta-banner h3 span { color: var(--gold); }
+.cta-banner p { color: var(--text-muted); font-size: 13px; margin-bottom: 16px; }
+.btn-cta {
+  display: inline-block;
+  background: var(--gold);
+  color: #000;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px; font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 11px 28px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.2s;
+  border: none;
+  cursor: pointer;
+}
+.btn-cta:hover { background: var(--gold-dark); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 20px 24px;
+  text-align: center;
+  margin-top: 48px;
+}
+footer p { font-size: 12px; color: var(--text-dim); }
+footer a { color: var(--gold); text-decoration: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .vin-field-wrap { flex-direction: column; }
+  .btn-decode { width: 100%; padding: 14px; }
+  .vin-counter { flex-wrap: wrap; gap: 3px; }
+  .vin-char { width: 24px; height: 24px; font-size: 10px; }
+  .vehicle-specs-grid { grid-template-columns: 1fr 1fr; }
+  nav { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="index.html" class="logo">Elite <span>OEM</span></a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="parts.html">Parts Catalog</a>
+    <a href="vin-decoder.html" class="active">VIN Decoder</a>
+    <a href="index.html#contact">Contact</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🔍 Free VIN Lookup — Powered by NHTSA</div>
+  <h1>VIN <span class="hl">Decoder</span></h1>
+  <p>Enter your 17-character VIN to instantly identify your vehicle and find matching OEM parts</p>
+</section>
+
+<!-- VIN INPUT -->
+<div class="vin-section">
+  <div class="vin-card">
+    <div class="vin-card-header">
+      <div class="dot dot-red"></div>
+      <div class="dot dot-yellow"></div>
+      <div class="dot dot-green"></div>
+      <span class="vin-card-title">vehicle_identification_number_decoder.exe</span>
+    </div>
+    <div class="vin-input-wrap">
+      <label class="vin-label">Enter VIN Number (17 Characters)</label>
+      <div class="vin-field-wrap">
+        <input type="text"
+               id="vinInput"
+               class="vin-input"
+               maxlength="17"
+               placeholder="1HGCM82633A123456"
+               autocomplete="off"
+               spellcheck="false">
+        <button class="btn-decode" id="decodeBtn">
+          <span id="btnText">Decode VIN</span>
+        </button>
+      </div>
+      <div class="vin-counter" id="vinCounter">
+        <!-- 17 boxes generated by JS -->
+      </div>
+      <div class="vin-hint">
+        <span>📍 Found on dashboard (driver side)</span>
+        <span>📄 Vehicle registration / insurance card</span>
+        <span>🚪 Driver door jamb sticker</span>
+      </div>
+    </div>
+    <div class="error-msg" id="errorMsg">
+      <span>⚠️</span>
+      <span id="errorText">Invalid VIN number</span>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading-wrap" id="loadingWrap">
+    <div class="loader">
+      <div class="loader-bar"></div>
+      <div class="loader-bar"></div>
+      <div class="loader-bar"></div>
+      <div class="loader-bar"></div>
+      <div class="loader-bar"></div>
+    </div>
+    <div class="loading-text" id="loadingText">CONTACTING NHTSA DATABASE...</div>
+    <div class="loading-steps">
+      <div class="loading-step" id="step1">⬜ Validating VIN format</div>
+      <div class="loading-step" id="step2">⬜ Querying NHTSA vPIC API</div>
+      <div class="loading-step" id="step3">⬜ Decoding vehicle specifications</div>
+      <div class="loading-step" id="step4">⬜ Matching OEM parts</div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-section" id="resultSection">
+
+    <!-- Vehicle Card -->
+    <div class="vehicle-card" id="vehicleCard">
+      <div class="vehicle-card-header">
+        <div class="vehicle-name" id="vehicleName"></div>
+        <div class="vehicle-vin-display" id="vehicleVinDisplay"></div>
+      </div>
+      <div class="vehicle-specs-grid" id="specsGrid"></div>
+      <div class="vin-breakdown" id="vinBreakdown"></div>
+    </div>
+
+    <!-- Matching Parts -->
+    <div class="parts-section-title">Matching <span>OEM Parts</span></div>
+    <div class="parts-section-sub" id="partsSub"></div>
+    <div class="parts-filter-tabs" id="partsFilterTabs"></div>
+    <div class="parts-grid" id="partsGrid"></div>
+
+    <!-- CTA -->
+    <div class="cta-banner">
+      <h3>Can't find your <span>part?</span></h3>
+      <p>We source any genuine OEM part for your vehicle. Send us your VIN and part name — we'll get back within 2–4 hours.</p>
+      <button class="btn-cta" onclick="openModal(null)">Request Custom Quote</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- QUOTE MODAL -->
+<div class="modal-overlay" id="quoteModal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3>Request Quote</h3>
+      <button class="modal-x" id="modalClose">×</button>
+    </div>
+    <div id="modalBody">
+      <div class="modal-bdy">
+        <div class="mpart-info" id="mpartInfo"></div>
+        <div class="fg-row">
+          <div class="fg"><label>Your Name *</label><input type="text" id="qName" placeholder="John Smith"></div>
+          <div class="fg"><label>Phone</label><input type="text" id="qPhone" placeholder="+1 555 000 0000"></div>
+        </div>
+        <div class="fg"><label>Email *</label><input type="text" id="qEmail" placeholder="you@email.com"></div>
+        <div class="fg"><label>Vehicle</label><input type="text" id="qVehicle" placeholder="Auto-filled from VIN" readonly style="opacity:0.7"></div>
+        <div class="fg"><label>Notes / VIN</label><textarea id="qNotes" placeholder="Any additional details..."></textarea></div>
+        <button class="btn-submit" id="submitBtn">Send Quote Request</button>
+      </div>
+    </div>
+    <div class="modal-success" id="modalSuccess">
+      <div class="check">✅</div>
+      <h4>Quote Sent!</h4>
+      <p>We'll respond within 2–4 business hours with pricing and availability.</p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <a href="index.html">Elite OEM Auto Parts</a> — Genuine OEM Parts | <a href="mailto:sales@eliteoemautoparts.com">sales@eliteoemautoparts.com</a> | Data powered by NHTSA vPIC API</p>
+</footer>
+
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<script>
+// ═══════════════════════════════════════════════════
+// PARTS DATABASE
+// ═══════════════════════════════════════════════════
+const PARTS_DB = [
+  // ENGINE
+  { id:'E001', name:'Engine Oil Filter', partNo:'OEM-E001', cat:'Engine', makes:['Toyota','Lexus'], stock:'In Stock' },
+  { id:'E002', name:'Timing Belt Kit', partNo:'OEM-E002', cat:'Engine', makes:['Honda','Acura'], stock:'In Stock' },
+  { id:'E003', name:'Valve Cover Gasket', partNo:'OEM-E003', cat:'Engine', makes:['Ford','Lincoln'], stock:'Limited' },
+  { id:'E004', name:'Engine Air Filter', partNo:'OEM-E004', cat:'Engine', makes:['Chevrolet','GMC','Buick','Cadillac'], stock:'In Stock' },
+  { id:'E005', name:'Crankshaft Position Sensor', partNo:'OEM-E005', cat:'Engine', makes:['BMW','MINI'], stock:'In Stock' },
+  { id:'E006', name:'Camshaft Position Sensor', partNo:'OEM-E006', cat:'Engine', makes:['Mercedes-Benz','Sprinter'], stock:'In Stock' },
+  { id:'E007', name:'Throttle Body Assembly', partNo:'OEM-E007', cat:'Engine', makes:['Nissan','Infiniti'], stock:'Limited' },
+  { id:'E008', name:'Intake Manifold Gasket Set', partNo:'OEM-E008', cat:'Engine', makes:['Dodge','Ram','Chrysler','Jeep'], stock:'In Stock' },
+  { id:'E009', name:'PCV Valve', partNo:'OEM-E009', cat:'Engine', makes:['Toyota','Lexus','Scion'], stock:'In Stock' },
+  { id:'E010', name:'Engine Mount Set', partNo:'OEM-E010', cat:'Engine', makes:['Honda','Acura'], stock:'In Stock' },
+  { id:'E011', name:'Oil Pan Gasket', partNo:'OEM-E011', cat:'Engine', makes:['Ford','Lincoln','Mercury'], stock:'In Stock' },
+  { id:'E012', name:'Timing Chain Kit', partNo:'OEM-E012', cat:'Engine', makes:['Jeep','Dodge','Ram'], stock:'Limited' },
+  { id:'E013', name:'Harmonic Balancer', partNo:'OEM-E013', cat:'Engine', makes:['Chevrolet','GMC','Cadillac'], stock:'In Stock' },
+  { id:'E014', name:'Cylinder Head Gasket', partNo:'OEM-E014', cat:'Engine', makes:['Subaru'], stock:'In Stock' },
+  { id:'E015', name:'Spark Plugs Set', partNo:'OEM-E015', cat:'Engine', makes:['Toyota','Lexus'], stock:'In Stock' },
+  { id:'E016', name:'Fuel Injectors Set', partNo:'OEM-E016', cat:'Engine', makes:['Hyundai','Kia','Genesis'], stock:'In Stock' },
+  { id:'E017', name:'Engine Oil Pan', partNo:'OEM-E017', cat:'Engine', makes:['Volkswagen','Audi'], stock:'In Stock' },
+  { id:'E018', name:'Turbocharger Assembly', partNo:'OEM-E018', cat:'Engine', makes:['Ford','Lincoln'], stock:'Limited' },
+  // BRAKES
+  { id:'B001', name:'Front Brake Rotor Pair', partNo:'OEM-B001', cat:'Brakes', makes:['Toyota','Lexus','Scion'], stock:'In Stock' },
+  { id:'B002', name:'Front Brake Pad Set', partNo:'OEM-B002', cat:'Brakes', makes:['Honda','Acura'], stock:'In Stock' },
+  { id:'B003', name:'Rear Brake Rotor Pair', partNo:'OEM-B003', cat:'Brakes', makes:['Ford','Lincoln'], stock:'In Stock' },
+  { id:'B004', name:'Rear Brake Pad Set', partNo:'OEM-B004', cat:'Brakes', makes:['Chevrolet','GMC','Buick'], stock:'In Stock' },
+  { id:'B005', name:'Brake Master Cylinder', partNo:'OEM-B005', cat:'Brakes', makes:['BMW','MINI'], stock:'In Stock' },
+  { id:'B006', name:'ABS Wheel Speed Sensor', partNo:'OEM-B006', cat:'Brakes', makes:['Mercedes-Benz'], stock:'In Stock' },
+  { id:'B007', name:'Brake Caliper Front Left', partNo:'OEM-B007', cat:'Brakes', makes:['Nissan','Infiniti'], stock:'Limited' },
+  { id:'B008', name:'Brake Caliper Front Right', partNo:'OEM-B008', cat:'Brakes', makes:['Nissan','Infiniti'], stock:'Limited' },
+  { id:'B009', name:'Brake Booster Assembly', partNo:'OEM-B009', cat:'Brakes', makes:['Jeep','Dodge'], stock:'In Stock' },
+  { id:'B010', name:'Brake Hose Set', partNo:'OEM-B010', cat:'Brakes', makes:['Subaru'], stock:'In Stock' },
+  { id:'B011', name:'Parking Brake Cable', partNo:'OEM-B011', cat:'Brakes', makes:['Hyundai','Kia'], stock:'In Stock' },
+  // SUSPENSION
+  { id:'S001', name:'Front Strut Assembly Left', partNo:'OEM-S001', cat:'Suspension', makes:['Toyota','Lexus'], stock:'In Stock' },
+  { id:'S002', name:'Front Strut Assembly Right', partNo:'OEM-S002', cat:'Suspension', makes:['Toyota','Lexus'], stock:'In Stock' },
+  { id:'S003', name:'Rear Shock Absorber Pair', partNo:'OEM-S003', cat:'Suspension', makes:['Ford','Lincoln'], stock:'In Stock' },
+  { id:'S004', name:'Control Arm Front Lower Left', partNo:'OEM-S004', cat:'Suspension', makes:['Honda','Acura'], stock:'In Stock' },
+  { id:'S005', name:'Sway Bar End Links', partNo:'OEM-S005', cat:'Suspension', makes:['Chevrolet','GMC'], stock:'In Stock' },
+  { id:'S006', name:'Tie Rod End Outer', partNo:'OEM-S006', cat:'Suspension', makes:['BMW','MINI'], stock:'In Stock' },
+  { id:'S007', name:'Power Steering Rack', partNo:'OEM-S007', cat:'Suspension', makes:['Dodge','Chrysler'], stock:'Limited' },
+  { id:'S008', name:'Ball Joint Set', partNo:'OEM-S008', cat:'Suspension', makes:['Nissan','Infiniti'], stock:'In Stock' },
+  { id:'S009', name:'Wheel Hub Assembly Front', partNo:'OEM-S009', cat:'Suspension', makes:['Jeep'], stock:'In Stock' },
+  { id:'S010', name:'Coil Spring Set Front', partNo:'OEM-S010', cat:'Suspension', makes:['Mercedes-Benz'], stock:'In Stock' },
+  { id:'S011', name:'CV Axle Shaft', partNo:'OEM-S011', cat:'Suspension', makes:['Subaru'], stock:'In Stock' },
+  { id:'S012', name:'Stabilizer Bar Link', partNo:'OEM-S012', cat:'Suspension', makes:['Hyundai','Kia','Genesis'], stock:'In Stock' },
+  // ELECTRICAL
+  { id:'EL001', name:'Alternator Assembly', partNo:'OEM-EL001', cat:'Electrical', makes:['Toyota','Lexus'], stock:'In Stock' },
+  { id:'EL002', name:'Starter Motor', partNo:'OEM-EL002', cat:'Electrical', makes:['Honda','Acura'], stock:'In Stock' },
+  { id:'EL003', name:'Headlight Assembly Left', partNo:'OEM-EL003', cat:'Electrical', makes:['Ford','Lincoln'], stock:'In Stock' },
+  { id:'EL004', name:'Headlight Assembly Right', partNo:'OEM-EL004', cat:'Electrical', makes:['Ford','Lincoln'], stock:'In Stock' },
+  { id:'EL005', name:'Tail Light Assembly Left', partNo:'OEM-EL005', cat:'Electrical', makes:['Chevrolet','GMC'], stock:'In Stock' },
+  { id:'EL006', name:'Engine Control Module ECM', partNo:'OEM-EL006', cat:'Electrical', makes:['BMW','MINI'], stock:'Limited' },
+  { id:'EL007', name:'Ignition Coil Pack', partNo:'OEM-EL007', cat:'Electrical', makes:['Mercedes-Benz'], stock:'In Stock' },
+  { id:'EL008', name:'Mass Air Flow Sensor', partNo:'OEM-EL008', cat:'Electrical', makes:['Nissan','Infiniti'], stock:'In Stock' },
+  { id:'EL009', name:'Oxygen Sensor Upstream', partNo:'OEM-EL009', cat:'Electrical', makes:['Subaru'], stock:'In Stock' },
+  { id:'EL010', name:'Fuel Pump Assembly', partNo:'OEM-EL010', cat:'Electrical', makes:['Dodge','Ram','Chrysler'], stock:'In Stock' },
+  { id:'EL011', name:'MAP Sensor', partNo:'OEM-EL011', cat:'Electrical', makes:['Jeep'], stock:'In Stock' },
+  { id:'EL012', name:'Battery OEM Spec', partNo:'OEM-EL012', cat:'Electrical', makes:['Toyota','Lexus','Scion'], stock:'In Stock' },
+  { id:'EL013', name:'Blower Motor Resistor', partNo:'OEM-EL013', cat:'Electrical', makes:['Hyundai','Kia'], stock:'In Stock' },
+  { id:'EL014', name:'Knock Sensor', partNo:'OEM-EL014', cat:'Electrical', makes:['Volkswagen','Audi'], stock:'In Stock' },
+  // COOLING
+  { id:'C001', name:'Radiator Assembly', partNo:'OEM-C001', cat:'Cooling', makes:['Toyota','Lexus'], stock:'In Stock' },
+  { id:'C002', name:'Water Pump with Thermostat', partNo:'OEM-C002', cat:'Cooling', makes:['Honda','Acura'], stock:'In Stock' },
+  { id:'C003', name:'Radiator Fan Assembly', partNo:'OEM-C003', cat:'Cooling', makes:['Ford','Lincoln'], stock:'In Stock' },
+  { id:'C004', name:'Coolant Temperature Sensor', partNo:'OEM-C004', cat:'Cooling', makes:['Chevrolet','GMC','Buick'], stock:'In Stock' },
+  { id:'C005', name:'Heater Core', partNo:'OEM-C005', cat:'Cooling', makes:['BMW','MINI'], stock:'Limited' },
+  { id:'C006', name:'Radiator Hose Kit', partNo:'OEM-C006', cat:'Cooling', makes:['Nissan','Infiniti'], stock:'In Stock' },
+  { id:'C007', name:'AC Compressor', partNo:'OEM-C007', cat:'Cooling', makes:['Jeep','Dodge'], stock:'In Stock' },
+  { id:'C008', name:'Expansion Tank', partNo:'OEM-C008', cat:'Cooling', makes:['Mercedes-Benz'], stock:'In Stock' },
+  // TRANSMISSION
+  { id:'T001', name:'Transmission Filter Kit', partNo:'OEM-T001', cat:'Transmission', makes:['Ford','Lincoln'], stock:'In Stock' },
+  { id:'T002', name:'Shift Solenoid Assembly', partNo:'OEM-T002', cat:'Transmission', makes:['Honda','Acura'], stock:'In Stock' },
+  { id:'T003', name:'Clutch Kit Manual', partNo:'OEM-T003', cat:'Transmission', makes:['Nissan','Infiniti'], stock:'In Stock' },
+  { id:'T004', name:'Torque Converter', partNo:'OEM-T004', cat:'Transmission', makes:['Chevrolet','GMC'], stock:'Limited' },
+  { id:'T005', name:'Transfer Case Motor', partNo:'OEM-T005', cat:'Transmission', makes:['Jeep','Dodge'], stock:'Limited' },
+  { id:'T006', name:'Drive Shaft Assembly', partNo:'OEM-T006', cat:'Transmission', makes:['Toyota','Lexus'], stock:'In Stock' },
+  // BODY
+  { id:'BP001', name:'Front Bumper Cover', partNo:'OEM-BP001', cat:'Body Parts', makes:['Toyota','Lexus'], stock:'In Stock' },
+  { id:'BP002', name:'Rear Bumper Cover', partNo:'OEM-BP002', cat:'Body Parts', makes:['Honda','Acura'], stock:'In Stock' },
+  { id:'BP003', name:'Hood Assembly', partNo:'OEM-BP003', cat:'Body Parts', makes:['Ford','Lincoln'], stock:'Limited' },
+  { id:'BP004', name:'Front Fender Left', partNo:'OEM-BP004', cat:'Body Parts', makes:['Chevrolet','GMC'], stock:'In Stock' },
+  { id:'BP005', name:'Door Mirror Left', partNo:'OEM-BP005', cat:'Body Parts', makes:['BMW','MINI'], stock:'In Stock' },
+  { id:'BP006', name:'Trunk Lid Latch', partNo:'OEM-BP006', cat:'Body Parts', makes:['Nissan','Infiniti'], stock:'In Stock' },
+  { id:'BP007', name:'Tailgate Assembly', partNo:'OEM-BP007', cat:'Body Parts', makes:['Dodge','Ram'], stock:'Limited' },
+  // FILTERS
+  { id:'FM001', name:'Engine Oil Filter', partNo:'OEM-FM001', cat:'Filters', makes:['Honda','Acura'], stock:'In Stock' },
+  { id:'FM002', name:'Cabin Air Filter', partNo:'OEM-FM002', cat:'Filters', makes:['Toyota','Lexus','Scion'], stock:'In Stock' },
+  { id:'FM003', name:'Fuel Filter', partNo:'OEM-FM003', cat:'Filters', makes:['Ford','Lincoln'], stock:'In Stock' },
+  { id:'FM004', name:'Transmission Fluid Filter', partNo:'OEM-FM004', cat:'Filters', makes:['Chevrolet','GMC','Buick'], stock:'In Stock' },
+  { id:'FM005', name:'Air Filter Engine', partNo:'OEM-FM005', cat:'Filters', makes:['Dodge','Ram','Chrysler'], stock:'In Stock' },
+  // EXHAUST
+  { id:'EX001', name:'Catalytic Converter', partNo:'OEM-EX001', cat:'Exhaust', makes:['Toyota','Lexus'], stock:'In Stock' },
+  { id:'EX002', name:'Exhaust Manifold', partNo:'OEM-EX002', cat:'Exhaust', makes:['Ford','Lincoln'], stock:'In Stock' },
+  { id:'EX003', name:'Muffler Assembly', partNo:'OEM-EX003', cat:'Exhaust', makes:['Honda','Acura'], stock:'In Stock' },
+  { id:'EX004', name:'EGR Valve', partNo:'OEM-EX004', cat:'Exhaust', makes:['Dodge','Chrysler'], stock:'In Stock' },
+  { id:'EX005', name:'Flex Pipe Section', partNo:'OEM-EX005', cat:'Exhaust', makes:['Nissan','Infiniti'], stock:'Limited' },
+  // INTERIOR
+  { id:'I001', name:'Dashboard Pad Assembly', partNo:'OEM-I001', cat:'Interior', makes:['Toyota','Lexus'], stock:'In Stock' },
+  { id:'I002', name:'Steering Wheel Assembly', partNo:'OEM-I002', cat:'Interior', makes:['Nissan','Infiniti'], stock:'Limited' },
+  { id:'I003', name:'Seat Belt Front', partNo:'OEM-I003', cat:'Interior', makes:['Chevrolet','GMC'], stock:'In Stock' },
+  { id:'I004', name:'Center Console Lid', partNo:'OEM-I004', cat:'Interior', makes:['Honda','Acura'], stock:'In Stock' },
+  { id:'I005', name:'Door Handle Interior Left', partNo:'OEM-I005', cat:'Interior', makes:['Ford','Lincoln'], stock:'In Stock' },
+];
+
+// ═══════════════════════════════════════════════════
+// VIN DECODER
+// ═══════════════════════════════════════════════════
+let decodedVehicle = null;
+let selectedPart = null;
+let activeCat = 'All';
+
+// Init VIN counter boxes
+function initCounter() {
+  const wrap = document.getElementById('vinCounter');
+  for (let i = 0; i < 17; i++) {
+    const d = document.createElement('div');
+    d.className = 'vin-char';
+    d.id = 'vc' + i;
+    wrap.appendChild(d);
+  }
+}
+
+// Update counter on input
+document.getElementById('vinInput').addEventListener('input', function() {
+  this.value = this.value.toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g, '');
+  const v = this.value;
+  this.classList.remove('error', 'success');
+  hideError();
+  for (let i = 0; i < 17; i++) {
+    const box = document.getElementById('vc' + i);
+    if (i < v.length) {
+      box.textContent = v[i];
+      box.className = 'vin-char ' + (v.length === 17 ? 'complete' : 'filled');
+    } else {
+      box.textContent = '';
+      box.className = 'vin-char';
+    }
+  }
+});
+
+document.getElementById('vinInput').addEventListener('keyup', e => {
+  if (e.key === 'Enter') decodeVIN();
+});
+
+document.getElementById('decodeBtn').addEventListener('click', decodeVIN);
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  document.getElementById('errorText').textContent = msg;
+  el.classList.add('show');
+  document.getElementById('vinInput').classList.add('error');
+}
+
+function hideError() {
+  document.getElementById('errorMsg').classList.remove('show');
+}
+
+function setStep(n, state) {
+  const el = document.getElementById('step' + n);
+  if (!el) return;
+  const icons = { pending: '⬜', active: '🔄', done: '✅', error: '❌' };
+  const texts = {
+    1: 'Validating VIN format',
+    2: 'Querying NHTSA vPIC API',
+    3: 'Decoding vehicle specifications',
+    4: 'Matching OEM parts'
+  };
+  el.textContent = (icons[state] || '⬜') + ' ' + texts[n];
+  el.className = 'loading-step ' + (state === 'active' ? 'active' : state === 'done' ? 'done' : '');
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function decodeVIN() {
+  const vin = document.getElementById('vinInput').value.trim().toUpperCase();
+  hideError();
+
+  // Validate
+  if (vin.length !== 17) { showError('VIN must be exactly 17 characters. You entered ' + vin.length + '.'); return; }
+  if (/[IOQ]/.test(vin)) { showError('VIN cannot contain letters I, O, or Q.'); return; }
+
+  // UI
+  const btn = document.getElementById('decodeBtn');
+  btn.disabled = true;
+  document.getElementById('btnText').textContent = 'Decoding...';
+  document.getElementById('resultSection').classList.remove('show');
+  document.getElementById('loadingWrap').classList.add('show');
+
+  // Steps animation
+  setStep(1, 'active'); await delay(400);
+  setStep(1, 'done'); setStep(2, 'active'); await delay(300);
+
+  try {
+    const res = await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevin/${vin}?format=json`);
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+
+    setStep(2, 'done'); setStep(3, 'active'); await delay(300);
+
+    const results = data.Results || [];
+    const get = (var_) => {
+      const found = results.find(r => r.Variable === var_);
+      return found && found.Value && found.Value !== 'Not Applicable' && found.Value !== '0' ? found.Value : null;
+    };
+
+    const year = get('Model Year');
+    const make = get('Make');
+    const model = get('Model');
+    const trim = get('Trim');
+    const engine = get('Displacement (L)') ? get('Displacement (L)') + 'L ' + (get('Engine Number of Cylinders') ? get('Engine Number of Cylinders') + '-Cyl' : '') : get('Engine Model') || null;
+    const driveType = get('Drive Type');
+    const bodyClass = get('Body Class');
+    const fuelType = get('Fuel Type - Primary');
+    const doors = get('Number of Doors');
+    const transmission = get('Transmission Style');
+    const plant = get('Plant City') && get('Plant Country') ? get('Plant City') + ', ' + get('Plant Country') : get('Plant Country') || null;
+    const series = get('Series');
+
+    if (!make && !model) {
+      setStep(2, 'error');
+      throw new Error('Could not decode VIN. Please check the number and try again.');
+    }
+
+    decodedVehicle = { vin, year, make, model, trim, engine, driveType, bodyClass, fuelType, doors, transmission, plant, series };
+
+    setStep(3, 'done'); setStep(4, 'active'); await delay(400);
+    setStep(4, 'done'); await delay(200);
+
+    renderResult(decodedVehicle);
+
+  } catch (err) {
+    setStep(2, 'error');
+    document.getElementById('loadingWrap').classList.remove('show');
+    showError(err.message || 'Failed to decode VIN. Please try again.');
+    document.getElementById('vinInput').classList.add('error');
+  } finally {
+    btn.disabled = false;
+    document.getElementById('btnText').textContent = 'Decode VIN';
+    document.getElementById('loadingWrap').classList.remove('show');
+    // reset steps
+    [1,2,3,4].forEach(n => setStep(n, 'pending'));
+  }
+}
+
+function renderResult(v) {
+  document.getElementById('vinInput').classList.add('success');
+
+  // Vehicle name
+  document.getElementById('vehicleName').innerHTML =
+    `<span class="year">${v.year || '—'}</span> ${v.make || '—'} ${v.model || '—'}`;
+  document.getElementById('vehicleVinDisplay').textContent = v.vin;
+
+  // Specs grid
+  const specs = [
+    { label: 'Make', value: v.make, hl: true },
+    { label: 'Model', value: v.model },
+    { label: 'Year', value: v.year, hl: true },
+    { label: 'Trim', value: v.trim || 'N/A' },
+    { label: 'Engine', value: v.engine || 'N/A' },
+    { label: 'Drive Type', value: v.driveType || 'N/A' },
+    { label: 'Body Style', value: v.bodyClass || 'N/A' },
+    { label: 'Fuel Type', value: v.fuelType || 'N/A' },
+    { label: 'Doors', value: v.doors || 'N/A' },
+    { label: 'Transmission', value: v.transmission || 'N/A' },
+    { label: 'Series', value: v.series || 'N/A' },
+    { label: 'Assembly Plant', value: v.plant || 'N/A' },
+  ];
+
+  document.getElementById('specsGrid').innerHTML = specs.map(s => `
+    <div class="spec-item">
+      <div class="spec-label">${s.label}</div>
+      <div class="spec-value${s.hl ? ' highlight' : ''}">${s.value || 'N/A'}</div>
+    </div>`).join('');
+
+  // VIN breakdown
+  document.getElementById('vinBreakdown').innerHTML = `
+    <span class="tag-label">VIN Breakdown:</span>
+    <span class="vin-section-tag tag-wmi" title="World Manufacturer Identifier">WMI: ${v.vin.slice(0,3)}</span>
+    <span class="vin-section-tag tag-vds" title="Vehicle Descriptor Section">VDS: ${v.vin.slice(3,9)}</span>
+    <span class="vin-section-tag tag-vis" title="Vehicle Identifier Section">VIS: ${v.vin.slice(9,17)}</span>
+  `;
+
+  // Match parts
+  renderParts(v.make);
+
+  document.getElementById('resultSection').classList.add('show');
+  document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderParts(make) {
+  const matched = PARTS_DB.filter(p => !make || p.makes.some(m => m.toLowerCase() === (make||'').toLowerCase()));
+  const categories = ['All', ...new Set(matched.map(p => p.cat))].sort((a,b) => a==='All'?-1:a.localeCompare(b));
+
+  // Sub title
+  document.getElementById('partsSub').textContent =
+    matched.length > 0
+      ? `Found ${matched.length} OEM parts compatible with your ${make || 'vehicle'}`
+      : `Showing all available OEM parts — request a quote for exact fitment confirmation`;
+
+  // Filter tabs
+  const tabs = document.getElementById('partsFilterTabs');
+  tabs.innerHTML = categories.map(c => `<button class="ptab${c==='All'?' active':''}" data-cat="${c}">${c}</button>`).join('');
+  tabs.querySelectorAll('.ptab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeCat = btn.dataset.cat;
+      tabs.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      filterPartsGrid(matched);
+    });
+  });
+
+  activeCat = 'All';
+  filterPartsGrid(matched);
+}
+
+function filterPartsGrid(parts) {
+  const filtered = activeCat === 'All' ? parts : parts.filter(p => p.cat === activeCat);
+  const grid = document.getElementById('partsGrid');
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="no-parts-msg" style="grid-column:1/-1">
+      <h4>No parts in this category</h4>
+      <p>Select another category or request a custom quote</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map((p, i) => {
+    const stockCls = p.stock === 'In Stock' ? 'in' : p.stock === 'Limited' ? 'ltd' : 'out';
+    return `
+    <div class="pcard" style="animation-delay:${Math.min(i*0.03,0.5)}s">
+      <div class="pcard-top">
+        <span class="pcat-badge">${p.cat}</span>
+        <span class="pstock ${stockCls}">${p.stock}</span>
+      </div>
+      <div class="pcard-body">
+        <div class="pname">${p.name}</div>
+        <div class="pno"># ${p.partNo}</div>
+        <div class="pbrand">Compatible: <strong>${p.makes.slice(0,3).join(', ')}${p.makes.length>3?'...':''}</strong></div>
+      </div>
+      <div class="pcard-footer">
+        <button class="btn-quote-part" data-id="${p.id}">Get Quote</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  grid.querySelectorAll('.btn-quote-part').forEach(btn => {
+    btn.addEventListener('click', () => openModal(btn.dataset.id));
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// QUOTE MODAL
+// ═══════════════════════════════════════════════════
+function openModal(partId) {
+  selectedPart = partId ? PARTS_DB.find(p => p.id === partId) : null;
+
+  // Part info display
+  const mpartInfo = document.getElementById('mpartInfo');
+  if (selectedPart) {
+    mpartInfo.innerHTML = `<strong>${selectedPart.name}</strong> Part #: ${selectedPart.partNo} | Category: ${selectedPart.cat}`;
+    mpartInfo.style.display = 'block';
+  } else {
+    mpartInfo.innerHTML = '<strong>Custom OEM Part Request</strong>';
+    mpartInfo.style.display = 'block';
+  }
+
+  // Pre-fill vehicle from decoded data
+  if (decodedVehicle) {
+    document.getElementById('qVehicle').value =
+      [decodedVehicle.year, decodedVehicle.make, decodedVehicle.model, decodedVehicle.trim].filter(Boolean).join(' ');
+    document.getElementById('qNotes').value = 'VIN: ' + decodedVehicle.vin;
+  }
+
+  document.getElementById('modalBody').style.display = 'block';
+  document.getElementById('modalSuccess').classList.remove('show');
+  document.getElementById('quoteModal').classList.add('open');
+}
+
+// Wire modal events safely
+document.addEventListener('DOMContentLoaded', function() {
+  var mc = document.getElementById('modalClose');
+  var qm = document.getElementById('quoteModal');
+  var sb = document.getElementById('submitBtn');
+  if(mc) mc.addEventListener('click', function(){ qm.classList.remove('open'); });
+  if(qm) qm.addEventListener('click', function(e){ if(e.target===qm) qm.classList.remove('open'); });
+  if(sb) sb.addEventListener('click', sendQuote);
+  initCounter();
+  if(typeof emailjs !== 'undefined') emailjs.init('436D8Gu9IZi-CaL6C');
+});
+
+function sendQuote() {
+  const name = document.getElementById('qName').value.trim();
+  const email = document.getElementById('qEmail').value.trim();
+  if (!name || !email) { alert('Please fill in your name and email.'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.textContent = 'Sending...'; btn.disabled = true;
+
+  const payload = {
+    from_name: name,
+    from_email: email,
+    phone: document.getElementById('qPhone').value,
+    vehicle: document.getElementById('qVehicle').value,
+    part_name: selectedPart ? selectedPart.name : '',
+    part_number: selectedPart ? selectedPart.partNo : '',
+    message: document.getElementById('qNotes').value,
+    to_email: 'sales@eliteoemautoparts.com'
+  };
+
+  if (typeof emailjs !== 'undefined') {
+    emailjs.send('service_qir3oxt', 'template_fpxmva9', payload)
+      .then(showSuccess).catch(showSuccess);
+  } else {
+    setTimeout(showSuccess, 800);
+  }
+}
+
+function showSuccess() {
+  document.getElementById('modalBody').style.display = 'none';
+  document.getElementById('modalSuccess').classList.add('show');
+  ['qName','qEmail','qPhone','qNotes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('submitBtn').textContent = 'Send Quote Request';
+  document.getElementById('submitBtn').disabled = false;
+  setTimeout(() => document.getElementById('quoteModal').classList.remove('open'), 3000);
+}
+
+// ── INIT ──
+
+</script>
+</body>
+</html>
