@@ -24,7 +24,7 @@ function gtag_report_conversion(url) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OEM Auto Parts USA | Elite OEM Auto Parts | Genuine OEM Car Parts</title>
-<meta name="description" content="Buy genuine OEM auto parts online in USA. Elite OEM Auto Parts offers factory-original parts for Ford, Toyota, Honda, BMW, Chevy & 30+ brands. Fast shipping all 50 states. VIN matching. Call .">
+<meta name="description" content="Buy genuine OEM auto parts online in USA. Elite OEM Auto Parts offers factory-original parts for Ford, Toyota, Honda, BMW, Chevy & 30+ brands. Fast shipping all 50 states. VIN matching. Call +1 (307) 205-2409.">
 <meta name="keywords" content="OEM auto parts USA, genuine OEM parts, buy auto parts online, Ford OEM parts, Toyota OEM parts, Honda OEM parts, BMW OEM parts, Chevrolet OEM parts, car parts USA, OEM replacement parts, factory original auto parts, VIN auto parts lookup">
 <meta name="robots" content="index, follow">
 <meta name="author" content="Elite OEM Auto Parts">
@@ -35,6 +35,8 @@ function gtag_report_conversion(url) {
 <meta property="og:description" content="99,000+ genuine OEM & aftermarket parts for Ford, Toyota, Honda, BMW, Chevrolet, Dodge, Cummins & 40+ brands. Fast shipping all 50 states. Call +1 (307) 205-2409.">
 <meta property="og:url" content="https://eliteoemautoparts.com">
 <meta property="og:site_name" content="Elite OEM Auto Parts">
+<meta property="og:image" content="https://images.pexels.com/photos/3807517/pexels-photo-3807517.jpeg?auto=compress&cs=tinysrgb&w=1200">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="OEM Auto Parts USA | Elite OEM Auto Parts">
 <script type="application/ld+json">
@@ -675,6 +677,10 @@ a, button, .brand-card, .part-card, .cat-card, .service-card, .why-card, .hiw-st
 #ymm-box {
   animation: heroFadeIn .8s ease .35s both;
 }
+#ymm-box select {
+  min-height: 44px;
+  box-sizing: border-box;
+}
 .hero-btns {
   animation: heroFadeIn .8s ease .5s both;
 }
@@ -1164,9 +1170,9 @@ button:active, a.btn-gold:active {
       <div id="ymm-box">
         <div id="ymm-title">🔍 Find Parts by Vehicle</div>
         <div id="ymm-selects">
-          <select id="ymm-year"><option value="">Select Year</option></select>
-          <select id="ymm-make"><option value="">Select Make</option></select>
-          <select id="ymm-model"><option value="">Select Model</option></select>
+          <select id="ymm-year" aria-label="Vehicle year"><option value="">Select Year</option></select>
+          <select id="ymm-make" aria-label="Vehicle make"><option value="">Select Make</option></select>
+          <select id="ymm-model" aria-label="Vehicle model"><option value="">Select Model</option></select>
           <input type="text" id="ymm-model-custom" placeholder="Type your model name..." style="display:none;background:var(--bg3,#1a2029);border:1px solid var(--border2,#28303d);color:#fff;padding:.7rem 1rem;border-radius:8px;font-size:.95rem;width:100%;box-sizing:border-box;">
           <button id="ymm-btn">Find Parts</button>
         </div>
@@ -1775,7 +1781,7 @@ button:active, a.btn-gold:active {
     <div id="cat-filters" class="brand-filters"></div>
     <div class="catalog-controls">
       <input id="cat-search" class="cat-search" type="text" placeholder="Search parts...">
-      <select id="cat-sort" class="sort-sel">
+      <select id="cat-sort" class="sort-sel" aria-label="Sort parts">
         <option value="">Sort: Default</option>
         <option value="az">A → Z</option>
         <option value="za">Z → A</option>
@@ -1822,7 +1828,7 @@ button:active, a.btn-gold:active {
         <div style="background:rgba(37,211,102,.06);border:1px solid rgba(37,211,102,.18);border-radius:10px;padding:1rem;margin-top:1.2rem">
           <strong style="font-size:.82rem;color:#fff;display:block;margin-bottom:.3rem">&#128172; WhatsApp Us</strong>
           <p style="font-size:.75rem;color:var(--muted);margin-bottom:.6rem">Quick response on WhatsApp</p>
-          <a onclick="gtag_report_conversion('https://wa.me/13072052409')" href="https://wa.me/13072052409?text=Hi Elite OEM! 👋 I need a quote for:%0A%0A🔩 Part Number: %0A🚗 Vehicle (Year/Make/Model): %0A👤 My Name: %0A📞 My Phone: %0A%0APlease help me find this part. Thank you!?text=Hi%2C%20I%20need%20OEM%20parts" target="_blank" style="background:#25d366;color:#fff;font-weight:700;font-size:.78rem;padding:.45rem .95rem;border-radius:50px;display:inline-block">Chat on WhatsApp</a>
+          <a onclick="gtag_report_conversion('https://wa.me/13072052409')" href="https://wa.me/13072052409?text=Hi Elite OEM! 👋 I need a quote for:%0A%0A🔩 Part Number: %0A🚗 Vehicle (Year/Make/Model): %0A👤 My Name: %0A📞 My Phone: %0A%0APlease help me find this part. Thank you!" target="_blank" style="background:#25d366;color:#fff;font-weight:700;font-size:.78rem;padding:.45rem .95rem;border-radius:50px;display:inline-block">Chat on WhatsApp</a>
         </div>
       </div>
       <div class="contact-form" id="contact-form-card">
@@ -1840,7 +1846,7 @@ button:active, a.btn-gold:active {
         <label>Message</label>
         <textarea id="cf-msg" rows="3" placeholder="Any additional details..."></textarea>
         <button id="cf-submit" class="btn-gold" style="margin-top:1rem;padding:.88rem 2rem;border-radius:50px;font-size:.88rem">&#128228; Send Inquiry &#8594;</button>
-        <a id="wa-contact-btn" onclick="gtag_report_conversion('https://wa.me/13072052409')" href="https://wa.me/13072052409?text=Hi Elite OEM! 👋 I need a quote for:%0A%0A🔩 Part Number: %0A🚗 Vehicle (Year/Make/Model): %0A👤 My Name: %0A📞 My Phone: %0A%0APlease help me find this part. Thank you!?text=Hi%2C%20I%20need%20an%20OEM%20parts%20quote%20for%20my%20vehicle.%20Can%20you%20help%3F" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.5rem;margin-top:1rem;margin-left:.75rem;padding:.88rem 2rem;border-radius:50px;font-size:.88rem;font-weight:700;background:#25D366;color:#fff;text-decoration:none;border:none;cursor:pointer;box-shadow:0 4px 15px rgba(37,211,102,.35);">&#128362; WhatsApp Us</a>
+        <a id="wa-contact-btn" onclick="gtag_report_conversion('https://wa.me/13072052409')" href="https://wa.me/13072052409?text=Hi Elite OEM! 👋 I need a quote for:%0A%0A🔩 Part Number: %0A🚗 Vehicle (Year/Make/Model): %0A👤 My Name: %0A📞 My Phone: %0A%0APlease help me find this part. Thank you!" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.5rem;margin-top:1rem;margin-left:.75rem;padding:.88rem 2rem;border-radius:50px;font-size:.88rem;font-weight:700;background:#25D366;color:#fff;text-decoration:none;border:none;cursor:pointer;box-shadow:0 4px 15px rgba(37,211,102,.35);">&#128362; WhatsApp Us</a>
         <p id="cf-msg-status" style="margin-top:.8rem;font-size:.8rem;display:none"></p>
       </div>
     </div>
@@ -2085,7 +2091,7 @@ button:active, a.btn-gold:active {
     <button id="chat-send-btn">▶</button>
   </div>
 </div>
-<a id="wa-btn" onclick="gtag_report_conversion('https://wa.me/13072052409')" href="https://wa.me/13072052409?text=Hi Elite OEM! 👋 I need a quote for:%0A%0A🔩 Part Number: %0A🚗 Vehicle (Year/Make/Model): %0A👤 My Name: %0A📞 My Phone: %0A%0APlease help me find this part. Thank you!?text=Hi%2C%20I%20need%20OEM%20parts%20quote" target="_blank">
+<a id="wa-btn" onclick="gtag_report_conversion('https://wa.me/13072052409')" href="https://wa.me/13072052409?text=Hi Elite OEM! 👋 I need a quote for:%0A%0A🔩 Part Number: %0A🚗 Vehicle (Year/Make/Model): %0A👤 My Name: %0A📞 My Phone: %0A%0APlease help me find this part. Thank you!" target="_blank">
   <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
 </a>
 
@@ -2330,7 +2336,7 @@ const catalog = [
 
 const PHONE = '+1 (307) 205-2409';
 const TEL   = 'tel:+13072052409';
-const WA    = 'https://wa.me/13072052409?text=Hi Elite OEM! 👋 I need a quote for:%0A%0A🔩 Part Number: %0A🚗 Vehicle (Year/Make/Model): %0A👤 My Name: %0A📞 My Phone: %0A%0APlease help me find this part. Thank you!?text=Hi%2C%20I%20need%20OEM%20parts%20quote';
+const WA    = 'https://wa.me/13072052409?text=Hi Elite OEM! 👋 I need a quote for:%0A%0A🔩 Part Number: %0A🚗 Vehicle (Year/Make/Model): %0A👤 My Name: %0A📞 My Phone: %0A%0APlease help me find this part. Thank you!';
 /* ── EMAILJS CONFIG ── */
 var EMAILJS_SERVICE  = 'service_qir3oxt';
 var EMAILJS_TEMPLATE = 'template_fpxmva9';
