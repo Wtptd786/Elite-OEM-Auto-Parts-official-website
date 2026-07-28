@@ -2856,7 +2856,15 @@ function init(){
   buildLogosStrip();
   buildHome();
   buildBrandsPage();
-  showPage('home');
+  // Respect a direct link's hash (e.g. eliteoemautoparts.com/#contact from
+  // an ad, bookmark, or external backlink) instead of always landing on
+  // home -- showPage()/updateNavActive() only ever run against an
+  // explicit id, so an unrecognized or empty hash safely falls back to home.
+  var knownPages = ['home','brands','catalog','contact','how','privacy','returns','shipping'];
+  var startPage = 'home';
+  var hash = (location.hash || '').replace('#', '');
+  if (knownPages.indexOf(hash) !== -1) startPage = hash;
+  showPage(startPage);
   wireAll();
   initSearchBar();
   initYMM();
@@ -2867,7 +2875,7 @@ function init(){
   }, 3000);
   initScrollReveal();
   initRipples();
-  updateNavActive('home');
+  updateNavActive(startPage);
     console.log('✅ Elite OEM - All systems ready!');
 }
 
